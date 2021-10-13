@@ -26,18 +26,29 @@ class Database {
             return {id, created, updated}
         }
 
-        let databaseObj = { ...o , ..._createMockObjectDefaults()}
-        this[tableName].push(databaseObj)
+        const { id } = o
+        let databaseObj
+        if (id) {
+            this.logger().debug(`Updating ${tableName} ${o.name}`)
+            const found = this[tableName].find(x => x.id === id)
+            if (!found) throw new Error("Object not found with id ", id)
+            databaseObj = Object.assign(found, {updated : Date.now(), amount: o.amount})
+        } else {
+            this.logger().debug(`Creating ${tableName} ${o.name}`)
+            databaseObj = { ...o , ..._createMockObjectDefaults()}
+            this[tableName].push(databaseObj)
+        }
+        
         return databaseObj
     }
 
-    get (tableName, options) {
-        // this.logger().debug("get invoke with ", tableName)
-        if (!!options.all) {
-            // this.logger().debug(this[tableName])
-            return this[tableName]
-        }
-        throw new Error("Get not implemented")
+    getAll (tableName) {
+        return this[tableName]
+    }
+
+    getByParentId(tableName, o) {
+        const { parentId } = o
+        return this[tableName].filter(x => x.parentId === parentId)
     }
 
 }

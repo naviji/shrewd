@@ -22,6 +22,7 @@ class CommandService {
 
     execute = (cmdName, o) => {
         const commandClass = this.getCommandFromName(cmdName)
+        if (!commandClass) throw new Error("Command not found: ", cmdName)
         const commandObj = new commandClass()
         const result = commandObj.execute(o)
         this.commandHistory_.push(commandObj)

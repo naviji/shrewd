@@ -9,8 +9,9 @@ class AddAccount {
         this.createdAccount = Account.save(o)
         return this.createdAccount;
     }
-    unexecute() {
-        Account.delete(this.createdAccount.id)
+
+    undo() {
+        throw new Error("Not Implemented")
     }
 }
 

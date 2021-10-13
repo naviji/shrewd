@@ -9,6 +9,11 @@ class FundAccount {
         this.createdCategory = Category.save(o)
         return this.createdCategory;
     }
+
+    undo() {
+        throw new Error("Not Implemented")
+    }
+    
 }
 
 export default FundAccount

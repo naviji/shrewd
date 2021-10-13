@@ -9,6 +9,10 @@ class AddCategoryGroup {
         this.createdCategoryGroup = CategoryGroup.save(o)
         return this.createdCategoryGroup;
     }
+
+    undo() {
+        throw new Error("Not Implemented")
+    }
 }
 
 export default AddCategoryGroup

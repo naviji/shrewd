@@ -23,7 +23,7 @@ class Logger {
             if (typeof msg === 'string') {
                 process.stdout.write(` ${msg} `);
             } else {
-                console.log(` ${JSON.stringify(msg)} `)
+                process.stdout.write(` ${JSON.stringify(msg)} `)
             }
         }
         process.stdout.write(`\n`);

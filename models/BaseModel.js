@@ -16,17 +16,19 @@ class BaseModel {
     }
 
     static save(o) {
-        BaseModel.logger().debug("Saving a new", this.tableName())
         return this.db().save(this.tableName(), o)
     }
 
     static getAll() {
-        const options = {all : true}
-        return this.db().get(this.tableName(), options)
+        return this.db().getAll(this.tableName())
+    }
+
+    static getByParentId(o) {
+        return this.db().getByParentId(this.tableName(), o)
     }
 
     static delete(name, id) {
-        BaseModel.logger().debug("deleting a", this.tableName())
+        throw new Error("Not implemented")
     }
 }
 
