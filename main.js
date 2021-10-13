@@ -10,9 +10,7 @@ app.start(options)
 const axis = app.addAccount({type: "Savings", name: "Axis", amount: 1000})
 const sbi = app.addAccount({type: "Savings", name: "SBI", amount: 2000})
 
-app.render()
-
-app.undo()
+const wishList = app.addCategoryGroup({name: "Wishlist"})
 
 app.render()
 
@@ -23,12 +21,6 @@ app.render()
 app.redo()
 
 app.render()
-
-app.redo()
-
-app.render()
-
-// const wishList = app.addCategoryGroup({name: "Wishlist"})
 // let ferrari = app.addCategory({parentId: wishList.id, name: "Ferrari", amount: 0})
 // let bmw = app.addCategory({parentId: wishList.id, name: "BMW", amount: 0})
 // ferrari = app.assignMoney({id: ferrari.id, amount: 250})
