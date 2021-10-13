@@ -3,8 +3,8 @@ import BaseModel from "./BaseModel.js"
 class Category extends BaseModel {
     static tableName = () => "category"
 
-    static save = () => {
-        super.save()
+    static save = (name, options) => {
+        super.save(name, options)
     }
 }
 

@@ -4,10 +4,10 @@ class AddCategory {
     constructor() {
         this.createdCategory = null
     }
-    
-    execute (name) {
+
+    execute(name, options) {
         console.log("Executing add category")
-        this.createdCategory = Category.save(name)
+        this.createdCategory = Category.save(name, options)
         return this.createdCategory;
     }
 }

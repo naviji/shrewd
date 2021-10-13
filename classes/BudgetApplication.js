@@ -4,29 +4,33 @@ import CommandService from "../services/CommandService.js"
 
 class BudgetApplication {
 
-    constructor () {
+    constructor() {
         this.commands = ['AddAccount', 'AddCategory', 'AddCategoryGroup']
     }
 
-    start () {
-        console.log("Starting budget application")
+    start() {
+        console.log("Starting budget application", new Database())
         BaseModel.setDb(new Database())
         this.registerCommands()
     }
 
-    addAccount () {
-        CommandService.instance().execute('AddAccount')
+    addAccount(account) {
+        CommandService.instance().execute('AddAccount', account)
     }
 
-    addCategoryGroup () {
-        CommandService.instance().execute('AddCategoryGroup')
+    addCategoryGroup(group) {
+        CommandService.instance().execute('AddCategoryGroup', group)
     }
 
-    addCategory () {
-        CommandService.instance().execute('AddCategory')
+    addCategory(category) {
+        CommandService.instance().execute('AddCategory', category)
     }
 
-    registerCommands () {
+    undo() {
+        CommandService.instance().unexecute()
+    }
+
+    registerCommands() {
         for (let command of this.commands) {
             CommandService.instance().register(command)
         }
