@@ -14,8 +14,8 @@ class BudgetApplication {
         this.registerCommands()
     }
 
-    addAccount () {
-        CommandService.instance().execute('AddAccount')
+    addAccount (toSave) {
+        CommandService.instance().execute('AddAccount', toSave)
     }
 
     addCategoryGroup () {

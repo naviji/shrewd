@@ -19,10 +19,10 @@ class CommandService {
 
     getCommandFromName = (name) => this.commandMap_[name]
 
-    execute = (name) => {
+    execute = (name, ctx) => {
         const commandClass = this.getCommandFromName(name)
         const command = new commandClass()
-        return command.execute()
+        return command.execute(ctx)
     }
 }
 

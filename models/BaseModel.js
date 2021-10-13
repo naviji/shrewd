@@ -11,8 +11,9 @@ class BaseModel {
         return this.db_
     }
 
-    static save() {
+    static save(ctx) {
         console.log("Saving a new ", this.tableName())
+        this.db().save()
     }
 }
 
