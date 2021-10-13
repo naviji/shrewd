@@ -10,10 +10,6 @@ import BaseModel from "../models/BaseModel.js"
 // const appLogger = new Logger()
 class BudgetApplication {
 
-    constructor() {
-        this.commands = ['AddAccount', 'AddCategory', 'AddCategoryGroup', 'AssignMoney']
-    }
-
     start(options) {
         this.setLogger(new Logger(options.debugMode ? LogLevel.Debug : LogLevel.Info))
         this.setupDatabase()
@@ -49,20 +45,26 @@ class BudgetApplication {
         return CommandService.instance().execute('AssignMoney', o)
     }
 
+    registerCommands() {
+        CommandService.instance().registerAll()
+    }
+
     undo() {
         CommandService.instance().undo()
+        return this
     }
 
     redo() {
         CommandService.instance().redo()
+        return this
     }
 
     get readyToAssign() {
         const categories = Category.getAll()
         const accounts = Account.getAll()
 
-        const totalMoneyInAccounts = accounts.length ? accounts.map(x => x.amount).reduce((a, b) => a + b) : 0
-        const moneyAlreadyAssigned = categories.length ? categories.map(x => x.amount).reduce((a, b) => a + b) : 0
+        const totalMoneyInAccounts = accounts.length ? accounts.map(x => x.amount).reduce((a, b) => a + b, 0) : 0
+        const moneyAlreadyAssigned = categories.length ? categories.map(x => x.amount).reduce((a, b) => a + b, 0) : 0
 
         return totalMoneyInAccounts - moneyAlreadyAssigned
     }
@@ -80,19 +82,16 @@ class BudgetApplication {
         const groups = CategoryGroup.getAll()
         for (let group of groups) {
             const categories = Category.getByParentId({parentId : group.id})
-            const totalMoneyAssigned = categories.length ? categories.reduce((a, b) => a.amount + b.amount) : 0
+            const totalMoneyAssigned = categories.length ? categories.map(x => x.amount).reduce((a, b) => a + b, 0) : 0
             this.logger().log(`    ${group.name} [${totalMoneyAssigned}]`)
             for (let category of categories) {
                 this.logger().log(`    --- ${category.name} [${category.amount}]`)
             }
         }
+        return this
     }
 
-    registerCommands() {
-        for (let command of this.commands) {
-            CommandService.instance().register(command)
-        }
-    }
+
 }
 
 export default BudgetApplication

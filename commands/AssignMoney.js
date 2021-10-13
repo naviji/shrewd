@@ -1,18 +1,8 @@
 import Category from '../models/Category.js'
+import UpdateCommand from './UpdateCommand.js'
 
-class AssignMoney {
-    constructor() {
-        this.updatedCategory = null
-    }
-
-    execute(o) {
-        this.updatedCategory = Category.save(o)
-        return this.updatedCategory;
-    }
-    
-    undo() {
-        throw new Error("Not Implemented")
-    }
+class AssignMoney extends UpdateCommand {
+    model = () => Category
 }
 
 export default AssignMoney

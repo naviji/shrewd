@@ -19,6 +19,12 @@ class CommandService {
         this.commandMap_[name] = commands[name]
     }
 
+    registerAll = () => {
+        for (let name of Object.keys(commands)) {
+            this.commandMap_[name] = commands[name]
+        }
+    }
+
     getCommandFromName = (name) => this.commandMap_[name]
 
     execute = (cmdName, o) => {

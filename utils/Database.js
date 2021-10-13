@@ -56,6 +56,13 @@ class Database {
         this[tableName] = this[tableName].filter(x => x.id !== id)
     }
 
+    getById(tableName, o) {
+        const { id } = o
+        const found = this[tableName].find(x => x.id === id)
+        if (!found) throw new Error("Object not found with id ", id)
+        return found
+    }
+
 }
 
 export default Database

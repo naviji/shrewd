@@ -1,18 +1,8 @@
 import Category from '../models/Category.js'
+import AddCommand from './AddCommand.js'
 
-class AddCategory {
-    constructor() {
-        this.createdCategory = null
-    }
-
-    execute(o) {
-        this.createdCategory = Category.save(o)
-        return this.createdCategory;
-    }
-    
-    undo() {
-        throw new Error("Not Implemented")
-    }
+class AddCategory extends AddCommand {
+    model = () => Category
 }
 
 export default AddCategory
