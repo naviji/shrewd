@@ -6,7 +6,6 @@ class FundAccount {
     }
 
     execute(o) {
-        console.log("Executing add category")
         this.createdCategory = Category.save(o)
         return this.createdCategory;
     }

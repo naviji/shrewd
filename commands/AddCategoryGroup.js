@@ -6,7 +6,6 @@ class AddCategoryGroup {
     }
 
     execute(o) {
-        console.log("Executing add category group")
         this.createdCategoryGroup = CategoryGroup.save(o)
         return this.createdCategoryGroup;
     }

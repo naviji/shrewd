@@ -1,12 +1,21 @@
 
 class Database {
 
-    constructor() {
-        console.log("Database initialized")
+    constructor(logger) {
+        this.setLogger(logger)
+        this.logger().debug("Database initialized")
         const tableNames = ["account", "categoryGroup", "category"]
         for (const name of tableNames) {
             this[name] = []
         }
+    }
+
+    setLogger(logger) {
+        this.logger_ = logger
+    }
+
+    logger() {
+        return this.logger_
     }
 
     save(tableName, o) {
@@ -23,8 +32,9 @@ class Database {
     }
 
     get (tableName, options) {
-        console.log("get invoke with ", tableName)
+        // this.logger().debug("get invoke with ", tableName)
         if (!!options.all) {
+            // this.logger().debug(this[tableName])
             return this[tableName]
         }
         throw new Error("Get not implemented")

@@ -4,9 +4,10 @@ const app = new BudgetApplication()
 
 app.start()
 const axis = app.addAccount({type: "Savings", name: "Axis", amount: 1000})
+const sbi = app.addAccount({type: "Savings", name: "SBI", amount: 2000})
 const wishList = app.addCategoryGroup({name: "Wishlist"})
-const ferrari = app.addCategory({parentId: wishList.id, name: "Ferrari"})
-const bmw = app.addCategory({parentId: wishList.id, name: "BMW"})
+const ferrari = app.addCategory({parentId: wishList.id, name: "Ferrari", amount: 0})
+const bmw = app.addCategory({parentId: wishList.id, name: "BMW", amount: 0})
 
 app.render()
 
