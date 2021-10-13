@@ -1,67 +1,33 @@
 
 class Database {
 
-    categoryGroups = new Map()
-    transactions = new Map()
-    accounts = new Map()
-    categories = new Map()
-
-
     constructor() {
         console.log("Database initialized")
+        const tableNames = ["account", "categoryGroup", "category"]
+        for (const name of tableNames) {
+            this[name] = []
+        }
     }
 
     save(tableName, o) {
-        console.log("table name = ", tableName)
-        if (tableName === "account") {
+        const _createMockObjectDefaults = () => {
             const id = Math.floor(Math.random()*10000000)
             const created =  Date.now()
             const updated =  Date.now()
-            
-            const account = { ...o ,id,  created , updated }
-            this.setAccount(account)
-            return account
-        }
-        else if (tableName=== "categoryGroup") {
-            const id = Math.floor(Math.random()*10000000)
-            const created =  Date.now()
-            const updated =  Date.now()
-            const group = { ...o, id , created , updated }
-            this.setCategoryGroup(group)
-            return group
-        }
-        else if (tableName=== "category") {
-            const id = Math.floor(Math.random()*10000000)
-            const created =  Date.now()
-            const updated =  Date.now()
-            const category = { ...o, id ,created , updated }
-            this.setCategory(category)
-            return category
+            return {id, created, updated}
         }
 
-        return { error : true }
-    }
-    getCategoryGroups() {
-        return this.categoryGroups
-    }
-    getTransactions() {
-        return this.transactions
-    }
-    getAccounts() {
-        return this.accounts
+        let databaseObj = { ...o , ..._createMockObjectDefaults()}
+        this[tableName].push(databaseObj)
+        return databaseObj
     }
 
-    setCategoryGroup(categoryGroup) {
-        this.categoryGroups[categoryGroup.id] = categoryGroup;
-    }
-    setCategory(category) {
-        this.categories[category.id] = category
-    }
-    setTransactions() {
-        this.transactions.push(transaction)
-    }
-    setAccount(account) {
-        this.accounts[account.id] = account;
+    get (tableName, options) {
+        console.log("get invoke with ", tableName)
+        if (!!options.all) {
+            return this[tableName]
+        }
+        throw new Error("Get not implemented")
     }
 
 }

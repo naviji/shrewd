@@ -9,6 +9,11 @@ class Account extends BaseModel {
     static delete = (name, id) => {
         super.delete(name, id)
     }
+
+    static getAll = () => {
+        const options = {all : true}
+        return this.db().get(this.tableName(), options)
+    }
 }
 
 export default Account

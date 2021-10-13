@@ -1,6 +1,7 @@
 import BaseModel from "../models/BaseModel.js"
 import Database from "../utils/Database.js"
 import CommandService from "../services/CommandService.js"
+import Account from "../models/Account.js"
 
 class BudgetApplication {
 
@@ -23,6 +24,15 @@ class BudgetApplication {
 
     addCategory(o) {
         return CommandService.instance().execute('AddCategory', o)
+    }
+
+    render () {
+        console.log(`--- BUDGET APP ---`)
+        console.log("Accounts: ")
+        const accounts = Account.getAll()
+        for (let account of accounts) {
+            console.log(`Account name: ${account.name} [${account.amount}]`)
+        }
     }
 
     undo() {
