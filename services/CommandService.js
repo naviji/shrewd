@@ -5,7 +5,8 @@ class CommandService {
     constructor() {
         this.instance_ = null
         this.commandMap_ = new Map()
-        this.commandHistory_ = []
+        this.backwardHistory = []
+        this.forwardHistory = []
     }
 
     static instance = () => {
@@ -25,13 +26,21 @@ class CommandService {
         if (!commandClass) throw new Error("Command not found: ", cmdName)
         const commandObj = new commandClass()
         const result = commandObj.execute(o)
-        this.commandHistory_.push(commandObj)
+        this.backwardHistory.push(commandObj)
         return result;
     }
 
-    unexecute = () => {
-        const command = this.commandHistory_.pop()
-        return command.unexecute(command)
+    undo = () => {
+        const command = this.backwardHistory.pop()
+        command.undo()
+        this.forwardHistory.push(command)
+        // return command.unexecute()
+    }
+
+    redo = () => {
+        const command = this.forwardHistory.pop()
+        command.redo()
+        this.backwardHistory.push(command)
         // return command.unexecute()
     }
 }

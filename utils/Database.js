@@ -51,6 +51,11 @@ class Database {
         return this[tableName].filter(x => x.parentId === parentId)
     }
 
+    deleteById(tableName, o) {
+        const { id } = o
+        this[tableName] = this[tableName].filter(x => x.id !== id)
+    }
+
 }
 
 export default Database

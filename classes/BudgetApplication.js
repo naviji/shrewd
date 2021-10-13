@@ -49,18 +49,26 @@ class BudgetApplication {
         return CommandService.instance().execute('AssignMoney', o)
     }
 
+    undo() {
+        CommandService.instance().undo()
+    }
+
+    redo() {
+        CommandService.instance().redo()
+    }
+
     get readyToAssign() {
         const categories = Category.getAll()
         const accounts = Account.getAll()
 
-        const totalMoneyInAccounts = accounts.map(x => x.amount).reduce((a, b) => a + b)
-        const moneyAlreadyAssigned = categories.map(x => x.amount).reduce((a, b) => a + b)
+        const totalMoneyInAccounts = accounts.length ? accounts.map(x => x.amount).reduce((a, b) => a + b) : 0
+        const moneyAlreadyAssigned = categories.length ? categories.map(x => x.amount).reduce((a, b) => a + b) : 0
 
         return totalMoneyInAccounts - moneyAlreadyAssigned
     }
 
     render () {
-        this.logger().log(`--- BUDGET APP ---`)
+        this.logger().log(`\n--- BUDGET APP ---`)
         this.logger().log(`Ready to assign : ${this.readyToAssign}`)
         this.logger().log("Accounts: ")
         const accounts = Account.getAll()

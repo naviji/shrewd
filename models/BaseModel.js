@@ -27,8 +27,8 @@ class BaseModel {
         return this.db().getByParentId(this.tableName(), o)
     }
 
-    static delete(name, id) {
-        throw new Error("Not implemented")
+    static deleteById(o) {
+        return this.db().deleteById(this.tableName(), o)
     }
 }
 
