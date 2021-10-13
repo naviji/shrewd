@@ -1,8 +1,8 @@
 import Category from '../models/Category.js'
 
-class AddCategory {
+class FundAccount {
     constructor() {
-        this.createdCategory = null
+        this.prevAccountBalance = null
     }
 
     execute(o) {
@@ -12,4 +12,4 @@ class AddCategory {
     }
 }
 
-export default AddCategory
+export default FundAccount

@@ -2,9 +2,10 @@ import { commands } from "../commands/index.js"
 
 class CommandService {
 
-    constructor () {
+    constructor() {
         this.instance_ = null
         this.commandMap_ = new Map()
+        this.commandHistory_ = []
     }
 
     static instance = () => {
@@ -19,10 +20,18 @@ class CommandService {
 
     getCommandFromName = (name) => this.commandMap_[name]
 
-    execute = (name, ctx) => {
-        const commandClass = this.getCommandFromName(name)
-        const command = new commandClass()
-        return command.execute(ctx)
+    execute = (cmdName, o) => {
+        const commandClass = this.getCommandFromName(cmdName)
+        const commandObj = new commandClass()
+        const result = commandObj.execute(o)
+        this.commandHistory_.push(commandObj)
+        return result;
+    }
+
+    unexecute = () => {
+        const command = this.commandHistory_.pop()
+        return command.unexecute(command)
+        // return command.unexecute()
     }
 }
 

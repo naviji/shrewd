@@ -5,10 +5,14 @@ class AddAccount {
         this.createdAccount = null
     }
     
-    execute (ctx) {
+    execute (o) {
         console.log("Executing add account")
-        this.createdAccount = Account.save(ctx)
+        this.createdAccount = Account.save(o)
         return this.createdAccount;
+    }
+    unexecute() {
+        console.log("Executing add account with")
+        Account.delete(this.createdAccount.id)
     }
 }
 

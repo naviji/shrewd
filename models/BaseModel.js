@@ -11,9 +11,14 @@ class BaseModel {
         return this.db_
     }
 
-    static save(ctx) {
-        console.log("Saving a new ", this.tableName())
-        this.db().save()
+    static save(o) {
+        console.log("Saving a new", this.tableName())
+        return this.db().save(this.tableName(), o)
+       
+    }
+
+    static delete(name, id) {
+        console.log("deleting a", this.tableName())
     }
 }
 
