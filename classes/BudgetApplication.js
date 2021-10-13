@@ -1,6 +1,6 @@
 
 import Database from "../utils/Database.js"
-import Logger from "../utils/Logger.js"
+import Logger, { LogLevel } from "../utils/Logger.js"
 import CommandService from "../services/CommandService.js"
 import Account from "../models/Account.js"
 import CategoryGroup from "../models/CategoryGroup.js"
@@ -15,11 +15,10 @@ class BudgetApplication {
     }
 
     start() {
-        this.setLogger(new Logger())
+        this.setLogger(new Logger(LogLevel.Info))
         this.setupDatabase()
         this.registerCommands()
         
-        this.logger().log("TESTING")
     }
 
     setupDatabase() {
@@ -57,21 +56,21 @@ class BudgetApplication {
     }
 
     render () {
-        this.logger().debug(`--- BUDGET APP ---`)
-        this.logger().debug("Ready to assign : ", this.readyToAssign)
-        this.logger().debug("Accounts: ")
+        this.logger().log(`--- BUDGET APP ---`)
+        this.logger().log("Ready to assign : ", this.readyToAssign)
+        this.logger().log("Accounts: ")
         const accounts = Account.getAll()
         for (let account of accounts) {
-            this.logger().debug(`   ${account.name} [${account.amount}]`)
+            this.logger().log(`   ${account.name} [${account.amount}]`)
         }
 
-        this.logger().debug("Categories Groups:")
+        this.logger().log("Categories Groups:")
         const groups = CategoryGroup.getAll()
         for (let group of groups) {
-            this.logger().debug(`    ${group.name} []`)
+            this.logger().log(`    ${group.name} []`)
             const categories = Category.getAll()
             for (let category of categories) {
-                this.logger().debug(`    --- ${category.name} [${category.amount}]`)
+                this.logger().log(`    --- ${category.name} [${category.amount}]`)
             }
         }
     }

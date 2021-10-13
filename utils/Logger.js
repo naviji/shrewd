@@ -17,7 +17,8 @@ class Logger {
 
     _log (level, prefix, ...rest) {
         if (this.logLevel < level) return;
-        process.stdout.write(`[${prefix}] `);
+        if (prefix !== '')
+            process.stdout.write(`[${prefix}] `);
         for (let msg of rest) {
             if (typeof msg === 'string') {
                 process.stdout.write(` ${msg} `);
@@ -30,7 +31,7 @@ class Logger {
     } 
 
     log (...rest) {
-        this._log(this.logLevel, "Log", ...rest)
+        this._log(this.logLevel, "", ...rest)
     }
 
     debug (...rest) {
