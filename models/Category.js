@@ -19,6 +19,10 @@ class Category extends BaseModel {
                                 .map(x => x.amount)
                                 .reduce((a, b) => a+b, 0)
     }
+
+    static getNameFromId = (id) => {
+        return Category.getById(id).name
+    }
 }
 
 export default Category

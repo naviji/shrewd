@@ -14,7 +14,7 @@ class UpdateCommand {
             throw new Error("Update must have ID")
         }
         
-        this.oldState = Object.assign({}, this.model().getById({id}))
+        this.oldState = Object.assign({}, this.model().getById(id))
         this.newState = Object.assign({}, this.model().save(o))
         return this.newState;
     }

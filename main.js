@@ -27,14 +27,32 @@ app.assignMoney({categoryId: bmw.id, amount: 500})
 // app.selectPreviousMonth()
 // app.render()
 
+app.addTransaction({
+    date: new Date('October 13, 2021'),
+    payee: "Raju",
+    categoryId: ferrari.id,
+    memo: "Gift from Raju",
+    outflow: 0,
+    inflow: 100,
+    cleared: true})
+
+app.addTransaction({
+    date: new Date('October 11, 2021'),
+    payee: "Ananthu",
+    categoryId: ferrari.id,
+    memo: "Loan to Ananthu",
+    outflow: 100,
+    inflow: 0,
+    cleared: true})
+
 app.render()
 
-app.selectNextMonth()
+// app.selectNextMonth()
 
-app.assignMoney({categoryId: ferrari.id, amount: 1000})
-app.assignMoney({categoryId: bmw.id, amount: 200})
+// app.assignMoney({categoryId: ferrari.id, amount: 1000})
+// app.assignMoney({categoryId: bmw.id, amount: 200})
 
-app.render()
+// app.render()
 
 // // app.selectPreviousMonth()
 

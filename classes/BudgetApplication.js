@@ -4,6 +4,7 @@ import Logger, { LogLevel } from "../utils/Logger.js"
 import CommandService from "../services/CommandService.js"
 import Account from "../models/Account.js"
 import Transfer from "../models/Transfer.js"
+import Transaction from "../models/Transaction.js"
 import CategoryGroup from "../models/CategoryGroup.js"
 import Category from "../models/Category.js"
 import BaseModel from "../models/BaseModel.js"
@@ -64,6 +65,10 @@ class BudgetApplication {
         return CommandService.instance().execute('AssignMoney', o)
     }
 
+    addTransaction(o) {
+        return CommandService.instance().execute('AddTransaction', o)
+    }
+
     registerCommands() {
         CommandService.instance().registerAll()
     }
@@ -107,6 +112,12 @@ class BudgetApplication {
             for (let category of categories) {
                 this.logger().log(`    --- ${category.name} [${Category.getAmountAssigned(category.id)}]`)
             }
+        }
+
+        this.logger().log("Transactions:")
+        const transactions = Transaction.getAll()
+        for (let transaction of transactions) {
+            this.logger().log(`${transaction.date.toDateString()} |  ${transaction.payee} | ${Category.getNameFromId(transaction.categoryId)} | ${transaction.memo} | ${transaction.outflow} | ${transaction.inflow} | ${transaction.cleared}`)
         }
         return this
     }

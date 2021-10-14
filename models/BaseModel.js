@@ -19,8 +19,8 @@ class BaseModel {
         return this.db().save(this.tableName(), o)
     }
 
-    static getById(o) {
-        return this.db().getById(this.tableName(), o)
+    static getById(id) {
+        return this.db().getById(this.tableName(), id)
     }
 
     static getAll() {
