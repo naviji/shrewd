@@ -36,9 +36,9 @@ app.assignMoney({categoryId: bmw.id, amount: 200})
 
 app.render()
 
-// app.selectPreviousMonth()
+// // app.selectPreviousMonth()
 
-app.render()
+// app.render()
 // app.selectPreviousMonth()
 // app.render()
     // .undo()

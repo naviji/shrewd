@@ -3,6 +3,7 @@ import Database from "../utils/Database.js"
 import Logger, { LogLevel } from "../utils/Logger.js"
 import CommandService from "../services/CommandService.js"
 import Account from "../models/Account.js"
+import Transfer from "../models/Transfer.js"
 import CategoryGroup from "../models/CategoryGroup.js"
 import Category from "../models/Category.js"
 import BaseModel from "../models/BaseModel.js"
@@ -77,12 +78,12 @@ class BudgetApplication {
         return this
     }
 
-    get readyToAssign() {
-        const categories = Category.getAll()
+    readyToAssign() {
+        const transfers = Transfer.getAll()
         const accounts = Account.getAll()
 
         const totalMoneyInAccounts = accounts.length ? accounts.map(x => x.amount).reduce((a, b) => a + b, 0) : 0
-        const moneyAlreadyAssigned = categories.length ? categories.map(x => x.amount).reduce((a, b) => a + b, 0) : 0
+        const moneyAlreadyAssigned = transfers.length ? transfers.map(x => x.amount).reduce((a, b) => a + b, 0) : 0
 
         return totalMoneyInAccounts - moneyAlreadyAssigned
     }
@@ -90,7 +91,7 @@ class BudgetApplication {
     render () {
         this.logger().log(`\n--- BUDGET APP ---`)
         this.logger().log(`Month: ${this.getSelectedMonth()}`)
-        this.logger().log(`Ready to assign : ${this.readyToAssign}`)
+        this.logger().log(`Ready to assign : ${this.readyToAssign()}`)
         this.logger().log("Accounts: ")
         const accounts = Account.getAll()
         for (let account of accounts) {
