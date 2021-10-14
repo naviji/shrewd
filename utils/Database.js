@@ -4,10 +4,6 @@ class Database {
     constructor(logger) {
         this.setLogger(logger)
         this.logger().debug("Database initialized")
-        const tableNames = ["account", "categoryGroup", "category"]
-        for (const name of tableNames) {
-            this[name] = []
-        }
     }
 
     setLogger(logger) {

@@ -1,6 +1,7 @@
 import BaseModel from "./BaseModel.js"
 import Calendar from "../utils/Calendar.js"
 import Transfer from "./Transfer.js"
+import Transaction from "./Transaction.js"
 class Category extends BaseModel {
     static tableName = () => "category"
 
@@ -20,7 +21,17 @@ class Category extends BaseModel {
                                 .reduce((a, b) => a+b, 0)
     }
 
+    static getActivity = (id) => {
+        const transactions = Transaction.getAll().filter(x => x.categoryId === id)
+        const start = Calendar.instance().startOfMonth()
+        const end = Calendar.instance().endOfMonth()
+        const relevantTransactions = transactions.filter( x => (start <= x.date && x.date <= end))
+        const relevantAmounts =  relevantTransactions.map(x => x.inflow - x.outflow)
+        return relevantAmounts.reduce((a, b) => a+b, 0)
+    }
+
     static getNameFromId = (id) => {
+        if (!id) return '--'
         return Category.getById(id).name
     }
 }

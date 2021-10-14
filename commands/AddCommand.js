@@ -19,8 +19,8 @@ class AddCommand {
         this.created = null
     }
 
-    redo() {
-        this.created = Object.assign({}, this.model().save(this.oldArgs))
+    redo(options = {}) {
+        this.created = Object.assign({}, this.model().save(Object.assign({}, this.oldArgs, options)))
         return this.created;
     }
 }

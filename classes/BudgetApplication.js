@@ -9,7 +9,7 @@ import CategoryGroup from "../models/CategoryGroup.js"
 import Category from "../models/Category.js"
 import BaseModel from "../models/BaseModel.js"
 import Calendar from "../utils/Calendar.js"
-
+import { dateFromUnixMs } from '../utils/timeUtils.js'
 
 // const appLogger = new Logger()
 class BudgetApplication {
@@ -86,9 +86,8 @@ class BudgetApplication {
     readyToAssign() {
         const transfers = Transfer.getAll()
         const accounts = Account.getAll()
-
-        const totalMoneyInAccounts = accounts.length ? accounts.map(x => x.amount).reduce((a, b) => a + b, 0) : 0
-        const moneyAlreadyAssigned = transfers.length ? transfers.map(x => x.amount).reduce((a, b) => a + b, 0) : 0
+        const totalMoneyInAccounts = accounts.length ? accounts.map(x => Account.getBalance(x.id)).reduce((a, b) => a+b, 0) : 0
+        const moneyAlreadyAssigned = transfers.length ? transfers.map(x => x.amount).reduce((a, b) => a+b, 0) : 0
 
         return totalMoneyInAccounts - moneyAlreadyAssigned
     }
@@ -100,7 +99,8 @@ class BudgetApplication {
         this.logger().log("Accounts: ")
         const accounts = Account.getAll()
         for (let account of accounts) {
-            this.logger().log(`   ${account.name} [${account.amount}]`)
+            // Add account init amount as a transaction
+            this.logger().log(`   ${account.name} [${Account.getBalance(account.id)}]`)
         }
 
         this.logger().log("Category Groups:")
@@ -110,14 +110,17 @@ class BudgetApplication {
             const totalMoneyAssigned = categories.length ? categories.map(x => Category.getAmountAssigned(x.id)).reduce((a, b) => a + b, 0) : 0
             this.logger().log(`    ${group.name} [${totalMoneyAssigned}]`)
             for (let category of categories) {
-                this.logger().log(`    --- ${category.name} [${Category.getAmountAssigned(category.id)}]`)
+                const amountAssigned = Category.getAmountAssigned(category.id)
+                const activityAmount = Category.getActivity(category.id)
+                const availableToSpend = amountAssigned + activityAmount
+                this.logger().log(`    --- ${category.name} [${amountAssigned}] [${activityAmount}] [${availableToSpend}]`)
             }
         }
 
         this.logger().log("Transactions:")
         const transactions = Transaction.getAll()
         for (let transaction of transactions) {
-            this.logger().log(`${transaction.date.toDateString()} |  ${transaction.payee} | ${Category.getNameFromId(transaction.categoryId)} | ${transaction.memo} | ${transaction.outflow} | ${transaction.inflow} | ${transaction.cleared}`)
+            this.logger().log(`${dateFromUnixMs(transaction.date)} | ${Account.getNameFromId(transaction.accountId)}  | ${transaction.payee} | ${Category.getNameFromId(transaction.categoryId)} | ${transaction.memo} | ${transaction.outflow} | ${transaction.inflow} | ${transaction.cleared}`)
         }
         return this
     }

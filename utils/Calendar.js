@@ -1,5 +1,4 @@
 import dayjs from "dayjs"
-import timeUtils from "./time.js"
 
 class Calendar {
     constructor() {
@@ -10,6 +9,14 @@ class Calendar {
         if (this.instance_) return this.instance_
         this.instance_ = new Calendar()
         return this.instance_
+    }
+
+    startOfMonth() {
+        return this.timeInUnixMs();
+    }
+
+    endOfMonth() {
+        return this.now.endOf('month').valueOf()
     }
 
     printMonth() {
