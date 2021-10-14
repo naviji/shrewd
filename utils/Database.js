@@ -19,6 +19,7 @@ class Database {
     }
 
     save(tableName, o) {
+        if (!this[tableName]) this[tableName] = []
         const _createMockObjectDefaults = () => {
             const id = Math.floor(Math.random()*10000000)
             const created =  Date.now()
@@ -34,7 +35,7 @@ class Database {
             if (!found) throw new Error("Object not found with id ", id)
             databaseObj = Object.assign(found, {updated : Date.now(), amount: o.amount})
         } else {
-            this.logger().debug(`Creating ${tableName} ${o.name}`)
+            this.logger().debug(`Creating ${tableName}`, o)
             databaseObj = { ...o , ..._createMockObjectDefaults()}
             this[tableName].push(databaseObj)
         }
@@ -43,7 +44,7 @@ class Database {
     }
 
     getAll (tableName) {
-        return this[tableName]
+        return this[tableName] ? this[tableName] : []
     }
 
     getByParentId(tableName, o) {

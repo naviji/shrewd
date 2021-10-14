@@ -1,5 +1,6 @@
 import BaseModel from "./BaseModel.js"
-
+import Calendar from "../utils/Calendar.js"
+import Transfer from "./Transfer.js"
 class Category extends BaseModel {
     static tableName = () => "category"
 
@@ -10,6 +11,13 @@ class Category extends BaseModel {
             o.amount = 0
         }
         return super.save(o);
+    }
+
+    static getAmountAssigned = (id) => {
+        const currTime = Calendar.instance().timeInUnixMs()
+        return Transfer.getAll().filter(x => x.categoryId === id && x.month === currTime)
+                                .map(x => x.amount)
+                                .reduce((a, b) => a+b, 0)
     }
 }
 

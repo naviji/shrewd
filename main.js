@@ -14,22 +14,41 @@ const sbi = app.addAccount({type: "Savings", name: "SBI", amount: 2000})
 const wishList = app.addCategoryGroup({name: "Wishlist"})
 let ferrari = app.addCategory({parentId: wishList.id, name: "Ferrari"})
 let bmw = app.addCategory({parentId: wishList.id, name: "BMW"})
-ferrari = app.assignMoney({id: ferrari.id, amount: 250})
-bmw = app.assignMoney({id: bmw.id, amount: 500})
+app.assignMoney({categoryId: ferrari.id, amount: 250})
+app.assignMoney({categoryId: bmw.id, amount: 500})
 
-const essentials = app.addCategoryGroup({name: "Essentials"})
-let electricity = app.addCategory({parentId: essentials.id, name: "Electricity", amount: 250})
-let internet = app.addCategory({parentId: essentials.id, name: "Internet", amount: 1000})
+// const essentials = app.addCategoryGroup({name: "Essentials"})
+// let electricity = app.addCategory({parentId: essentials.id, name: "Electricity"})
+// let internet = app.addCategory({parentId: essentials.id, name: "Internet"})
+// electricity = app.assignMoney({categoryId: electricity.id, amount: 100})
+// internet = app.assignMoney({categoryId: internet.id, amount: 200})
 
+// app.render()
+// app.selectPreviousMonth()
+// app.render()
 
 app.render()
-    .undo()
-    .render()
-    .redo()
-    .render()
+
+app.selectNextMonth()
+
+app.assignMoney({categoryId: ferrari.id, amount: 1000})
+app.assignMoney({categoryId: bmw.id, amount: 200})
+
+app.render()
+
+// app.selectPreviousMonth()
+
+app.render()
+// app.selectPreviousMonth()
+// app.render()
+    // .undo()
+    // .render()
+    // .redo()
+    // .render()
 
 /*
 TO DO:
+0. Distinguish transfers and transactions
 1. app.addTransaction({date: DATE, payee: STRING, categoryId: ID, memo: STRING, outflow: NUM, inflow: NUM, cleared: BOOL})
 2. app.moveMoney{{fromId: ID, toId: ID}} // From a category to another category
 3. Logic to delete a category or categoryGroup

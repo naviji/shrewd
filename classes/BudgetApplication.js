@@ -6,6 +6,8 @@ import Account from "../models/Account.js"
 import CategoryGroup from "../models/CategoryGroup.js"
 import Category from "../models/Category.js"
 import BaseModel from "../models/BaseModel.js"
+import Calendar from "../utils/Calendar.js"
+
 
 // const appLogger = new Logger()
 class BudgetApplication {
@@ -14,7 +16,23 @@ class BudgetApplication {
         this.setLogger(new Logger(options.debugMode ? LogLevel.Debug : LogLevel.Info))
         this.setupDatabase()
         this.registerCommands()
-        
+        this.calendar_ = Calendar.instance()
+    }
+
+    getSelectedMonth() {
+        return this.calendar().printMonth()
+    }
+
+    selectNextMonth() {
+        return this.calendar().selectNextMonth()
+    }
+
+    selectPreviousMonth() {
+        return this.calendar().selectPreviousMonth()
+    }
+
+    calendar() {
+        return this.calendar_
     }
 
     setupDatabase() {
@@ -71,6 +89,7 @@ class BudgetApplication {
 
     render () {
         this.logger().log(`\n--- BUDGET APP ---`)
+        this.logger().log(`Month: ${this.getSelectedMonth()}`)
         this.logger().log(`Ready to assign : ${this.readyToAssign}`)
         this.logger().log("Accounts: ")
         const accounts = Account.getAll()
@@ -82,10 +101,10 @@ class BudgetApplication {
         const groups = CategoryGroup.getAll()
         for (let group of groups) {
             const categories = Category.getByParentId({parentId : group.id})
-            const totalMoneyAssigned = categories.length ? categories.map(x => x.amount).reduce((a, b) => a + b, 0) : 0
+            const totalMoneyAssigned = categories.length ? categories.map(x => Category.getAmountAssigned(x.id)).reduce((a, b) => a + b, 0) : 0
             this.logger().log(`    ${group.name} [${totalMoneyAssigned}]`)
             for (let category of categories) {
-                this.logger().log(`    --- ${category.name} [${category.amount}]`)
+                this.logger().log(`    --- ${category.name} [${Category.getAmountAssigned(category.id)}]`)
             }
         }
         return this
