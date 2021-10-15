@@ -1,4 +1,8 @@
 
+import { todayInUnixMs } from "./timeUtils.js"
+
+
+let globalCounter = 0
 class Database {
 
     constructor(logger) {
@@ -18,9 +22,10 @@ class Database {
         if (!this[tableName]) this[tableName] = []
         const _createMockObjectDefaults = () => {
             const id = Math.floor(Math.random()*10000000)
-            const created =  Date.now()
-            const updated =  Date.now()
-            return {id, created, updated}
+            const created =  todayInUnixMs()
+            const updated =  todayInUnixMs()
+            const index = globalCounter++
+            return {id, created, updated, index}
         }
 
         const { id } = o
@@ -34,22 +39,20 @@ class Database {
                 // create a new object with exactly this id
 
                 //TODO place object in exactly same index
-                databaseObj = Object.assign({}, o, {updated : Date.now()})
+                databaseObj = Object.assign({}, o, {updated : todayInUnixMs()})
                 this[tableName].push(databaseObj)
             }
             else {
                 // updating existing object with this id
-                databaseObj = Object.assign(found,  o, {updated : Date.now()})
+                databaseObj = Object.assign(found,  o, {updated : todayInUnixMs()})
             }
         } else {
             this.logger().debug(`Creating ${tableName}`, o)
             databaseObj = { ...o , ..._createMockObjectDefaults()}
             this[tableName].push(databaseObj)
         }
-
-        // Always sort after saving
-        this[tableName].sort((a, b)=>a.created<b.created)
         
+        this[tableName].sort((a, b) => a.index - b.index)
         return databaseObj
     }
 

@@ -81,7 +81,7 @@ app.assignMoney({ categoryId: test.id, amount: 100 })
 
 app.render()
 
-app.removeCategory({ id : test.id })
+app.removeCategory({ id : bmw.id })
 app.render()
 app.undo()
 app.render()

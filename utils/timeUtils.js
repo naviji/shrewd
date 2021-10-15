@@ -1,6 +1,9 @@
 import dayjs from "dayjs"
 
 export const timeInUnixMs = (dateString) => {
+    if (!dateString) {
+        throw new Error("Provide dateString")
+    }
     return dayjs(new Date(dateString)).valueOf()
 }
 

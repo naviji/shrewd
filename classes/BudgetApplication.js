@@ -140,6 +140,7 @@ class BudgetApplication {
                 const activityAmount = Category.getActivityOfMonth(category.id)
                 const availableToSpend = amountAssigned + Category.getAllActivity(category.id)
                 this.logger().log(`    --- ${category.name} [${amountAssigned}] [${activityAmount}] [${availableToSpend}]  `)
+                this.logger().debug(category.index)
                 this.renderTargets_(category.id)
             }
         }
