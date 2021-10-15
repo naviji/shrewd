@@ -1,6 +1,10 @@
 import dayjs from "dayjs"
+// var customParseFormat = require('dayjs/plugin/customParseFormat')
+// import {customParseFormat} from 'dayjs/plugin/customParseFormat'
+// dayjs.extend(customParseFormat)
 
-export const timeInUnixMs = (dateString) => {
+
+export const unixMsFromDate = (dateString) => {
     if (!dateString) {
         throw new Error("Provide dateString")
     }
@@ -32,8 +36,12 @@ export const addMonth = (value) => {
     return dayjs(value).add(1, 'month').valueOf()
 }
 
+export const printDateOfToday = () => {
+    return dayjs().format('DD/MM/YYYY')
+}
+
 export default {
-    timeInUnixMs,
+    unixMsFromDate,
     dateFromUnixMs,
     todayInUnixMs,
     endOfMonth,

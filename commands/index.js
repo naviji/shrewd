@@ -7,6 +7,7 @@ import MoveMoney from "./MoveMoney.js";
 import AddTarget from "./AddTarget.js";
 import RemoveCategory from "./RemoveCategory.js";
 import RemoveCategoryGroup from "./RemoveCategoryGroup.js";
+import RemoveTransaction from "./RemoveTransaction.js";
 
 export const commands = {
     AddAccount,
@@ -17,7 +18,8 @@ export const commands = {
     MoveMoney,
     AddTarget,
     RemoveCategory,
-    RemoveCategoryGroup
+    RemoveCategoryGroup,
+    RemoveTransaction
     // RemoveAccount,
     // RemoveCategoryGroup,
     // RemoveCategory,

@@ -78,16 +78,21 @@ class BudgetApplication {
         return CommandService.instance().execute('RemoveCategoryGroup', o)
     }
 
-    assignMoney(o) {
-        return CommandService.instance().execute('AddTransfer', o)
-    }
+    // assignMoney(o) {
+    //     return CommandService.instance().execute('AddTransfer', o)
+    // }
 
     addTransaction(o) {
         return CommandService.instance().execute('AddTransaction', o)
     }
 
+    removeTransaction(o) {
+        return CommandService.instance().execute('RemoveTransaction', o)
+    }
+
     moveMoney(o) {
-        return CommandService.instance().execute('MoveMoney', o)
+
+        return CommandService.instance().execute('MoveMoney', Object.assign(o, { month : this.getSelectedMonth()} ))
     }
 
     registerCommands() {
@@ -109,12 +114,8 @@ class BudgetApplication {
     }
 
     readyToAssign() {
-        const transfers = Transfer.getAll()
-        const accounts = Account.getAll()
-        const totalMoneyInAccounts = accounts.length ? accounts.map(x => Account.getBalance(x.id)).reduce((a, b) => a + b, 0) : 0
-        const moneyAlreadyAssigned = transfers.length ? transfers.map(x => x.amount).reduce((a, b) => a + b, 0) : 0
-
-        return totalMoneyInAccounts - moneyAlreadyAssigned
+        // Category id with null indicates the Ready to Assign category
+        return Category.getAllAssigned(null)
     }
 
 
@@ -126,8 +127,8 @@ class BudgetApplication {
 
     leftOverFromLastMonth(categoryId) {
         const month = this.getSelectedMonth()
-        const prevMonth = timeUtils.subtractMonth(month)
-        return this.activityTillMonth(categoryId, prevMonth) + this.assignedTillMonth(categoryId, prevMonth)
+        // const prevMonth = timeUtils.subtractMonth(month)
+        return this.activityTillMonth(categoryId, month) + this.assignedTillMonth(categoryId, month)
     }
 
     activityTillMonth(categoryId, month) {
@@ -156,7 +157,8 @@ class BudgetApplication {
 
             for (let category of categories) {
                 category.assignedThisMonth = this.assignedThisMonth(category.id)
-                category.activityThisMonth = this.activityThisMonth(category.id)
+                category.activityThisMonth =  this.activityThisMonth(category.id)
+                // category.activityTillThisMonth = this.activityTillMonth(category.id) 
                 category.availableThisMonth = category.assignedThisMonth + category.activityThisMonth + this.leftOverFromLastMonth(category.id)
                 totalAssignedThisMonth += category.assignedThisMonth
                 totalActivityThisMonth += category.activityThisMonth

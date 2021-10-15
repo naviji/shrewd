@@ -4,6 +4,15 @@ import Transaction from "./Transaction.js"
 class Account extends BaseModel {
     static tableName = () => "account"
 
+    static save =  (o) => {
+        const { id, closed } = o
+        if (!id && !closed) {
+            // New accounts are open by default
+            o.closed = false
+        }
+        return super.save(o);
+    }
+
     static getNameFromId = (id) => {
         return Account.getById(id).name
     }

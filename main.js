@@ -1,11 +1,12 @@
 import BudgetApplication from './classes/BudgetApplication.js'
-import { timeInUnixMs, todayInUnixMs } from "./utils/timeUtils.js"
+import Logger from './utils/Logger.js'
+import { unixMsFromDate, todayInUnixMs } from "./utils/timeUtils.js"
 
 
 /*
 TO DO:
 0. Delete transaction better UI
-0.5 Hiddent transactions better UI
+0.5 Hidden transactions better UI
 0.6 Multi delete category groups
 Make category group selectable and show options in sidebar including show/hide hidden categories.
 
@@ -60,19 +61,39 @@ let ferrari = app.addCategory({ parentId: wishList.id, name: "Ferrari" })
 let bmw = app.addCategory({ parentId: wishList.id, name: "BMW" })
 let benz = app.addCategory({ parentId: wishList.id, name: "Benz" })
 
-const fixedExpenses = app.addCategoryGroup({ name: "Fixed Expenses" })
-let funMoney = app.addCategory({ parentId: fixedExpenses.id, name: "Fun Money"})
+// const fixedExpenses = app.addCategoryGroup({ name: "Fixed Expenses" })
+// let funMoney = app.addCategory({ parentId: fixedExpenses.id, name: "Fun Money"})
 // app.render()
 // app.removeCategory(ferrari.id)
 
-app.assignMoney({ categoryId: ferrari.id, amount: 250 })
-app.assignMoney({ categoryId: bmw.id, amount: 400 })
-app.assignMoney({ categoryId: benz.id, amount: 2250 })
+// app.assignMoney({ categoryId: ferrari.id, amount: 250 })
+app.moveMoney({ from: null, to: ferrari.id, amount: 250})
+// app.assignMoney({ categoryId: bmw.id, amount: 400 })
+app.moveMoney({ from: null, to: bmw.id, amount: 400})
+// app.assignMoney({ categoryId: benz.id, amount: 2250 })
+app.moveMoney({ from: null, to: benz.id, amount: 2250})
 
 
 // app.selectPreviousMonth()
 // app.selectNextMonth()
 // app.selectNextMonth()
+
+let giftFromRaju = app.addTransaction({
+    date: unixMsFromDate('October 13, 2021'),
+    payee: "Raju",
+    categoryId: ferrari.id,
+    accountId: axis.id,
+    memo: "Gift from Raju",
+    outflow: 0,
+    inflow: 1000,
+    cleared: true
+})
+
+// app.selectNextMonth()
+app.selectPreviousMonth()
+
+// app.logger().log(giftFromRaju)
+// app.removeTransaction({ id: giftFromRaju.id })
 
 app.render()
 
@@ -80,16 +101,7 @@ app.render()
 
 // app.moveMoney({ from: bmw.id, to: ferrari.id, amount: 250 })
 
-// app.addTransaction({
-//     date: timeInUnixMs('October 13, 2021'),
-//     payee: "Raju",
-//     categoryId: ferrari.id,
-//     accountId: axis.id,
-//     memo: "Gift from Raju",
-//     outflow: 0,
-//     inflow: 1000,
-//     cleared: true
-// })
+
 
 // let test = app.addCategory({ parentId: wishList.id, name: "test" })
 

@@ -7,10 +7,14 @@ class Category extends BaseModel {
     static tableName = () => "category"
 
     static save =  (o) => {
-        const { id, amount } = o
+        const { id, amount, hidden } = o
         if (!id && !amount) {
             // New Categories have default amount 0
             o.amount = 0
+        }
+        if (!id && !hidden) {
+            // New Categories are by default not hidden
+            o.hidden = false
         }
         return super.save(o);
     }
@@ -23,13 +27,13 @@ class Category extends BaseModel {
     // }
 
     static assignedTillMonth = (id, month) => {
-        const transfers = Transfer.getAll().filter(x => x.categoryId === id && x.month <= month)
+        const transfers = Transfer.getAll().filter(x => x.categoryId === id && x.month < month)
         return transfers.length ? transfers.map(x => x.amount).reduce((a, b) => a+b, 0) : 0
     }
 
     static activityTillMonth = (id, month) => {
         const transactions = Transaction.getAll().filter(x => x.categoryId === id)
-        const relevantTransactions = transactions.filter( x => x.date <= month)
+        const relevantTransactions = transactions.filter( x => x.date < month)
         const relevantAmounts =  relevantTransactions.map(x => x.inflow - x.outflow)
         return relevantAmounts.length ? relevantAmounts.reduce((a, b) => a+b, 0) : 0
     }
@@ -57,6 +61,12 @@ class Category extends BaseModel {
         const transactions = Transaction.getAll().filter(x => x.categoryId === id)
         const relevantAmounts =  transactions.map(x => x.inflow - x.outflow)
         return relevantAmounts.reduce((a, b) => a+b, 0)
+    }
+
+    static getAllAssigned(id) {
+        const transfers = Transfer.getAll().filter(x => x.categoryId === id)
+        const relevantAmounts =  transfers.map(x => x.amount)
+        return relevantAmounts.length ? relevantAmounts.reduce((a, b) => a+b, 0) : 0
     }
 
     static getNameFromId = (id) => {
