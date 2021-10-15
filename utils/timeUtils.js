@@ -25,11 +25,11 @@ export const startOfMonth = (value) => {
 }
 
 export const subtractMonth = (value) => {
-    return dayjs(value).subtract(1, 'month')
+    return dayjs(value).subtract(1, 'month').valueOf()
 }
 
 export const addMonth = (value) => {
-    return dayjs(value).add(1, 'month')
+    return dayjs(value).add(1, 'month').valueOf()
 }
 
 export default {

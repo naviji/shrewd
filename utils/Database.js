@@ -47,7 +47,7 @@ class Database {
                 databaseObj = Object.assign(found,  o, {updated : todayInUnixMs()})
             }
         } else {
-            this.logger().debug(`Creating ${tableName}`, o)
+            // this.logger().debug(`Creating ${tableName}`, o)
             databaseObj = { ...o , ..._createMockObjectDefaults()}
             this[tableName].push(databaseObj)
         }

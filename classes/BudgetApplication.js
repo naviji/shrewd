@@ -117,36 +117,12 @@ class BudgetApplication {
         return totalMoneyInAccounts - moneyAlreadyAssigned
     }
 
-    renderAccounts_() {
-        this.logger().log("Accounts: ")
-        const accounts = Account.getAll()
-        for (let account of accounts) {
-            // Add account init amount as a transaction
-            this.logger().log(`   ${account.name} [${Account.getBalance(account.id)}]`)
-        }
-    }
 
-    renderTargets_(categoryId) {
-        const assignedThisMonth = this.assignedThisMonth(categoryId)
-        const target = Target.getByCategoryId(categoryId)
-        if (target && (target.date <= this.getSelectedMonth()))
-            this.logger().log(`             --- Every ${target.every} ${target.type} ${target.amount} ( You need ${(target.amount /target.every) - (assignedThisMonth + Category.getAllActivity(categoryId))} this ${target.type})`)
-    }
-
-    assignedThisMonth_(categoryId, month) {
-        return Category.getAssignedOfMonth(categoryId, month)
-    }
 
     assignedThisMonth(categoryId) {
         const month = this.getSelectedMonth()
-        return this.assignedThisMonth_(categoryId, month)
+        return Category.getAssignedOfMonth(categoryId, month)
     }
-
-    // leftOverFromLastMonth_(categoryId, month) {
-    //     if (month < this.lastMonthWithTransactions()) return 0;
-    //     const prevMonth = subtractMonth(month)
-    //     const result = this.assignedThisMonth_(categoryId, month) + this.leftOverFromLastMonth_(categoryId, prevMonth)
-    // }
 
     leftOverFromLastMonth(categoryId) {
         const month = this.getSelectedMonth()
@@ -162,13 +138,10 @@ class BudgetApplication {
         return Category.assignedTillMonth(categoryId, month)
     }
 
-    activityThisMonth_(categoryId, month) {
-        return Category.getActivityOfMonth(categoryId, month)
-    }
 
     activityThisMonth(categoryId) {
         const month = this.getSelectedMonth()
-        return this.activityThisMonth_(categoryId, month)
+        return Category.getActivityOfMonth(categoryId, month)
     }
 
     renderCategories_() {
@@ -176,14 +149,23 @@ class BudgetApplication {
         const groups = CategoryGroup.getAll()
         for (let group of groups) {
             const categories = Category.getByParentId(group.id)
-            const totalMoneyAssigned = categories.length ? categories.map(x => this.assignedThisMonth(x.id)).reduce((a, b) => a + b, 0) : 0
-            this.logger().log(`    ${group.name} [${totalMoneyAssigned}]`)
+
+            let totalAssignedThisMonth = 0;
+            let totalActivityThisMonth = 0;
+            let totalAvailableThisMonth = 0;
+
             for (let category of categories) {
-                const assignedThisMonth = this.assignedThisMonth(category.id) // Category.getAmountAssignedOfMonth(category.id)
-                const activityThisMonth = this.activityThisMonth(category.id) // Category.getActivityOfMonth(category.id)
-                const availableToSpend = assignedThisMonth + activityThisMonth + this.leftOverFromLastMonth(category.id)  // Category.getAllActivity(category.id)
-                this.logger().log(`    --- ${category.name} [${assignedThisMonth}] [${activityThisMonth}] [${availableToSpend}]  `)
-                this.logger().debug(category.index)
+                category.assignedThisMonth = this.assignedThisMonth(category.id)
+                category.activityThisMonth = this.activityThisMonth(category.id)
+                category.availableThisMonth = category.assignedThisMonth + category.activityThisMonth + this.leftOverFromLastMonth(category.id)
+                totalAssignedThisMonth += category.assignedThisMonth
+                totalActivityThisMonth += category.activityThisMonth
+                totalAvailableThisMonth += category.availableThisMonth
+            }
+
+            this.logger().log(`    ${group.name} [${totalAssignedThisMonth}] [${totalActivityThisMonth}] [${totalAvailableThisMonth}]`)
+            for (let category of categories) {
+                this.logger().log(`    --- ${category.name} [${category.assignedThisMonth}] [${category.activityThisMonth}] [${category.availableThisMonth}]  `)
                 this.renderTargets_(category.id)
             }
         }
@@ -195,6 +177,22 @@ class BudgetApplication {
         for (let transaction of transactions) {
             this.logger().log(`${dateFromUnixMs(transaction.date)} | ${Account.getNameFromId(transaction.accountId)}  | ${transaction.payee} | ${Category.getNameFromId(transaction.categoryId)} | ${transaction.memo} | ${transaction.outflow} | ${transaction.inflow} | ${transaction.cleared}`)
         }
+    }
+
+    renderAccounts_() {
+        this.logger().log("Accounts: ")
+        const accounts = Account.getAll()
+        for (let account of accounts) {
+            // Add account init amount as a transaction
+            this.logger().log(`   ${account.name} [${Account.getBalance(account.id)}]`)
+        }
+    }
+
+    renderTargets_(categoryId) {
+        const assignedThisMonth = this.assignedThisMonth(categoryId)
+        const target = Target.getByCategoryId(categoryId)
+        if (target && (target.date <= this.getSelectedMonth()))
+            this.logger().log(`             --- Every ${target.every} ${target.type} ${target.amount} ( You need ${(target.amount /target.every) - (assignedThisMonth + Category.getAllActivity(categoryId))} this ${target.type})`)
     }
 
     render() {

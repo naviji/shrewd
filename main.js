@@ -47,7 +47,7 @@ Optional
 const app = new BudgetApplication()
 
 const options = {
-    debugMode: false
+    debugMode: true
 }
 
 app.start(options)
@@ -70,7 +70,8 @@ app.assignMoney({ categoryId: bmw.id, amount: 400 })
 app.assignMoney({ categoryId: benz.id, amount: 2250 })
 
 
-app.selectPreviousMonth()
+// app.selectPreviousMonth()
+// app.selectNextMonth()
 // app.selectNextMonth()
 
 app.render()
