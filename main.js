@@ -47,18 +47,18 @@ const options = {
 
 app.start(options)
 
-const axis = app.addAccount({type: "Savings", name: "Axis", amount: 1000})
-const sbi = app.addAccount({type: "Savings", name: "SBI", amount: 2000})
+const axis = app.addAccount({ type: "Savings", name: "Axis", amount: 1000 })
+const sbi = app.addAccount({ type: "Savings", name: "SBI", amount: 2000 })
 
-const wishList = app.addCategoryGroup({name: "Wishlist"})
-let ferrari = app.addCategory({parentId: wishList.id, name: "Ferrari"})
-let bmw = app.addCategory({parentId: wishList.id, name: "BMW"})
-let benz = app.addCategory({parentId: wishList.id, name: "Benz"})
+const wishList = app.addCategoryGroup({ name: "Wishlist" })
+let ferrari = app.addCategory({ parentId: wishList.id, name: "Ferrari" })
+let bmw = app.addCategory({ parentId: wishList.id, name: "BMW" })
+let benz = app.addCategory({ parentId: wishList.id, name: "Benz" })
+app.assignMoney({ categoryId: ferrari.id, amount: 250 })
+app.assignMoney({ categoryId: bmw.id, amount: 400 })
+app.assignMoney({ categoryId: benz.id, amount: 2250 })
 
-app.assignMoney({categoryId: ferrari.id, amount: 250})
-app.assignMoney({categoryId: bmw.id, amount: 500})
-app.assignMoney({categoryId: benz.id, amount: 2250})
-app.moveMoney({from: bmw.id, to: ferrari.id, amount: 250})
+app.moveMoney({ from: bmw.id, to: ferrari.id, amount: 250 })
 
 app.addTransaction({
     date: timeInUnixMs('October 13, 2021'),
@@ -68,6 +68,7 @@ app.addTransaction({
     memo: "Gift from Raju",
     outflow: 0,
     inflow: 100,
-    cleared: true})
+    cleared: true
+})
 
 app.render()

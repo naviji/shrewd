@@ -10,6 +10,7 @@ import Category from "../models/Category.js"
 import BaseModel from "../models/BaseModel.js"
 import Calendar from "../utils/Calendar.js"
 import { dateFromUnixMs } from '../utils/timeUtils.js'
+import Target from "../models/Target.js"
 
 // const appLogger = new Logger()
 class BudgetApplication {
@@ -80,6 +81,10 @@ class BudgetApplication {
         CommandService.instance().registerAll()
     }
 
+    addTarget(o) {
+        return CommandService.instance().execute('AddTarget', o)
+    }
+
     undo() {
         CommandService.instance().undo()
         return this
@@ -93,13 +98,13 @@ class BudgetApplication {
     readyToAssign() {
         const transfers = Transfer.getAll()
         const accounts = Account.getAll()
-        const totalMoneyInAccounts = accounts.length ? accounts.map(x => Account.getBalance(x.id)).reduce((a, b) => a+b, 0) : 0
-        const moneyAlreadyAssigned = transfers.length ? transfers.map(x => x.amount).reduce((a, b) => a+b, 0) : 0
+        const totalMoneyInAccounts = accounts.length ? accounts.map(x => Account.getBalance(x.id)).reduce((a, b) => a + b, 0) : 0
+        const moneyAlreadyAssigned = transfers.length ? transfers.map(x => x.amount).reduce((a, b) => a + b, 0) : 0
 
         return totalMoneyInAccounts - moneyAlreadyAssigned
     }
 
-    render () {
+    render() {
         this.logger().log(`\n--- BUDGET APP ---`)
         this.logger().log(`Month: ${this.getSelectedMonth()}`)
         this.logger().log(`Year: ${this.getSelectedYear()}`)
@@ -114,7 +119,7 @@ class BudgetApplication {
         this.logger().log("Category Groups:")
         const groups = CategoryGroup.getAll()
         for (let group of groups) {
-            const categories = Category.getByParentId({parentId : group.id})
+            const categories = Category.getByParentId({ parentId: group.id })
             const totalMoneyAssigned = categories.length ? categories.map(x => Category.getAmountAssigned(x.id)).reduce((a, b) => a + b, 0) : 0
             this.logger().log(`    ${group.name} [${totalMoneyAssigned}]`)
             for (let category of categories) {
@@ -130,6 +135,10 @@ class BudgetApplication {
         for (let transaction of transactions) {
             this.logger().log(`${dateFromUnixMs(transaction.date)} | ${Account.getNameFromId(transaction.accountId)}  | ${transaction.payee} | ${Category.getNameFromId(transaction.categoryId)} | ${transaction.memo} | ${transaction.outflow} | ${transaction.inflow} | ${transaction.cleared}`)
         }
+
+        // this.logger().log(`${Target.getAll()}`)
+
+
         return this
     }
 
