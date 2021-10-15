@@ -132,7 +132,7 @@ class BudgetApplication {
         this.logger().log("Category Groups:")
         const groups = CategoryGroup.getAll()
         for (let group of groups) {
-            const categories = Category.getByParentId({ parentId: group.id })
+            const categories = Category.getByParentId(group.id)
             const totalMoneyAssigned = categories.length ? categories.map(x => Category.getAmountAssignedOfMonth(x.id)).reduce((a, b) => a + b, 0) : 0
             this.logger().log(`    ${group.name} [${totalMoneyAssigned}]`)
             for (let category of categories) {

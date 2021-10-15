@@ -33,7 +33,7 @@ class AddAccount extends AddCommand {
 
     redo() {
         const createdAccount = super.redo()
-        // Use the newly created account id rather than the old one
+        // We could probably remove this paramter to redo since we're preserving the ids
         this.addTransactionCmd.redo({ accountId: createdAccount.id}) 
         return createdAccount
     }

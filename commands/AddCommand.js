@@ -15,7 +15,7 @@ class AddCommand {
     }
 
     undo() {
-        this.model().deleteById({id: this.created.id})
+        this.model().deleteById(this.created.id)
         this.created = null
     }
 

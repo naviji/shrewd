@@ -26,15 +26,29 @@ class Database {
         const { id } = o
         let databaseObj
         if (id) {
+             // If id was provided; either I want to update the object with that id
+             // or I want to create a new with exactly this id
             this.logger().debug(`Updating ${tableName} ${o.name}`)
             const found = this[tableName].find(x => x.id === id)
-            if (!found) throw new Error("Object not found with id ", id)
-            databaseObj = Object.assign(found, {updated : Date.now(), amount: o.amount})
+            if (!found) {
+                // create a new object with exactly this id
+
+                //TODO place object in exactly same index
+                databaseObj = Object.assign({}, o, {updated : Date.now()})
+                this[tableName].push(databaseObj)
+            }
+            else {
+                // updating existing object with this id
+                databaseObj = Object.assign(found,  o, {updated : Date.now()})
+            }
         } else {
             this.logger().debug(`Creating ${tableName}`, o)
             databaseObj = { ...o , ..._createMockObjectDefaults()}
             this[tableName].push(databaseObj)
         }
+
+        // Always sort after saving
+        this[tableName].sort((a, b)=>a.created<b.created)
         
         return databaseObj
     }
@@ -43,13 +57,11 @@ class Database {
         return this[tableName] ? this[tableName] : []
     }
 
-    getByParentId(tableName, o) {
-        const { parentId } = o
-        return this[tableName].filter(x => x.parentId === parentId)
+    getByParentId(tableName, id) {
+        return this[tableName].filter(x => x.parentId === id)
     }
 
-    deleteById(tableName, o) {
-        const { id } = o
+    deleteById(tableName, id) {
         this[tableName] = this[tableName].filter(x => x.id !== id)
     }
 

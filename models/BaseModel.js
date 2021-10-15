@@ -27,12 +27,12 @@ class BaseModel {
         return this.db().getAll(this.tableName())
     }
 
-    static getByParentId(o) {
-        return this.db().getByParentId(this.tableName(), o)
+    static getByParentId(id) {
+        return this.db().getByParentId(this.tableName(), id)
     }
 
-    static deleteById(o) {
-        return this.db().deleteById(this.tableName(), o)
+    static deleteById(id) {
+        return this.db().deleteById(this.tableName(), id)
     }
 }
 
