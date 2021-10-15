@@ -10,19 +10,27 @@ const options = {
 
 app.start(options)
 
-const axis = app.addAccount({type: "Savings", name: "Axis", amount: 1000})
-const sbi = app.addAccount({type: "Savings", name: "SBI", amount: 2000})
+const axis = app.addAccount({ type: "Savings", name: "Axis", amount: 1000 })
+const sbi = app.addAccount({ type: "Savings", name: "SBI", amount: 2000 })
 
-const wishList = app.addCategoryGroup({name: "Wishlist"})
-let ferrari = app.addCategory({parentId: wishList.id, name: "Ferrari"})
-let bmw = app.addCategory({parentId: wishList.id, name: "BMW"})
-let benz = app.addCategory({parentId: wishList.id, name: "Benz"})
-app.assignMoney({categoryId: ferrari.id, amount: 250})
-app.assignMoney({categoryId: bmw.id, amount: 500})
-app.assignMoney({categoryId: benz.id, amount: 2250})
+const wishList = app.addCategoryGroup({ name: "Wishlist" })
+let ferrari = app.addCategory({ parentId: wishList.id, name: "Ferrari" })
+let bmw = app.addCategory({ parentId: wishList.id, name: "BMW" })
+let benz = app.addCategory({ parentId: wishList.id, name: "Benz" })
+app.assignMoney({ categoryId: ferrari.id, amount: 250 })
+app.assignMoney({ categoryId: bmw.id, amount: 400 })
+app.assignMoney({ categoryId: benz.id, amount: 2250 })
+
+
 
 
 app.render().undo().redo().render()
+// app.addTarget({
+//     // date: timeInUnixMs('October 13, 2021'),
+//     categoryId: ferrari.id,
+//     memo: "Gift from Raju",
+//     targetAmount: 20000
+// })
 
 
 // app.render().undo().render().undo().render().undo().render()
@@ -43,15 +51,19 @@ app.render().undo().redo().render()
 // app.selectPreviousMonth()
 // app.render()
 
-// app.addTransaction({
-//     date: timeInUnixMs('October 13, 2021'),
-//     payee: "Raju",
-//     categoryId: ferrari.id,
-//     accountId: axis.id,
-//     memo: "Gift from Raju",
-//     outflow: 0,
-//     inflow: 100,
-//     cleared: true})
+app.addTransaction({
+    date: timeInUnixMs('October 13, 2021'),
+    payee: "Raju",
+    categoryId: ferrari.id,
+    accountId: axis.id,
+    memo: "Gift from Raju",
+    outflow: 0,
+    inflow: 300,
+    cleared: true
+})
+app.render()
+
+
 
 // app.addTransaction({
 //     date: timeInUnixMs('October 11, 2021'),
@@ -65,9 +77,9 @@ app.render().undo().redo().render()
 
 // app.render()
 
-// app.render()
 
 // app.selectNextMonth()
+// app.render()
 
 // app.assignMoney({categoryId: ferrari.id, amount: 1000})
 // app.assignMoney({categoryId: bmw.id, amount: 200})
@@ -90,9 +102,9 @@ TO DO:
 1. app.addTransaction({date: DATE, payee: STRING, categoryId: ID, memo: STRING, outflow: NUM, inflow: NUM, cleared: BOOL})
 2. app.moveMoney{{fromId: ID, toId: ID}} // From a category to another category
 3. Logic to delete a category or categoryGroup
-    When deleting a category with atleast a single transaction, 
+    When deleting a category with atleast a single transaction,
     (Or a categoryGroup containing such a category)
-    we need to provide another category as replacement which will get all the transactions 
+    we need to provide another category as replacement which will get all the transactions
     and assinged amount of the deleted group
 4. Change assignMoney logic to consider the month in which it is assigned
     Each category has a distinct asssign for each month
