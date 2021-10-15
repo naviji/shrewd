@@ -23,6 +23,10 @@ class Calendar {
         return this.now.format("MMMM")
     }
 
+    printYear() {
+        return this.now.format("YYYY")
+    }
+
     timeInUnixMs () {
         return this.now.valueOf() 
     }

@@ -14,7 +14,7 @@ class AddAccount extends AddCommand {
     execute (o) {
         const createdAccount = super.execute(o)
         const createdTransaction = this.addTransactionCmd.execute({
-            date: todayInUnixMs(), // TODO : Change this to the current date
+            date: todayInUnixMs(),
             payee: "Starting Balance",
             categoryId: null,
             accountId: createdAccount.id,
