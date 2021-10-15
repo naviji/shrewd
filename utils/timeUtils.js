@@ -15,3 +15,29 @@ export const dateFromUnixMs = (value) => {
 export const todayInUnixMs = () => {
     return dayjs().valueOf()
 }
+
+export const endOfMonth = (value) => {
+    return dayjs(value).endOf('month')
+}
+
+export const startOfMonth = (value) => {
+    return dayjs(value).startOf('month')
+}
+
+export const subtractMonth = (value) => {
+    return dayjs(value).subtract(1, 'month')
+}
+
+export const addMonth = (value) => {
+    return dayjs(value).add(1, 'month')
+}
+
+export default {
+    timeInUnixMs,
+    dateFromUnixMs,
+    todayInUnixMs,
+    endOfMonth,
+    startOfMonth,
+    subtractMonth,
+    addMonth
+}

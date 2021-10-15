@@ -4,6 +4,11 @@ import { timeInUnixMs, todayInUnixMs } from "./utils/timeUtils.js"
 
 /*
 TO DO:
+0. Delete transaction better UI
+0.5 Hiddent transactions better UI
+0.6 Multi delete category groups
+Make category group selectable and show options in sidebar including show/hide hidden categories.
+
 
 1. Logic to delete/hide a category/categoryGroup/accounts/transactions
     When deleting a category with atleast a single transaction, 
@@ -64,28 +69,36 @@ app.assignMoney({ categoryId: ferrari.id, amount: 250 })
 app.assignMoney({ categoryId: bmw.id, amount: 400 })
 app.assignMoney({ categoryId: benz.id, amount: 2250 })
 
-// app.moveMoney({ from: bmw.id, to: ferrari.id, amount: 250 })
 
-app.addTransaction({
-    date: timeInUnixMs('October 13, 2021'),
-    payee: "Raju",
-    categoryId: ferrari.id,
-    accountId: axis.id,
-    memo: "Gift from Raju",
-    outflow: 0,
-    inflow: 1000,
-    cleared: true
-})
-
-let test = app.addCategory({ parentId: wishList.id, name: "test" })
-
-app.assignMoney({ categoryId: test.id, amount: 100 })
+app.selectPreviousMonth()
+// app.selectNextMonth()
 
 app.render()
 
-app.removeCategoryGroup({ id : wishList.id, newCategoryId: funMoney.id })
 
-app.render().undo().render().redo().render()
+
+// app.moveMoney({ from: bmw.id, to: ferrari.id, amount: 250 })
+
+// app.addTransaction({
+//     date: timeInUnixMs('October 13, 2021'),
+//     payee: "Raju",
+//     categoryId: ferrari.id,
+//     accountId: axis.id,
+//     memo: "Gift from Raju",
+//     outflow: 0,
+//     inflow: 1000,
+//     cleared: true
+// })
+
+// let test = app.addCategory({ parentId: wishList.id, name: "test" })
+
+// app.assignMoney({ categoryId: test.id, amount: 100 })
+
+// app.render()
+
+// app.removeCategoryGroup({ id : wishList.id, newCategoryId: funMoney.id })
+
+// app.render().undo().render().redo().render()
 
 // app.removeCategory({ id : ferrari.id, newCategoryId: test.id})
 // app.render()

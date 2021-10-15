@@ -11,6 +11,7 @@ import BaseModel from "../models/BaseModel.js"
 import Calendar from "../utils/Calendar.js"
 import { dateFromUnixMs } from '../utils/timeUtils.js'
 import Target from "../models/Target.js"
+import timeUtils from "../utils/timeUtils.js"
 
 // const appLogger = new Logger()
 class BudgetApplication {
@@ -126,10 +127,48 @@ class BudgetApplication {
     }
 
     renderTargets_(categoryId) {
-        const amountAssigned = Category.getAmountAssignedOfMonth(categoryId)
+        const assignedThisMonth = this.assignedThisMonth(categoryId)
         const target = Target.getByCategoryId(categoryId)
         if (target && (target.date <= this.getSelectedMonth()))
-            this.logger().log(`             --- Every ${target.every} ${target.type} ${target.amount} ( You need ${(target.amount /target.every) - (amountAssigned + Category.getAllActivity(categoryId))} this ${target.type})`)
+            this.logger().log(`             --- Every ${target.every} ${target.type} ${target.amount} ( You need ${(target.amount /target.every) - (assignedThisMonth + Category.getAllActivity(categoryId))} this ${target.type})`)
+    }
+
+    assignedThisMonth_(categoryId, month) {
+        return Category.getAssignedOfMonth(categoryId, month)
+    }
+
+    assignedThisMonth(categoryId) {
+        const month = this.getSelectedMonth()
+        return this.assignedThisMonth_(categoryId, month)
+    }
+
+    // leftOverFromLastMonth_(categoryId, month) {
+    //     if (month < this.lastMonthWithTransactions()) return 0;
+    //     const prevMonth = subtractMonth(month)
+    //     const result = this.assignedThisMonth_(categoryId, month) + this.leftOverFromLastMonth_(categoryId, prevMonth)
+    // }
+
+    leftOverFromLastMonth(categoryId) {
+        const month = this.getSelectedMonth()
+        const prevMonth = timeUtils.subtractMonth(month)
+        return this.activityTillMonth(categoryId, prevMonth) + this.assignedTillMonth(categoryId, prevMonth)
+    }
+
+    activityTillMonth(categoryId, month) {
+        return Category.activityTillMonth(categoryId, month)
+    }
+
+    assignedTillMonth(categoryId, month) {
+        return Category.assignedTillMonth(categoryId, month)
+    }
+
+    activityThisMonth_(categoryId, month) {
+        return Category.getActivityOfMonth(categoryId, month)
+    }
+
+    activityThisMonth(categoryId) {
+        const month = this.getSelectedMonth()
+        return this.activityThisMonth_(categoryId, month)
     }
 
     renderCategories_() {
@@ -137,13 +176,13 @@ class BudgetApplication {
         const groups = CategoryGroup.getAll()
         for (let group of groups) {
             const categories = Category.getByParentId(group.id)
-            const totalMoneyAssigned = categories.length ? categories.map(x => Category.getAmountAssignedOfMonth(x.id)).reduce((a, b) => a + b, 0) : 0
+            const totalMoneyAssigned = categories.length ? categories.map(x => this.assignedThisMonth(x.id)).reduce((a, b) => a + b, 0) : 0
             this.logger().log(`    ${group.name} [${totalMoneyAssigned}]`)
             for (let category of categories) {
-                const amountAssigned = Category.getAmountAssignedOfMonth(category.id)
-                const activityAmount = Category.getActivityOfMonth(category.id)
-                const availableToSpend = amountAssigned + Category.getAllActivity(category.id)
-                this.logger().log(`    --- ${category.name} [${amountAssigned}] [${activityAmount}] [${availableToSpend}]  `)
+                const assignedThisMonth = this.assignedThisMonth(category.id) // Category.getAmountAssignedOfMonth(category.id)
+                const activityThisMonth = this.activityThisMonth(category.id) // Category.getActivityOfMonth(category.id)
+                const availableToSpend = assignedThisMonth + activityThisMonth + this.leftOverFromLastMonth(category.id)  // Category.getAllActivity(category.id)
+                this.logger().log(`    --- ${category.name} [${assignedThisMonth}] [${activityThisMonth}] [${availableToSpend}]  `)
                 this.logger().debug(category.index)
                 this.renderTargets_(category.id)
             }

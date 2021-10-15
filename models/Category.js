@@ -2,6 +2,7 @@ import BaseModel from "./BaseModel.js"
 import Calendar from "../utils/Calendar.js"
 import Transfer from "./Transfer.js"
 import Transaction from "./Transaction.js"
+import { endOfMonth, startOfMonth } from "../utils/timeUtils.js"
 class Category extends BaseModel {
     static tableName = () => "category"
 
@@ -14,20 +15,42 @@ class Category extends BaseModel {
         return super.save(o);
     }
 
-    static getAmountAssignedOfMonth = (id) => {
-        const currTime = Calendar.instance().timeInUnixMs()
-        return Transfer.getAll().filter(x => x.categoryId === id && x.month === currTime)
-                                .map(x => x.amount)
-                                .reduce((a, b) => a+b, 0)
+    // static getAmountAssignedOfMonth = (id) => {
+    //     const currTime = Calendar.instance().timeInUnixMs() // TO DO : remove calendar
+    //     return Transfer.getAll().filter(x => x.categoryId === id && x.month === currTime)
+    //                             .map(x => x.amount)
+    //                             .reduce((a, b) => a+b, 0)
+    // }
+
+    static assignedTillMonth = (id, month) => {
+        const transfers = Transfer.getAll().filter(x => x.categoryId === id && x.month <= month)
+        return transfers.length ? transfers.map(x => x.amount).reduce((a, b) => a+b, 0) : 0
     }
 
-    static getActivityOfMonth = (id) => {
+    static activityTillMonth = (id, month) => {
         const transactions = Transaction.getAll().filter(x => x.categoryId === id)
-        const start = Calendar.instance().startOfMonth()
-        const end = Calendar.instance().endOfMonth()
+        const relevantTransactions = transactions.filter( x => x.date <= month)
+        const relevantAmounts =  relevantTransactions.map(x => x.inflow - x.outflow)
+        return relevantAmounts.length ? relevantAmounts.reduce((a, b) => a+b, 0) : 0
+    }
+
+    static getAssignedOfMonth = (id, month) => {
+        const transfers = Transfer.getAll().filter(x => x.categoryId === id && x.month === month)
+        if (transfers.length) {
+            let result = transfers.map(x => x.amount)
+            result = result.reduce((a, b) => a+b, 0)
+            return result
+        }
+        return 0
+    }
+
+    static getActivityOfMonth = (id, month) => {
+        const transactions = Transaction.getAll().filter(x => x.categoryId === id)
+        const start = startOfMonth(month)
+        const end = endOfMonth(month)
         const relevantTransactions = transactions.filter( x => (start <= x.date && x.date <= end))
         const relevantAmounts =  relevantTransactions.map(x => x.inflow - x.outflow)
-        return relevantAmounts.reduce((a, b) => a+b, 0)
+        return relevantAmounts.length ? relevantAmounts.reduce((a, b) => a+b, 0) : 0
     }
 
     static getAllActivity(id){
