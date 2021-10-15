@@ -69,6 +69,10 @@ class BudgetApplication {
         return CommandService.instance().execute('AddCategory', o)
     }
 
+    removeCategory(o) {
+        return CommandService.instance().execute('RemoveCategory', o)
+    }
+
     assignMoney(o) {
         return CommandService.instance().execute('AddTransfer', o)
     }
@@ -121,7 +125,7 @@ class BudgetApplication {
         const amountAssigned = Category.getAmountAssignedOfMonth(categoryId)
         const target = Target.getByCategoryId(categoryId)
         if (target && (target.date <= this.getSelectedMonth()))
-            this.logger().log(`             --- ${target.type} ${target.amount} You need ${target.amount - (amountAssigned + Category.getAllActivity(categoryId))}`)
+            this.logger().log(`             --- Every ${target.every} ${target.type} ${target.amount} ( You need ${(target.amount /target.every) - (amountAssigned + Category.getAllActivity(categoryId))} this ${target.type})`)
     }
 
     renderCategories_() {

@@ -14,4 +14,10 @@ export const commands = {
     AddTransaction,
     MoveMoney,
     AddTarget
+    // RemoveAccount,
+    // RemoveCategoryGroup,
+    // RemoveCategory,
+    // RemoveTransfer,
+    // RemoveTarget,
+    // RemoveTransaction,
 }

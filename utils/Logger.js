@@ -15,23 +15,24 @@ class Logger {
         this.logLevel = level
     }
 
-    _log (level, prefix, ...rest) {
+    _log (level, prefix, str) {
         if (this.logLevel < level) return;
         if (prefix !== '')
             process.stdout.write(`[${prefix}] `);
-        for (let msg of rest) {
-            if (typeof msg === 'string') {
-                process.stdout.write(` ${msg} `);
-            } else {
-                process.stdout.write(` ${JSON.stringify(msg)} `)
-            }
-        }
-        process.stdout.write(`\n`);
+        console.log(str)
+        // for (let msg of rest) {
+        //     if (typeof msg === 'string') {
+        //         process.stdout.write(` ${msg} `);
+        //     } else {
+        //         process.stdout.write(` ${JSON.stringify(msg)} `)
+        //     }
+        // }
+        // process.stdout.write(`\n`);
         
     } 
 
-    log (...rest) {
-        this._log(this.logLevel, "", ...rest)
+    log (str) {
+        this._log(this.logLevel, "", str)
     }
 
     debug (...rest) {

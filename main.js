@@ -54,30 +54,35 @@ const wishList = app.addCategoryGroup({ name: "Wishlist" })
 let ferrari = app.addCategory({ parentId: wishList.id, name: "Ferrari" })
 let bmw = app.addCategory({ parentId: wishList.id, name: "BMW" })
 let benz = app.addCategory({ parentId: wishList.id, name: "Benz" })
-app.assignMoney({ categoryId: ferrari.id, amount: 250 })
-app.assignMoney({ categoryId: bmw.id, amount: 400 })
-app.assignMoney({ categoryId: benz.id, amount: 2250 })
+
+app.render()
+// app.removeCategory(ferrari.id)
+
+// app.assignMoney({ categoryId: ferrari.id, amount: 250 })
+// app.assignMoney({ categoryId: bmw.id, amount: 400 })
+// app.assignMoney({ categoryId: benz.id, amount: 2250 })
 
 // app.moveMoney({ from: bmw.id, to: ferrari.id, amount: 250 })
 
-app.addTransaction({
-    date: timeInUnixMs('October 13, 2021'),
-    payee: "Raju",
-    categoryId: ferrari.id,
-    accountId: axis.id,
-    memo: "Gift from Raju",
-    outflow: 0,
-    inflow: 1000,
-    cleared: true
-})
+// app.addTransaction({
+//     date: timeInUnixMs('October 13, 2021'),
+//     payee: "Raju",
+//     categoryId: ferrari.id,
+//     accountId: axis.id,
+//     memo: "Gift from Raju",
+//     outflow: 0,
+//     inflow: 1000,
+//     cleared: true
+// })
 
-app.addTarget({
-    categoryId: ferrari.id,
-    amount: 1000,
-    type: "Monthly",
-})
+// app.addTarget({
+//     categoryId: ferrari.id,
+//     amount: 1000,
+//     type: "Month",
+//     every: 2
+// })
 
-app.render()
+// app.render()
 
 // app.selectNextMonth()
 
