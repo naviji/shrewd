@@ -24,6 +24,9 @@ class BudgetApplication {
     getSelectedMonth() {
         return this.calendar().printMonth()
     }
+    getSelectedYear() {
+        return this.calendar().printYear()
+    }
 
     selectNextMonth() {
         return this.calendar().selectNextMonth()
@@ -62,11 +65,15 @@ class BudgetApplication {
     }
 
     assignMoney(o) {
-        return CommandService.instance().execute('AssignMoney', o)
+        return CommandService.instance().execute('AddTransfer', o)
     }
 
     addTransaction(o) {
         return CommandService.instance().execute('AddTransaction', o)
+    }
+
+    moveMoney(o) {
+        return CommandService.instance().execute('MoveMoney', o)
     }
 
     registerCommands() {
@@ -95,6 +102,7 @@ class BudgetApplication {
     render () {
         this.logger().log(`\n--- BUDGET APP ---`)
         this.logger().log(`Month: ${this.getSelectedMonth()}`)
+        this.logger().log(`Year: ${this.getSelectedYear()}`)
         this.logger().log(`Ready to assign : ${this.readyToAssign()}`)
         this.logger().log("Accounts: ")
         const accounts = Account.getAll()
