@@ -55,6 +55,8 @@ let ferrari = app.addCategory({ parentId: wishList.id, name: "Ferrari" })
 let bmw = app.addCategory({ parentId: wishList.id, name: "BMW" })
 let benz = app.addCategory({ parentId: wishList.id, name: "Benz" })
 
+const fixedExpenses = app.addCategoryGroup({ name: "Fixed Expenses" })
+let funMoney = app.addCategory({ parentId: fixedExpenses.id, name: "Fun Money"})
 // app.render()
 // app.removeCategory(ferrari.id)
 
@@ -81,13 +83,13 @@ app.assignMoney({ categoryId: test.id, amount: 100 })
 
 app.render()
 
-app.removeCategory({ id : bmw.id })
+app.removeCategory({ id : ferrari.id, newCategoryId: test.id})
 app.render()
 app.undo()
 app.render()
 app.redo()
-
 app.render()
+// app.render()
 
 // app.addTarget({
 //     categoryId: ferrari.id,
