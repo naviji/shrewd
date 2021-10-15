@@ -58,15 +58,6 @@ app.assignMoney({ categoryId: ferrari.id, amount: 250 })
 app.assignMoney({ categoryId: bmw.id, amount: 400 })
 app.assignMoney({ categoryId: benz.id, amount: 2250 })
 
-
-const wishList = app.addCategoryGroup({ name: "Wishlist" })
-let ferrari = app.addCategory({ parentId: wishList.id, name: "Ferrari" })
-let bmw = app.addCategory({ parentId: wishList.id, name: "BMW" })
-let benz = app.addCategory({ parentId: wishList.id, name: "Benz" })
-
-app.assignMoney({ categoryId: ferrari.id, amount: 250 })
-app.assignMoney({ categoryId: bmw.id, amount: 500 })
-app.assignMoney({ categoryId: benz.id, amount: 2250 })
 app.moveMoney({ from: bmw.id, to: ferrari.id, amount: 250 })
 
 app.addTransaction({
