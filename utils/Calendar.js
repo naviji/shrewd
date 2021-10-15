@@ -33,12 +33,12 @@ class Calendar {
 
     selectNextMonth() {
         this.now = this.now.add(1, 'month')
-        // return this.getSelectedMonth()
+        // return this.printSelectedMonth()
     }
 
     selectPreviousMonth() {
         this.now = this.now.subtract(1, 'month')
-        // return this.getSelectedMonth()
+        // return this.printSelectedMonth()
     }
 }
 

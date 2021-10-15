@@ -1,5 +1,5 @@
 import BudgetApplication from './classes/BudgetApplication.js'
-import { timeInUnixMs } from "./utils/timeUtils.js"
+import { timeInUnixMs, todayInUnixMs } from "./utils/timeUtils.js"
 
 
 /*
@@ -58,7 +58,7 @@ app.assignMoney({ categoryId: ferrari.id, amount: 250 })
 app.assignMoney({ categoryId: bmw.id, amount: 400 })
 app.assignMoney({ categoryId: benz.id, amount: 2250 })
 
-app.moveMoney({ from: bmw.id, to: ferrari.id, amount: 250 })
+// app.moveMoney({ from: bmw.id, to: ferrari.id, amount: 250 })
 
 app.addTransaction({
     date: timeInUnixMs('October 13, 2021'),
@@ -67,8 +67,32 @@ app.addTransaction({
     accountId: axis.id,
     memo: "Gift from Raju",
     outflow: 0,
-    inflow: 100,
+    inflow: 1000,
     cleared: true
 })
 
+app.addTarget({
+    categoryId: ferrari.id,
+    amount: 1000,
+    type: "Monthly",
+})
+
 app.render()
+
+// app.selectNextMonth()
+
+
+// app.addTransaction({
+//     date: timeInUnixMs('November 13, 2021'),
+//     payee: "Raju",
+//     categoryId: ferrari.id,
+//     accountId: axis.id,
+//     memo: "Gift from Raju",
+//     outflow: 0,
+//     inflow: 2000,
+//     cleared: true
+// })
+// app.render()
+
+// app.selectPreviousMonth()
+// app.render()

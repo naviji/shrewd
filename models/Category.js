@@ -14,19 +14,25 @@ class Category extends BaseModel {
         return super.save(o);
     }
 
-    static getAmountAssigned = (id) => {
+    static getAmountAssignedOfMonth = (id) => {
         const currTime = Calendar.instance().timeInUnixMs()
         return Transfer.getAll().filter(x => x.categoryId === id && x.month === currTime)
                                 .map(x => x.amount)
                                 .reduce((a, b) => a+b, 0)
     }
 
-    static getActivity = (id) => {
+    static getActivityOfMonth = (id) => {
         const transactions = Transaction.getAll().filter(x => x.categoryId === id)
         const start = Calendar.instance().startOfMonth()
         const end = Calendar.instance().endOfMonth()
         const relevantTransactions = transactions.filter( x => (start <= x.date && x.date <= end))
         const relevantAmounts =  relevantTransactions.map(x => x.inflow - x.outflow)
+        return relevantAmounts.reduce((a, b) => a+b, 0)
+    }
+
+    static getAllActivity(id){
+        const transactions = Transaction.getAll().filter(x => x.categoryId === id)
+        const relevantAmounts =  transactions.map(x => x.inflow - x.outflow)
         return relevantAmounts.reduce((a, b) => a+b, 0)
     }
 
