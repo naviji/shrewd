@@ -11,17 +11,20 @@ class RemoveCategory extends RemoveCommand {
         this.transfers  = []
         this.transactions = []
         this.prevId = null
+        this.moveTransfers = null
     }
 
     execute = (o) => {
-        const { id, newCategoryId } = o
+        const { id, newCategoryId, moveTransfers } = o
         this.prevId = id
+        this.moveTransfers = moveTransfers
         this.transfers = Transfer.getAll().filter(x => x.categoryId === id)
         this.transactions = Transaction.getAll().filter(x => x.categoryId === id)
 
-        if (!this.transactions.length) {
+        if (!moveTransfers && !this.transactions.length) {
             for (let transfer of this.transfers) {
                 // We're moving the money to readyToAssigned implicitly by removing all the transfers
+                // since there aren't any transactions
                 Transfer.deleteById(transfer.id)
             }
         } else {
@@ -42,7 +45,7 @@ class RemoveCategory extends RemoveCommand {
 
     undo = () => {
         super.undo()
-        if (!this.transactions.length) {
+        if (!this.moveTransfers && !this.transactions.length) {
             for (let transfer of this.transfers) {
                 Transfer.save(transfer)
             }

@@ -83,12 +83,16 @@ app.assignMoney({ categoryId: test.id, amount: 100 })
 
 app.render()
 
-app.removeCategory({ id : ferrari.id, newCategoryId: test.id})
-app.render()
-app.undo()
-app.render()
-app.redo()
-app.render()
+app.removeCategoryGroup({ id : wishList.id, newCategoryId: funMoney.id })
+
+app.render().undo().render().redo().render()
+
+// app.removeCategory({ id : ferrari.id, newCategoryId: test.id})
+// app.render()
+// app.undo()
+// app.render()
+// app.redo()
+// app.render()
 // app.render()
 
 // app.addTarget({

@@ -73,6 +73,10 @@ class BudgetApplication {
         return CommandService.instance().execute('RemoveCategory', o)
     }
 
+    removeCategoryGroup(o) {
+        return CommandService.instance().execute('RemoveCategoryGroup', o)
+    }
+
     assignMoney(o) {
         return CommandService.instance().execute('AddTransfer', o)
     }
