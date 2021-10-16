@@ -68,12 +68,12 @@ let benz = app.addCategory({ parentId: wishList.id, name: "Benz" })
 // app.render()
 // app.removeCategory(ferrari.id)
 
-// app.assignMoney({ categoryId: ferrari.id, amount: 250 })
-app.moveMoney({ from: null, to: ferrari.id, amount: 250})
-// app.assignMoney({ categoryId: bmw.id, amount: 400 })
-app.moveMoney({ from: null, to: bmw.id, amount: 400})
-// app.assignMoney({ categoryId: benz.id, amount: 2250 })
-app.moveMoney({ from: null, to: benz.id, amount: 2250})
+app.assignMoney({ categoryId: ferrari.id, amount: 250 })
+// app.moveMoney({ from: null, to: ferrari.id, amount: 250})
+app.assignMoney({ categoryId: bmw.id, amount: 400 })
+// app.moveMoney({ from: null, to: bmw.id, amount: 400})
+app.assignMoney({ categoryId: benz.id, amount: 2250 })
+// app.moveMoney({ from: null, to: benz.id, amount: 2250})
 
 
 // app.selectPreviousMonth()
@@ -91,10 +91,10 @@ let giftFromRaju = app.addTransaction({
     cleared: true
 })
 
-app.selectNextMonth() // GETTING WRONG!!
+app.selectNextMonth()
 // app.selectPreviousMonth()
 
-app.moveMoney({ from: null, to: bmw.id, amount: 4000})
+// app.moveMoney({ from: null, to: bmw.id, amount: 4000})
 
 // app.selectPreviousMonth()
 
