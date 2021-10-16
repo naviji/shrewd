@@ -14,7 +14,7 @@ class AddAccount extends AddCommand {
     }
 
     execute (o) {
-        const { month } = o
+        const { date } = o
         const createdAccount = super.execute(o)
         const createdTransaction = this.addTransactionCmd.execute({
             date: todayInUnixMs(),
@@ -28,7 +28,7 @@ class AddAccount extends AddCommand {
         })
 
         const createdTransfer = this.addTransferCmd.execute({
-            date: month,
+            date: date,
             categoryId: null,
             amount: o.amount
         })

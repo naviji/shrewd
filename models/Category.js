@@ -19,15 +19,8 @@ class Category extends BaseModel {
         return super.save(o);
     }
 
-    // static getAmountAssignedOfMonth = (id) => {
-    //     const currTime = Calendar.instance().timeInUnixMs() // TO DO : remove calendar
-    //     return Transfer.getAll().filter(x => x.categoryId === id && x.month === currTime)
-    //                             .map(x => x.amount)
-    //                             .reduce((a, b) => a+b, 0)
-    // }
-
     static assignedTillMonth = (id, month) => {
-        const transfers = Transfer.getAll().filter(x => x.categoryId === id && x.month < month)
+        const transfers = Transfer.getAll().filter(x => x.categoryId === id && x.date < month)
         return transfers.length ? transfers.map(x => x.amount).reduce((a, b) => a+b, 0) : 0
     }
 
@@ -39,7 +32,7 @@ class Category extends BaseModel {
     }
 
     static getAssignedOfMonth = (id, month) => {
-        const transfers = Transfer.getAll().filter(x => x.categoryId === id && x.month === month)
+        const transfers = Transfer.getAll().filter(x => x.categoryId === id && x.date === month)
         if (transfers.length) {
             let result = transfers.map(x => x.amount)
             result = result.reduce((a, b) => a+b, 0)

@@ -6,7 +6,9 @@ class Transfer extends BaseModel {
 
     static save = (o) => {
         // TODO: Create an update function for this purpose?
-        return super.save({...o, month: o.month ? o.month : Calendar.instance().timeInUnixMs()})
+        // return super.save({...o, month: o.month ? o.month : Calendar.instance().timeInUnixMs()})
+        return super.save({...o, date: o.date ? o.date : Calendar.instance().timeInUnixMs()})
+
     }
 
 }

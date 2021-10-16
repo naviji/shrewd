@@ -5,6 +5,8 @@ import { unixMsFromDate, todayInUnixMs } from "./utils/timeUtils.js"
 
 /*
 TO DO:
+
+Undo redo shouldn't change postiions when going to transaction page
 0. Delete transaction better UI
 0.5 Hidden transactions better UI
 0.6 Multi delete category groups
@@ -89,8 +91,12 @@ let giftFromRaju = app.addTransaction({
     cleared: true
 })
 
-// app.selectNextMonth()
-app.selectPreviousMonth()
+app.selectNextMonth() // GETTING WRONG!!
+// app.selectPreviousMonth()
+
+app.moveMoney({ from: null, to: bmw.id, amount: 4000})
+
+// app.selectPreviousMonth()
 
 // app.logger().log(giftFromRaju)
 // app.removeTransaction({ id: giftFromRaju.id })

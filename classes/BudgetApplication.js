@@ -59,7 +59,7 @@ class BudgetApplication {
     }
 
     addAccount(o) {
-        return CommandService.instance().execute('AddAccount', o)
+        return CommandService.instance().execute('AddAccount', Object.assign(o, { date : this.getSelectedMonth()}))
     }
 
     addCategoryGroup(o) {
@@ -92,7 +92,7 @@ class BudgetApplication {
 
     moveMoney(o) {
 
-        return CommandService.instance().execute('MoveMoney', Object.assign(o, { month : this.getSelectedMonth()} ))
+        return CommandService.instance().execute('MoveMoney', Object.assign(o, { date : this.getSelectedMonth()} )) // TODO: Change?
     }
 
     registerCommands() {
@@ -113,8 +113,19 @@ class BudgetApplication {
         return this
     }
 
+    lastTransferToReadyToAssign() {
+        // const INFINITY
+        let transferDates =  Transfer.getAll().filter(x => x.categoryId === null).map(x => x.date)
+        // transferDates.push(100000000000000)
+        // this.logger().debug(transferDates)
+        transferDates.sort((a, b)=>a-b)
+        // this.logger().debug(transferDates)
+        return transferDates.length ? transferDates[0] : Infinity
+    }
+
     readyToAssign() {
         // Category id with null indicates the Ready to Assign category
+        if (this.lastTransferToReadyToAssign() > this.getSelectedMonth()) return 0
         return Category.getAllAssigned(null)
     }
 
