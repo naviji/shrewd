@@ -3,50 +3,6 @@ import Logger from './utils/Logger.js'
 import { unixMsFromDate, todayInUnixMs } from "./utils/timeUtils.js"
 
 
-/*
-TO DO:
-
-Undo redo shouldn't change postiions when going to transaction page
-0. Delete transaction better UI
-0.5 Hidden transactions better UI
-0.6 Multi delete category groups
-Make category group selectable and show options in sidebar including show/hide hidden categories.
-
-
-1. Logic to delete/hide a category/categoryGroup/accounts/transactions
-    When deleting a category with atleast a single transaction, 
-    (Or a categoryGroup containing such a category)
-    we need to provide another category as replacement which will get all the transactions 
-    and assinged amount of the deleted category/group
-2. Add credit card logic
-3. Investment or Debt accounts
-3. Add Goals (Monthly, Month/Year, By Date)
-4. Reconciliation
-5. Synchronization
-6. Importing from YNAB
-7. Importing and matching transactions from bank statement
-8. Multiple budgets
-9. End to End encryption
-10. Reports
-11. Scheduled transactions (how do we sync this?)
-12. Smart auto populate of categories and payee when doing a transaction
-13. Export to spreadsheet (Aspire?, option to filter transactions when exporting)
-14. Mobile App (Notification icon doesn't go away if you have overspend)
-15. Search
-16. Change currency and date display format. 
-17. Change locale?
-
-
-Optional
-1. Sharing
-2. Password lock
-3. Plugin system
-4. Multiple language translations
-
-*/
-
-
-
 const app = new BudgetApplication()
 
 const options = {
@@ -63,22 +19,10 @@ let ferrari = app.addCategory({ parentId: wishList.id, name: "Ferrari" })
 let bmw = app.addCategory({ parentId: wishList.id, name: "BMW" })
 let benz = app.addCategory({ parentId: wishList.id, name: "Benz" })
 
-// const fixedExpenses = app.addCategoryGroup({ name: "Fixed Expenses" })
-// let funMoney = app.addCategory({ parentId: fixedExpenses.id, name: "Fun Money"})
-// app.render()
-// app.removeCategory(ferrari.id)
-
 app.assignMoney({ categoryId: ferrari.id, amount: 250 })
-// app.moveMoney({ from: null, to: ferrari.id, amount: 250})
 app.assignMoney({ categoryId: bmw.id, amount: 400 })
-// app.moveMoney({ from: null, to: bmw.id, amount: 400})
 app.assignMoney({ categoryId: benz.id, amount: 2250 })
-// app.moveMoney({ from: null, to: benz.id, amount: 2250})
-
-
-// app.selectPreviousMonth()
-// app.selectNextMonth()
-// app.selectNextMonth()
+// app.moveMoney({ from: ferrari.id, to: bmw.id, amount: 400})
 
 let giftFromRaju = app.addTransaction({
     date: unixMsFromDate('October 13, 2021'),
@@ -91,65 +35,4 @@ let giftFromRaju = app.addTransaction({
     cleared: true
 })
 
-app.selectNextMonth()
-// app.selectPreviousMonth()
-
-// app.moveMoney({ from: null, to: bmw.id, amount: 4000})
-
-// app.selectPreviousMonth()
-
-// app.logger().log(giftFromRaju)
-// app.removeTransaction({ id: giftFromRaju.id })
-
 app.render()
-
-
-
-// app.moveMoney({ from: bmw.id, to: ferrari.id, amount: 250 })
-
-
-
-// let test = app.addCategory({ parentId: wishList.id, name: "test" })
-
-// app.assignMoney({ categoryId: test.id, amount: 100 })
-
-// app.render()
-
-// app.removeCategoryGroup({ id : wishList.id, newCategoryId: funMoney.id })
-
-// app.render().undo().render().redo().render()
-
-// app.removeCategory({ id : ferrari.id, newCategoryId: test.id})
-// app.render()
-// app.undo()
-// app.render()
-// app.redo()
-// app.render()
-// app.render()
-
-// app.addTarget({
-//     categoryId: ferrari.id,
-//     amount: 1000,
-//     type: "Month",
-//     every: 2
-// })
-
-// app.render()
-
-// app.selectNextMonth()
-
-
-// app.addTransaction({
-//     date: timeInUnixMs('November 13, 2021'),
-//     payee: "Raju",
-//     categoryId: ferrari.id,
-//     accountId: axis.id,
-//     memo: "Gift from Raju",
-//     outflow: 0,
-//     inflow: 2000,
-//     cleared: true
-// })
-// app.render()
-
-// app.selectPreviousMonth()
-// app.render()
