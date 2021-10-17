@@ -13,6 +13,7 @@ app.start(options)
 
 const axis = app.addAccount({ type: "Savings", name: "Axis", amount: 1000 })
 const sbi = app.addAccount({ type: "Savings", name: "SBI", amount: 2000 })
+// const creditCard = app.addAccount({ type: "CreditCard", name: "MyCreditCard", amount: 1000})
 
 const wishList = app.addCategoryGroup({ name: "Wishlist" })
 let ferrari = app.addCategory({ parentId: wishList.id, name: "Ferrari" })

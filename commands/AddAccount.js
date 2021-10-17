@@ -36,6 +36,7 @@ class AddAccount extends AddCommand {
     }
 
     undo() {
+        this.addTransactionCmd.undo()
         this.addTransferCmd.undo()
         super.undo()
     }
