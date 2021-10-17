@@ -6,7 +6,7 @@ import { unixMsFromDate, todayInUnixMs } from "./utils/timeUtils.js"
 const app = new BudgetApplication()
 
 const options = {
-    debugMode: true
+    debugMode: false
 }
 
 app.start(options)
