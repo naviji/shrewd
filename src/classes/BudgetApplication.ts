@@ -1,6 +1,6 @@
 
-import Database from "../utils/Database"
-import Logger, { LogLevel } from "../utils/Logger"
+import Database from "../lib/Database"
+import Logger, { LogLevel } from "../lib/Logger"
 import CommandService from "../services/CommandService"
 import Account from "../models/Account"
 import Transfer from "../models/Transfer"
@@ -8,7 +8,7 @@ import Transaction from "../models/Transaction"
 import CategoryGroup from "../models/CategoryGroup"
 import Category from "../models/Category"
 import BaseModel from "../models/BaseModel"
-import Calendar from "../utils/Calendar"
+import Calendar from "../lib/Calendar"
 import { dateFromUnixMs } from '../utils/timeUtils'
 import Target from "../models/Target"
 import timeUtils from "../utils/timeUtils"

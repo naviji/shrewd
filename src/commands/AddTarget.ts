@@ -1,5 +1,5 @@
 import Target from '../models/Target'
-import Calendar from '../utils/Calendar'
+import Calendar from '../lib/Calendar'
 import AddCommand from './AddCommand'
 
 class AddTarget extends AddCommand {

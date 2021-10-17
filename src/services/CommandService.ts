@@ -1,12 +1,14 @@
 import { commands } from "../commands/index"
+import BaseService from "./BaseService"
 
-class CommandService {
+class CommandService extends BaseService {
     private static instance_: CommandService
     private commandMap_: Map<string, any>
     private backwardHistory
     private forwardHistory
 
     private constructor() {
+        super()
         this.commandMap_ = new Map()
         this.backwardHistory = []
         this.forwardHistory = []

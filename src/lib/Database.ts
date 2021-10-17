@@ -1,6 +1,6 @@
 
 import Logger from "./Logger"
-import { todayInUnixMs } from "./timeUtils"
+import { todayInUnixMs } from "../utils/timeUtils"
 
 
 let globalCounter = 0
