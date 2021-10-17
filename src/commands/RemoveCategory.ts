@@ -1,10 +1,15 @@
-import Category from '../models/Category.js'
-import Transaction from '../models/Transaction.js'
-import Transfer from '../models/Transfer.js'
-import RemoveCommand from './RemoveCommand.js'
+import Category from '../models/Category'
+import Transaction from '../models/Transaction'
+import Transfer from '../models/Transfer'
+import RemoveCommand from './RemoveCommand'
 
 class RemoveCategory extends RemoveCommand {
     model = () => Category
+
+    public transfers
+    public transactions
+    public prevId
+    public moveTransfers
 
     constructor () {
         super()

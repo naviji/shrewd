@@ -1,5 +1,5 @@
-import Category from '../models/Category.js'
-import AddCommand from './AddCommand.js'
+import Category from '../models/Category'
+import AddCommand from './AddCommand'
 
 class AddCategory extends AddCommand {
     model = () => Category

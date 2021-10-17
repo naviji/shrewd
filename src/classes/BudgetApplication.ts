@@ -1,20 +1,23 @@
 
-import Database from "../utils/Database.js"
-import Logger, { LogLevel } from "../utils/Logger.js"
-import CommandService from "../services/CommandService.js"
-import Account from "../models/Account.js"
-import Transfer from "../models/Transfer.js"
-import Transaction from "../models/Transaction.js"
-import CategoryGroup from "../models/CategoryGroup.js"
-import Category from "../models/Category.js"
-import BaseModel from "../models/BaseModel.js"
-import Calendar from "../utils/Calendar.js"
-import { dateFromUnixMs } from '../utils/timeUtils.js'
-import Target from "../models/Target.js"
-import timeUtils from "../utils/timeUtils.js"
+import Database from "../utils/Database"
+import Logger, { LogLevel } from "../utils/Logger"
+import CommandService from "../services/CommandService"
+import Account from "../models/Account"
+import Transfer from "../models/Transfer"
+import Transaction from "../models/Transaction"
+import CategoryGroup from "../models/CategoryGroup"
+import Category from "../models/Category"
+import BaseModel from "../models/BaseModel"
+import Calendar from "../utils/Calendar"
+import { dateFromUnixMs } from '../utils/timeUtils'
+import Target from "../models/Target"
+import timeUtils from "../utils/timeUtils"
 
 // const appLogger = new Logger()
 class BudgetApplication {
+
+    private calendar_
+    private logger_
 
     start(options) {
         this.setLogger(new Logger(options.debugMode ? LogLevel.Debug : LogLevel.Info))

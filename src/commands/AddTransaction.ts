@@ -1,5 +1,5 @@
-import Transaction from '../models/Transaction.js'
-import AddCommand from './AddCommand.js'
+import Transaction from '../models/Transaction'
+import AddCommand from './AddCommand'
 
 class AddTransaction extends AddCommand {
     model = () => Transaction

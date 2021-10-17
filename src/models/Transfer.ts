@@ -1,5 +1,5 @@
-import BaseModel from "./BaseModel.js"
-import Calendar from "../utils/Calendar.js"
+import BaseModel from "./BaseModel"
+import Calendar from "../utils/Calendar"
 
 class Transfer extends BaseModel {
     static tableName = () => "transfer"

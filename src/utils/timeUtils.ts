@@ -1,4 +1,4 @@
-import dayjs from "dayjs"
+import * as dayjs from "dayjs"
 // var customParseFormat = require('dayjs/plugin/customParseFormat')
 // import {customParseFormat} from 'dayjs/plugin/customParseFormat'
 // dayjs.extend(customParseFormat)

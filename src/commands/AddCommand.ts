@@ -1,10 +1,16 @@
+import BaseModel from "../models/BaseModel"
+
 class AddCommand {
+
+    private oldArgs
+    private created
+
     constructor() {
         this.oldArgs = null
         this.created = null
     }
 
-    model () {
+    model () : any { // to fix any
         throw new Error("Needs to be overriden")
     }
     

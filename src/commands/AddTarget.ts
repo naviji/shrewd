@@ -1,6 +1,6 @@
-import Target from '../models/Target.js'
-import Calendar from '../utils/Calendar.js'
-import AddCommand from './AddCommand.js'
+import Target from '../models/Target'
+import Calendar from '../utils/Calendar'
+import AddCommand from './AddCommand'
 
 class AddTarget extends AddCommand {
     model = () => Target

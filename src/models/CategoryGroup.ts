@@ -1,5 +1,5 @@
-import BaseModel from "./BaseModel.js"
-import Category from "./Category.js"
+import BaseModel from "./BaseModel"
+import Category from "./Category"
 
 class CategoryGroup extends BaseModel {
     static tableName = () => "categoryGroup"

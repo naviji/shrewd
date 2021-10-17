@@ -1,11 +1,16 @@
-import dayjs from "dayjs"
+import * as dayjs from 'dayjs'
+import { Dayjs } from 'dayjs'
 
 class Calendar {
-    constructor() {
+
+    now: Dayjs
+    private static instance_: Calendar
+
+    private constructor() {
         this.now = dayjs().startOf('month')
     }
 
-    static instance() {
+    public static instance() {
         if (this.instance_) return this.instance_
         this.instance_ = new Calendar()
         return this.instance_

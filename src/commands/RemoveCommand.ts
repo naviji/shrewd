@@ -1,10 +1,14 @@
 class RemoveCommand {
+
+    private oldArgs
+    private created
+
     constructor() {
         this.oldArgs = null
         this.created = null
     }
 
-    model () {
+    model (): any { // TODO Fix any
         throw new Error("Needs to be overriden")
     }
     

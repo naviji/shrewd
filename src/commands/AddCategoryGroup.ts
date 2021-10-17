@@ -1,5 +1,5 @@
-import CategoryGroup from '../models/CategoryGroup.js'
-import AddCommand from './AddCommand.js'
+import CategoryGroup from '../models/CategoryGroup'
+import AddCommand from './AddCommand'
 
 class AddCategoryGroup extends AddCommand {
     model = () => CategoryGroup

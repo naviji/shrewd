@@ -1,5 +1,5 @@
-import Transfer from '../models/Transfer.js'
-import AddCommand from './AddCommand.js'
+import Transfer from '../models/Transfer'
+import AddCommand from './AddCommand'
 class AddTransfer extends AddCommand {
     model = () => Transfer
 }

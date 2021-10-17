@@ -1,10 +1,13 @@
 class UpdateCommand {
+    private oldState
+    private newState
+
     constructor() {
         this.oldState = null
         this.newState = null
     }
 
-    model () {
+    model (): any { // TODO FIX any
         throw new Error("Needs to be overriden")
     }
     

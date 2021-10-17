@@ -1,4 +1,7 @@
 class BaseModel {
+
+    private static db_
+    
     static tableName() {
         throw new Error("Needs to be overriden")
     }

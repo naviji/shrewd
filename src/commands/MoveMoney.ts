@@ -1,9 +1,13 @@
-import Transfer from '../models/Transfer.js'
-import AddCommand from './AddCommand.js'
-import AddTransfer from './AddTransfer.js'
+import Transfer from '../models/Transfer'
+import AddCommand from './AddCommand'
+import AddTransfer from './AddTransfer'
 
 class MoveMoney extends AddCommand {
+    private fromMove
+    private toMove
+    
     model = () => Transfer
+
 
     constructor() {
         super()

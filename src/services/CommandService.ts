@@ -1,15 +1,18 @@
-import { commands } from "../commands/index.js"
+import { commands } from "../commands/index"
 
 class CommandService {
+    private static instance_: CommandService
+    private commandMap_: Map<string, any>
+    private backwardHistory
+    private forwardHistory
 
-    constructor() {
-        this.instance_ = null
+    private constructor() {
         this.commandMap_ = new Map()
         this.backwardHistory = []
         this.forwardHistory = []
     }
 
-    static instance = () => {
+    public static instance = () => {
         if (this.instance_) return this.instance_
         this.instance_ = new CommandService()
         return this.instance_
@@ -29,7 +32,7 @@ class CommandService {
 
     execute = (cmdName, o) => {
         const commandClass = this.getCommandFromName(cmdName)
-        if (!commandClass) throw new Error("Command not found: ", cmdName)
+        if (!commandClass) throw new Error(`Command not found: ${cmdName}`)
         const commandObj = new commandClass()
         const result = commandObj.execute(o)
         this.backwardHistory.push(commandObj)

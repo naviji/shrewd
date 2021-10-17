@@ -1,6 +1,5 @@
-import BudgetApplication from './classes/BudgetApplication.js'
-import Logger from './utils/Logger.js'
-import { unixMsFromDate, todayInUnixMs } from "./utils/timeUtils.js"
+import BudgetApplication from './classes/BudgetApplication'
+import { unixMsFromDate, todayInUnixMs } from "./utils/timeUtils"
 
 
 const app = new BudgetApplication()

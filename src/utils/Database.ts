@@ -1,9 +1,12 @@
 
-import { todayInUnixMs } from "./timeUtils.js"
+import Logger from "./Logger"
+import { todayInUnixMs } from "./timeUtils"
 
 
 let globalCounter = 0
 class Database {
+
+    private logger_: Logger
 
     constructor(logger) {
         this.setLogger(logger)
@@ -70,7 +73,7 @@ class Database {
 
     getById(tableName, id) {
         const found = this[tableName].find(x => x.id === id)
-        if (!found) throw new Error("Object not found with id ", id)
+        if (!found) throw new Error(`Object not found with id ${id}`)
         return found
     }
 

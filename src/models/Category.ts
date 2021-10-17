@@ -1,8 +1,9 @@
-import BaseModel from "./BaseModel.js"
-import Calendar from "../utils/Calendar.js"
-import Transfer from "./Transfer.js"
-import Transaction from "./Transaction.js"
-import { endOfMonth, startOfMonth } from "../utils/timeUtils.js"
+import BaseModel from "./BaseModel"
+import Transfer from "./Transfer"
+import Transaction from "./Transaction"
+import { endOfMonth, startOfMonth } from "../utils/timeUtils"
+
+
 class Category extends BaseModel {
     static tableName = () => "category"
 

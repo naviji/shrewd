@@ -2,9 +2,7 @@
     "compilerOptions": {
       "outDir": "./built",
       "allowJs": true,
-      "target": "es5",
-      "esModuleInterop": true,
-      "allowSyntheticDefaultImports": true,
+      "target": "es5"
     },
     "include": ["./src/**/*"]
   }

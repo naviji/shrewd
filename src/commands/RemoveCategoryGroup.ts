@@ -1,11 +1,15 @@
-import Category from '../models/Category.js'
-import CategoryGroup from '../models/CategoryGroup.js'
-import Transaction from '../models/Transaction.js'
-import Transfer from '../models/Transfer.js'
-import RemoveCategory from './RemoveCategory.js'
-import RemoveCommand from './RemoveCommand.js'
+import Category from '../models/Category'
+import CategoryGroup from '../models/CategoryGroup'
+import Transaction from '../models/Transaction'
+import Transfer from '../models/Transfer'
+import RemoveCategory from './RemoveCategory'
+import RemoveCommand from './RemoveCommand'
 
 class RemoveCategoryGroup extends RemoveCommand {
+    public categoryIds
+    public prevId
+    public removeCategoryCommands
+
     model = () => CategoryGroup
 
     constructor () {

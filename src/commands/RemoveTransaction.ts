@@ -1,5 +1,5 @@
-import Transaction from "../models/Transaction.js"
-import RemoveCommand from "./RemoveCommand.js"
+import Transaction from "../models/Transaction"
+import RemoveCommand from "./RemoveCommand"
 
 class RemoveTransaction extends RemoveCommand {
     model = () => Transaction

@@ -1,4 +1,4 @@
-import BaseModel from "./BaseModel.js"
+import BaseModel from "./BaseModel"
 class Target extends BaseModel {
     static tableName = () => "Target"
 

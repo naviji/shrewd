@@ -1,10 +1,14 @@
-import Account from '../models/Account.js'
-import AddCommand from './AddCommand.js'
-import Transfer from '../models/Transfer.js'
-import AddTransfer from './AddTransfer.js'
-import { unixMsFromDate, todayInUnixMs, printDateOfToday } from '../utils/timeUtils.js'
-import AddTransaction from './AddTransaction.js'
+import Account from '../models/Account'
+import AddCommand from './AddCommand'
+import Transfer from '../models/Transfer'
+import AddTransfer from './AddTransfer'
+import { unixMsFromDate, todayInUnixMs, printDateOfToday } from '../utils/timeUtils'
+import AddTransaction from './AddTransaction'
+
 class AddAccount extends AddCommand {
+    private addTransferCmd
+    private addTransactionCmd
+
     model = () => Account
 
     constructor() {

@@ -7,6 +7,7 @@ export const LogLevel = {
 }
 
 class Logger {
+    private logLevel: number
     constructor (level = LogLevel.Debug) {
         this.logLevel = level
     }
@@ -35,20 +36,20 @@ class Logger {
         this._log(this.logLevel, "", str)
     }
 
-    debug (...rest) {
-        this._log(LogLevel.Debug, "Debug", ...rest)
+    debug (str) {
+        this._log(LogLevel.Debug, "Debug", str)
     }
 
-    info (...rest) {
-        this._log(LogLevel.Info, "Info", ...rest)
+    info (str) {
+        this._log(LogLevel.Info, "Info", str)
     }
 
-    warn (...rest) {
-        this._log(LogLevel.Warn, "Warn", ...rest)
+    warn (str) {
+        this._log(LogLevel.Warn, "Warn", str)
     }
 
-    error (...rest) {
-        this._log(LogLevel.Error, "Error", ...rest)
+    error (str) {
+        this._log(LogLevel.Error, "Error", str)
     }
 }
 

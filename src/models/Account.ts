@@ -1,5 +1,5 @@
-import BaseModel from "./BaseModel.js"
-import Transaction from "./Transaction.js"
+import BaseModel from "./BaseModel"
+import Transaction from "./Transaction"
 
 class Account extends BaseModel {
     static tableName = () => "account"
