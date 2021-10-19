@@ -8,7 +8,7 @@ export const LogLevel = {
 
 class Logger {
     private logLevel: number
-    constructor (level = LogLevel.Debug) {
+    constructor (level = LogLevel.Info) {
         this.logLevel = level
     }
 

@@ -10,7 +10,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "dayjs": "^1.10.7"
+    "async-mutex": "^0.3.2",
+    "dayjs": "^1.10.7",
+    "fs-extra": "^10.0.0",
+    "sprintf-js": "^1.1.2"
   },
   "devDependencies": {
     "@types/jest": "^27.0.2",

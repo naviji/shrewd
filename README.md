@@ -2,7 +2,7 @@ Buddy
 
 
 TO DO:
-- [ ] Add File API
+- [x] Add File API
 - [ ] Implement Synchronization
 
 TO DO LATER:

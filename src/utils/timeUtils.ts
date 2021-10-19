@@ -40,6 +40,14 @@ export const printDateOfToday = () => {
     return dayjs().format('DD/MM/YYYY')
 }
 
+export const msleep = (ms: number) => {
+    return new Promise((resolve: Function) => {
+        setTimeout(() => {
+            resolve();
+        }, ms);
+    });
+}
+
 export default {
     unixMsFromDate,
     dateFromUnixMs,
@@ -47,5 +55,6 @@ export default {
     endOfMonth,
     startOfMonth,
     subtractMonth,
-    addMonth
+    addMonth,
+    msleep
 }
