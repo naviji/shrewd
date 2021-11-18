@@ -4,6 +4,10 @@ import Transaction from "./Transaction"
 class Account extends BaseModel {
     static tableName = () => "account"
 
+    static fieldNames() {
+        return ["id", "type", "name", "amount"]
+    }
+
     static save =  (o) => {
         const { id, closed } = o
         if (!id && !closed) {

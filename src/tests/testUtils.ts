@@ -3,9 +3,19 @@ import FileApi from "../lib/FileApi"
 import Logger from "../lib/Logger"
 import SyncTargetMemory from "../lib/SyncTargetMemory"
 import BaseModel from "../models/BaseModel"
+import BaseItem from "../models/BaseItem"
 import BaseService from "../services/BaseService"
 import FileApiDriverMemory from "../lib/FileApiDriverMemory"
 import timeUtils from "../utils/timeUtils"
+import Setting from "../models/Setting"
+import * as fs from 'fs-extra';
+
+import Account from "../models/Account"
+import Category from "../models/Category"
+import CategoryGroup from "../models/CategoryGroup"
+import Target from "../models/Target"
+import Transaction from "../models/Transaction"
+import Transfer from "../models/Transfer"
 
 const logger = new Logger()
 const databases_ = new Map<number, Database>()
@@ -14,6 +24,41 @@ const synchronizers_ = new Map<number, any>()
 const settings = new Map<string, string>()
 
 let currentClient_ = 1;
+
+BaseItem.loadClass('Account', Account);
+BaseItem.loadClass('Category', Category);
+BaseItem.loadClass('CategoryGroup', CategoryGroup);
+BaseItem.loadClass('Target', Target);
+BaseItem.loadClass('Transaction', Transaction);
+BaseItem.loadClass('Transfer', Transfer);
+
+const suiteName_ = Math.floor(Math.random()*1000000000)
+
+const testDir = `${__dirname}`;
+const logDir = `${testDir}/logs`;
+const baseTempDir = `${testDir}/tmp/${suiteName_}`;
+const supportDir = `${testDir}/support`;
+
+
+// We add a space in the data directory path as that will help uncover
+// various space-in-path issues.
+const dataDir = `${testDir}/test data/${suiteName_}`;
+const profileDir = `${dataDir}/profile`;
+
+
+Setting.set('appId', 'net.naviji.buddytest-cli');
+Setting.set('appType', 'cli');
+Setting.set('tempDir', baseTempDir);
+Setting.set('cacheDir', baseTempDir);
+Setting.set('pluginDataDir', `${profileDir}/profile/plugin-data`);
+Setting.set('profileDir', profileDir);
+Setting.set('env', 'dev');
+
+
+fs.mkdirpSync(logDir);
+fs.mkdirpSync(baseTempDir);
+fs.mkdirpSync(dataDir);
+fs.mkdirpSync(profileDir);
 
 
 export const setupDatabaseAndSynchronizer = async (id) => {
@@ -62,9 +107,9 @@ export async function afterAllCleanUp() {
 
 export async function synchronizerStart(id = null, extraOptions = {}) {
     if (id === null) id = currentClient_;
-    const context = settings['context'] ? JSON.parse(settings['context']) : {};
+    const context = Setting.get('context') ? JSON.parse(Setting.get('context')) : {};
     const options = Object.assign({ context : context, throwOnError : true }, extraOptions);
 
 	const newContext = await synchronizer(id).start(options);
-    settings['context'] = JSON.stringify(newContext)
+    Setting.set('context', JSON.stringify(newContext))
 }

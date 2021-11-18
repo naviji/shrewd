@@ -23,6 +23,8 @@ app.assignMoney({ categoryId: ferrari.id, amount: 250 })
 app.assignMoney({ categoryId: bmw.id, amount: 400 })
 app.assignMoney({ categoryId: benz.id, amount: 2250 })
 // app.moveMoney({ from: ferrari.id, to: bmw.id, amount: 400})
+app.render()
+
 
 let giftFromRaju = app.addTransaction({
     date: unixMsFromDate('October 13, 2021'),

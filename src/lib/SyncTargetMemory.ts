@@ -33,7 +33,7 @@ class SyncTargetMemory extends BaseSyncTarget {
 	}
 
 	async initSynchronizer() {
-		return new Synchronizer(this.db(), await this.fileApi());
+		return new Synchronizer(this.db(), await this.fileApi(), 'test');
 	}
 }
 

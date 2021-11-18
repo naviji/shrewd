@@ -1,4 +1,5 @@
 import * as dayjs from "dayjs"
+import timers from "timers"
 // var customParseFormat = require('dayjs/plugin/customParseFormat')
 // import {customParseFormat} from 'dayjs/plugin/customParseFormat'
 // dayjs.extend(customParseFormat)
@@ -48,6 +49,39 @@ export const msleep = (ms: number) => {
     });
 }
 
+export const sleep = (seconds: number) => {
+    return msleep(seconds * 1000);
+}
+
+export const setTimeout = (fn, interval) => {
+    return timers.setTimeout(fn, interval);
+};
+
+export const setInterval = (fn, interval) => {
+    return timers.setInterval(fn, interval);
+};
+
+export const clearTimeout = (id) => {
+    return timers.clearTimeout(id);
+};
+
+export const clearInterval = (id) => {
+    return timers.clearInterval(id);
+};
+
+export const unserializeDate = (value) => {
+    return dayjs(value, 'YYYY-MM-DDTHH:mm:ss.SSSZ').valueOf()
+}
+
+export const serializeDate = (value) => {
+    return `${dayjs(Number(value)).format('YYYY-MM-DDTHH:mm:ss.SSS')}Z`
+}
+
+// if (['created_time', 'updated_time', 'sync_time', 'user_updated_time', 'user_created_time'].indexOf(propName) >= 0) {
+//     if (!propValue) return '';
+//     propValue = `${moment.unix(propValue / 1000).utc().format('YYYY-MM-DDTHH:mm:ss.SSS')}Z`;
+// } 
+
 export default {
     unixMsFromDate,
     dateFromUnixMs,
@@ -56,5 +90,12 @@ export default {
     startOfMonth,
     subtractMonth,
     addMonth,
-    msleep
+    msleep,
+    sleep,
+    setTimeout,
+    setInterval,
+    clearTimeout,
+    clearInterval,
+    unserializeDate,
+    serializeDate
 }

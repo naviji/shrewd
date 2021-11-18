@@ -1,4 +1,7 @@
 import Logger from './Logger';
+import timeUtils from '../utils/timeUtils';
+import FsDriverBase from './FsDriverBase';
+import FsDriverNode from './FsDriverNode';
 // import shim from './shim';
 // import BaseItem from './models/BaseItem';
 // import time from './time';
@@ -8,7 +11,7 @@ import Logger from './Logger';
 // const ArrayUtils = require('./ArrayUtils');
 // const { sprintf } = require('sprintf-js');
 const Mutex = require('async-mutex').Mutex;
-
+const logger = new Logger()
 // const logger = Logger.create('FileApi');
 
 // export interface MultiPutItem {
@@ -35,40 +38,37 @@ const Mutex = require('async-mutex').Mutex;
 // 	return true;
 // }
 
-// async function tryAndRepeat(fn: Function, count: number) {
-// 	let retryCount = 0;
+export interface MultiPutItem {
+	name: string;
+	body: string;
+}
 
-// 	// Don't use internal fetch retry mechanim since we
-// 	// are already retrying here.
-// 	const shimFetchMaxRetryPrevious = shim.fetchMaxRetrySet(0);
-// 	const defer = () => {
-// 		shim.fetchMaxRetrySet(shimFetchMaxRetryPrevious);
-// 	};
+async function tryAndRepeat(fn: Function, count: number) {
+	let retryCount = 0;
 
-// 	while (true) {
-// 		try {
-// 			const result = await fn();
-// 			defer();
-// 			return result;
-// 		} catch (error) {
-// 			if (retryCount >= count || !requestCanBeRepeated(error)) {
-// 				defer();
-// 				throw error;
-// 			}
-// 			retryCount++;
-// 			await time.sleep(1 + retryCount * 3);
-// 		}
-// 	}
-// }
+	while (true) {
+		try {
+			const result = await fn();
+			return result;
+		} catch (error) {
+			if (retryCount >= count) {
+				throw error;
+			}
+			retryCount++;
+			await timeUtils.sleep(1 + retryCount * 3);
+		}
+	}
+}
 
 class FileApi {
 
 	private baseDir_: any;
 	private driver_: any;
 	private logger_: Logger = new Logger();
+	private fsDriver_: FsDriverBase = new FsDriverNode()
 	private syncTargetId_: number = null;
 	private tempDirName_: string = null;
-	// public requestRepeatCount_: number = null; // For testing purpose only - normally this value should come from the driver
+	public requestRepeatCount_: number = null; // For testing purpose only - normally this value should come from the driver
 	// private remoteDateOffset_ = 0;
 	// private remoteDateNextCheckTime_ = 0;
 	// private remoteDateMutex_ = new Mutex();
@@ -199,14 +199,18 @@ class FileApi {
 // 		return new Date(Date.now() + this.remoteDateOffset_);
 // 	}
 
-// 	// Ideally all requests repeating should be done at the FileApi level to remove duplicate code in the drivers, but
-// 	// historically some drivers (eg. OneDrive) are already handling request repeating, so this is optional, per driver,
-// 	// and it defaults to no repeating.
-// 	requestRepeatCount() {
-// 		if (this.requestRepeatCount_ !== null) return this.requestRepeatCount_;
-// 		if (this.driver_.requestRepeatCount) return this.driver_.requestRepeatCount();
-// 		return 0;
-// 	}
+	// Ideally all requests repeating should be done at the FileApi level to remove duplicate code in the drivers, but
+	// historically some drivers (eg. OneDrive) are already handling request repeating, so this is optional, per driver,
+	// and it defaults to no repeating.
+	requestRepeatCount() {
+		if (this.requestRepeatCount_ !== null) return this.requestRepeatCount_;
+		if (this.driver_.requestRepeatCount) return this.driver_.requestRepeatCount();
+		return 0;
+	}
+
+	setRequestRepeatCount(count) {
+		this.requestRepeatCount_ = count;
+	}
 
 // 	lastRequests() {
 // 		return this.driver_.lastRequests ? this.driver_.lastRequests() : [];
@@ -227,13 +231,13 @@ class FileApi {
 // 		this.tempDirName_ = v;
 // 	}
 
-// 	fsDriver() {
-// 		return shim.fsDriver();
-// 	}
+	fsDriver() {
+		return this.fsDriver_;
+	}
 
-// 	driver() {
-// 		return this.driver_;
-// 	}
+	driver() {
+		return this.driver_;
+	}
 
 // 	setSyncTargetId(v: number) {
 // 		this.syncTargetId_ = v;
@@ -244,37 +248,16 @@ class FileApi {
 
 
 
-// 	// DRIVER MUST RETURN PATHS RELATIVE TO `path`
-// 	// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-// 	async list(path = '', options: any = null) {
-// 		if (!options) options = {};
-// 		if (!('includeHidden' in options)) options.includeHidden = false;
-// 		if (!('context' in options)) options.context = null;
-// 		if (!('includeDirs' in options)) options.includeDirs = true;
-// 		if (!('syncItemsOnly' in options)) options.syncItemsOnly = false;
+	// DRIVER MUST RETURN PATHS RELATIVE TO `path`
+	// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+	async list(path = '', options: any = null) {
+		if (!options) options = {};
 
-// 		logger.debug(`list ${this.baseDir()}`);
+		const result = await tryAndRepeat(() => this.driver_.list(this.fullPath(path), options), this.requestRepeatCount());
 
-// 		const result = await tryAndRepeat(() => this.driver_.list(this.fullPath(path), options), this.requestRepeatCount());
 
-// 		if (!options.includeHidden) {
-// 			const temp = [];
-// 			for (let i = 0; i < result.items.length; i++) {
-// 				if (!isHidden(result.items[i].path)) temp.push(result.items[i]);
-// 			}
-// 			result.items = temp;
-// 		}
-
-// 		if (!options.includeDirs) {
-// 			result.items = result.items.filter((f: any) => !f.isDir);
-// 		}
-
-// 		if (options.syncItemsOnly) {
-// 			result.items = result.items.filter((f: any) => !f.isDir && BaseItem.isSystemPath(f.path));
-// 		}
-
-// 		return result;
-// 	}
+		return result;
+	}
 
 // 	// Deprectated
 // 	setTimestamp(path: string, timestampMs: number) {
@@ -283,48 +266,48 @@ class FileApi {
 // 		// return this.driver_.setTimestamp(this.fullPath(path), timestampMs);
 // 	}
 
-// 	mkdir(path: string) {
-// 		logger.debug(`mkdir ${this.fullPath(path)}`);
-// 		return tryAndRepeat(() => this.driver_.mkdir(this.fullPath(path)), this.requestRepeatCount());
-// 	}
+	mkdir(path: string) {
+		logger.debug(`mkdir ${this.fullPath(path)}`);
+		return tryAndRepeat(() => this.driver_.mkdir(this.fullPath(path)), this.requestRepeatCount());
+	}
 
-// 	async stat(path: string) {
-// 		logger.debug(`stat ${this.fullPath(path)}`);
+	async stat(path: string) {
+		logger.debug(`stat ${this.fullPath(path)}`);
 
-// 		const output = await tryAndRepeat(() => this.driver_.stat(this.fullPath(path)), this.requestRepeatCount());
+		const output = await tryAndRepeat(() => this.driver_.stat(this.fullPath(path)), this.requestRepeatCount());
 
-// 		if (!output) return output;
-// 		output.path = path;
-// 		return output;
-// 	}
+		if (!output) return output;
+		output.path = path;
+		return output;
+	}
 
-// 	// Returns UTF-8 encoded string by default, or a Response if `options.target = 'file'`
-// 	get(path: string, options: any = null) {
-// 		if (!options) options = {};
-// 		if (!options.encoding) options.encoding = 'utf8';
-// 		logger.debug(`get ${this.fullPath(path)}`);
-// 		return tryAndRepeat(() => this.driver_.get(this.fullPath(path), options), this.requestRepeatCount());
-// 	}
+	// Returns UTF-8 encoded string by default, or a Response if `options.target = 'file'`
+	get(path: string, options: any = null) {
+		if (!options) options = {};
+		if (!options.encoding) options.encoding = 'utf8';
+		logger.debug(`get ${this.fullPath(path)}`);
+		return tryAndRepeat(() => this.driver_.get(this.fullPath(path), options), this.requestRepeatCount());
+	}
 
-// 	async put(path: string, content: any, options: any = null) {
-// 		logger.debug(`put ${this.fullPath(path)}`, options);
+	async put(path: string, content: any, options: any = null) {
+		logger.debug(`put ${this.fullPath(path)} ${JSON.stringify(options)}`, );
 
-// 		if (options && options.source === 'file') {
-// 			if (!(await this.fsDriver().exists(options.path))) throw new JoplinError(`File not found: ${options.path}`, 'fileNotFound');
-// 		}
+		if (options && options.source === 'file') {
+			if (!(await this.fsDriver().exists(options.path))) throw new Error(`File not found: ${options.path} fileNotFound`);
+		}
 
-// 		return tryAndRepeat(() => this.driver_.put(this.fullPath(path), content, options), this.requestRepeatCount());
-// 	}
+		return tryAndRepeat(() => this.driver_.put(this.fullPath(path), content, options), this.requestRepeatCount());
+	}
 
-// 	public async multiPut(items: MultiPutItem[], options: any = null) {
-// 		if (!this.driver().supportsMultiPut) throw new Error('Multi PUT not supported');
-// 		return tryAndRepeat(() => this.driver_.multiPut(items, options), this.requestRepeatCount());
-// 	}
+	public async multiPut(items: MultiPutItem[], options: any = null) {
+		if (!this.driver().supportsMultiPut) throw new Error('Multi PUT not supported');
+		return tryAndRepeat(() => this.driver_.multiPut(items, options), this.requestRepeatCount());
+	}
 
-// 	delete(path: string) {
-// 		logger.debug(`delete ${this.fullPath(path)}`);
-// 		return tryAndRepeat(() => this.driver_.delete(this.fullPath(path)), this.requestRepeatCount());
-// 	}
+	delete(path: string) {
+		logger.debug(`delete ${this.fullPath(path)}`);
+		return tryAndRepeat(() => this.driver_.delete(this.fullPath(path)), this.requestRepeatCount());
+	}
 
 // 	// Deprectated
 // 	move(oldPath: string, newPath: string) {
@@ -338,11 +321,11 @@ class FileApi {
 // 	}
 
 
-// 	delta(path: string, options: any = null) {
-// 		logger.debug(`delta ${this.fullPath(path)}`);
-// 		return tryAndRepeat(() => this.driver_.delta(this.fullPath(path), options), this.requestRepeatCount());
-// 	}
-// }
+	delta(path: string, options: any = null) {
+		logger.debug(`delta ${this.fullPath(path)}`);
+		return tryAndRepeat(() => this.driver_.delta(this.fullPath(path), options), this.requestRepeatCount());
+	}
+}
 
 // function basicDeltaContextFromOptions_(options: any) {
 // 	const output: any = {
@@ -497,6 +480,6 @@ class FileApi {
 // 		context: newContext,
 // 		items: output,
 // 	};
-}
+// }
 
 export default FileApi

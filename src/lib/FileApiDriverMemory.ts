@@ -1,6 +1,6 @@
 // import time from './time';
 import timeUtils from '../utils/timeUtils';
-const fs = require('fs-extra');
+import * as fs from 'fs-extra';
 // import { basicDelta, MultiPutItem } from './file-api';
 
 export default class FileApiDriverMemory {
