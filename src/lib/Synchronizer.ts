@@ -33,7 +33,7 @@ import syncInfoUtils from '../utils/syncInfoUtils';
 // const { Dirnames } = require('./services/synchronizer/utils/types');
 
 // const logger = Logger.create('Synchronizer');
-const logger = new Logger();
+import Logger from './Logger'
 
 interface RemoteItem {
 	id: string;
@@ -71,7 +71,7 @@ interface RemoteItem {
 
 import Database from "./Database";
 import FileApi from "./FileApi";
-import Logger from "./Logger";
+// import Logger from "./Logger";
 import LockHandler from "./LockHandler";
 import Setting from '../models/Setting'
 import TaskQueue from './TaskQueue';
@@ -95,6 +95,8 @@ export default class Synchronizer {
 	private migrationHandler_: MigrationHandler;
 	private syncTargetIsLocked_: boolean = false;
 
+
+
 	// Debug flags are used to test certain hard-to-test conditions
 	// such as cancelling in the middle of a loop.
 	public testingHooks_: string[] = [];
@@ -110,6 +112,7 @@ export default class Synchronizer {
 
 		this.appType_ = appType;
 		this.clientId_ = Setting.get('clientId');
+		this.logger_ = new Logger()
 
 		// this.onProgress_ = function() {};
 		// this.progressReport_ = {};
@@ -232,7 +235,7 @@ export default class Synchronizer {
 	// 	}
 
 	// 	if (Synchronizer.verboseMode) {
-	// 		logger.info(line.join(': '));
+	// 		this.logger().info(line.join(': '));
 	// 	} else {
 	// 		logger.debug(line.join(': '));
 	// 	}
@@ -252,7 +255,7 @@ export default class Synchronizer {
 	// }
 
 	// async logSyncSummary(report: any) {
-	// 	logger.info('Operations completed: ');
+	// 	this.logger().info('Operations completed: ');
 	// 	for (const n in report) {
 	// 		if (!report.hasOwnProperty(n)) continue;
 	// 		if (n == 'errors') continue;
@@ -261,20 +264,20 @@ export default class Synchronizer {
 	// 		if (n == 'state') continue;
 	// 		if (n == 'startTime') continue;
 	// 		if (n == 'completedTime') continue;
-	// 		logger.info(`${n}: ${report[n] ? report[n] : '-'}`);
+	// 		this.logger().info(`${n}: ${report[n] ? report[n] : '-'}`);
 	// 	}
 	// 	const folderCount = await Folder.count();
 	// 	const noteCount = await Note.count();
 	// 	const resourceCount = await Resource.count();
-	// 	logger.info(`Total folders: ${folderCount}`);
-	// 	logger.info(`Total notes: ${noteCount}`);
-	// 	logger.info(`Total resources: ${resourceCount}`);
+	// 	this.logger().info(`Total folders: ${folderCount}`);
+	// 	this.logger().info(`Total notes: ${noteCount}`);
+	// 	this.logger().info(`Total resources: ${resourceCount}`);
 
 	// 	if (Synchronizer.reportHasErrors(report)) {
-	// 		logger.warn('There was some errors:');
+	// 		this.logger().warn('There was some errors:');
 	// 		for (let i = 0; i < report.errors.length; i++) {
 	// 			const e = report.errors[i];
-	// 			logger.warn(e);
+	// 			this.logger().warn(e);
 	// 		}
 	// 	}
 	// }
@@ -286,7 +289,7 @@ export default class Synchronizer {
 		// retrieve the last few downloads.
 		// if (this.downloadQueue_) this.downloadQueue_.stop();
 
-		logger.log("Cancelling sync")
+		this.logger().log("Cancelling sync")
 
 		// this.logSyncOperation('cancelling', null, null, '');
 		this.cancelling_ = true;
@@ -311,8 +314,8 @@ export default class Synchronizer {
 
 	// 	for (const r of lastRequests) {
 	// 		const timestamp = time.unixMsToLocalHms(r.timestamp);
-	// 		logger.info(`Req ${timestamp}: ${r.request}`);
-	// 		logger.info(`Res ${timestamp}: ${r.response}`);
+	// 		this.logger().info(`Req ${timestamp}: ${r.request}`);
+	// 		this.logger().info(`Res ${timestamp}: ${r.response}`);
 	// 	}
 	// }
 
@@ -417,24 +420,24 @@ export default class Synchronizer {
 
 			try {
 				let remoteInfo = await syncInfoUtils.fetchSyncInfo(this.api());
-				logger.info(`Sync target remote info: ${remoteInfo}`);
+				this.logger().info(`Sync target remote info: ${remoteInfo}`);
 
 				if (!remoteInfo.version) {
-					logger.info('Sync target is new - setting it up...');
+					this.logger().info('Sync target is new - setting it up...');
 					await this.migrationHandler().upgrade(Setting.get('syncVersion'));
 					remoteInfo = await syncInfoUtils.fetchSyncInfo(this.api());
 				}
 
-				logger.info('Sync target is already setup - checking it...');
+				this.logger().info('Sync target is already setup - checking it...');
 
 				await this.migrationHandler().checkCanSync(remoteInfo);
 
 				let localInfo = syncInfoUtils.localSyncInfo()
 
-				logger.info(`Sync target local info: ${localInfo}`);
+				this.logger().info(`Sync target local info: ${localInfo}`);
 
 			} catch (error) {
-				logger.log(error)
+				this.logger().log(error)
 				// if (error.code === 'outdatedSyncTarget') {
 				// 	Setting.set('sync.upgradeState', Setting.SYNC_UPGRADE_STATE_SHOULD_DO);
 				// }
@@ -444,7 +447,7 @@ export default class Synchronizer {
 			syncLock = await this.lockHandler().acquireLock(this.appType_, this.clientId_);
 
 			this.lockHandler().startAutoLockRefresh(syncLock, (error: any) => {
-				logger.warn(`Could not refresh lock - cancelling sync. Error was: ${error}`);
+				this.logger().warn(`Could not refresh lock - cancelling sync. Error was: ${error}`);
 				this.syncTargetIsLocked_ = true;
 				this.cancel();
 			});
@@ -462,7 +465,7 @@ export default class Synchronizer {
 
 					const item = deletedItems[i];
 					const path = BaseItem.systemPath(item.item_id);
-					logger.log(`deleteRemote ${ JSON.stringify({id: item.item_id}) } local has been deleted`);
+					this.logger().log(`deleteRemote ${ JSON.stringify({id: item.item_id}) } local has been deleted`);
 					await this.apiCall('delete', path);
 
 					await BaseItem.remoteDeletedItem(syncTargetId, item.item_id);
@@ -550,7 +553,7 @@ export default class Synchronizer {
 								if (error.code === 'rejectedByTarget') {
 									// TO DO
 									// this.progressReport_.errors.push(error);
-									// logger.warn(`Rejected by target: ${path}: ${error.message}`);
+									// this.logger().warn(`Rejected by target: ${path}: ${error.message}`);
 									// completeItemProcessing(path);
 									continue;
 								} else {
@@ -616,7 +619,7 @@ export default class Synchronizer {
 
 			if (this.downloadQueue_) await this.downloadQueue_.stop();
 			this.downloadQueue_ = new TaskQueue('syncDownload');
-			this.downloadQueue_.logger_ = logger;
+			this.downloadQueue_.logger_ = this.logger();
 
 			if (syncSteps.indexOf('delta') >= 0) {
 				// At this point all the local items that have changed have been pushed to remote
@@ -642,7 +645,7 @@ export default class Synchronizer {
 						allItemIdsHandler: async () => {
 							return BaseItem.syncedItemIds(syncTargetId);
 						},
-						logger: logger,
+						logger: this.logger(),
 					});
 
 					const remotes: RemoteItem[] = listResult.items;
@@ -717,7 +720,7 @@ export default class Synchronizer {
 
 						if (action == 'createLocal' || action == 'updateLocal') {
 							if (content === null) {
-								logger.warn(`Remote has been deleted between now and the delta() call? In that case it will be handled during the next sync: ${path}`);
+								this.logger().warn(`Remote has been deleted between now and the delta() call? In that case it will be handled during the next sync: ${path}`);
 								continue;
 							}
 							// content = ItemClass.filter(content);
@@ -780,7 +783,7 @@ export default class Synchronizer {
 		this.syncTargetIsLocked_ = false;
 
 		if (this.cancelling()) {
-			logger.info('Synchronisation was cancelled.');
+			this.logger().info('Synchronisation was cancelled.');
 			this.cancelling_ = false;
 		}
 

@@ -45,14 +45,14 @@ const supportDir = `${testDir}/support`;
 const dataDir = `${testDir}/test data/${suiteName_}`;
 const profileDir = `${dataDir}/profile`;
 
-
-Setting.set('appId', 'net.naviji.buddytest-cli');
-Setting.set('appType', 'cli');
-Setting.set('tempDir', baseTempDir);
-Setting.set('cacheDir', baseTempDir);
-Setting.set('pluginDataDir', `${profileDir}/profile/plugin-data`);
-Setting.set('profileDir', profileDir);
-Setting.set('env', 'dev');
+// This needs the database to be initialized first
+Setting.setConstant('appId', 'net.naviji.buddytest-cli');
+Setting.setConstant('appType', 'cli');
+Setting.setConstant('tempDir', baseTempDir);
+Setting.setConstant('cacheDir', baseTempDir);
+Setting.setConstant('pluginDataDir', `${profileDir}/profile/plugin-data`);
+Setting.setConstant('profileDir', profileDir);
+Setting.setConstant('env', 'dev');
 
 
 fs.mkdirpSync(logDir);

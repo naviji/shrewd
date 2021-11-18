@@ -1,8 +1,13 @@
 import * as dayjs from "dayjs"
-import timers from "timers"
+var NanoTimer = require('nanotimer');
+// var NanoTimer = require('nanotimer');
+ 
+// import timers from "timers"
 // var customParseFormat = require('dayjs/plugin/customParseFormat')
 // import {customParseFormat} from 'dayjs/plugin/customParseFormat'
 // dayjs.extend(customParseFormat)
+
+const timers_ = {}
 
 
 export const unixMsFromDate = (dateString) => {
@@ -54,19 +59,29 @@ export const sleep = (seconds: number) => {
 }
 
 export const setTimeout = (fn, interval) => {
-    return timers.setTimeout(fn, interval);
+    const timer = new NanoTimer();
+    const id = Math.floor(Math.random()*100000000);
+    timer.setTimeout(fn, '', `${interval}m`);
+    timers_[id] = timer
+    return id
 };
 
 export const setInterval = (fn, interval) => {
-    return timers.setInterval(fn, interval);
+    const timer = new NanoTimer();
+    const id = Math.floor(Math.random()*100000000);
+    timer.setInterval(fn, '', `${interval}m`);
+    timers_[id] = timer
+    return id
 };
 
 export const clearTimeout = (id) => {
-    return timers.clearTimeout(id);
+    timers_[id].clearTimeout(id);
+    delete timers_[id]
 };
 
 export const clearInterval = (id) => {
-    return timers.clearInterval(id);
+    timers_[id].clearInterval(id);
+    delete timers_[id]
 };
 
 export const unserializeDate = (value) => {
