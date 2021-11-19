@@ -1,7 +1,6 @@
-import BaseModel from "./BaseModel"
-
-class Transaction extends BaseModel {
-    static tableName = () => "transaction"
+import BaseItem from "./BaseItem"
+class Transaction extends BaseItem {
+    static tableName = () => "Transaction"
 
     static fieldNames() {
         return ["id", "date", "payee", "categoryId", "accountId", "memo", "outflow", "inflow", "cleared"]

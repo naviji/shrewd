@@ -28,8 +28,9 @@ export interface ItemsThatNeedDecryptionResult {
 
 export interface ItemThatNeedSync {
 	id: string;
-	syncTime: number;
-	updatedTime: number;
+	type_: ModelType
+	syncedAt: number;
+	updatedAt: number;
 }
 
 export interface ItemsThatNeedSyncResult {
@@ -155,6 +156,14 @@ export default class BaseItem extends BaseModel {
 			}
 		}
     }
+
+	static getTypeFromClass(name: string) {
+		for (let i = 0; i < BaseItem.syncItemDefinitions_.length; i++) {
+			if (BaseItem.syncItemDefinitions_[i].className == name) {
+				return BaseItem.syncItemDefinitions_[i].type;
+			}
+		}
+	}
 
 	static itemClass(item: any): any {
 		if (!item) throw new Error('Item cannot be null');
@@ -451,20 +460,25 @@ export default class BaseItem extends BaseModel {
 	// 	throw new Error('Unreachable');
 	// }
 
-	public static neverSyncedItem(syncTarget, limit) {
-		const result = this.db().getAll().filter(x => {
-			const { syncedTargets = [] } = x;
+	public static neverSyncedItems(syncTarget, limit) {		
+		const result = this.getAll().filter(x => {
+			const syncedTargets = SyncedItem.getSyncedTargets(x.id)
 			return !syncedTargets.includes(syncTarget)
-		})
+		}).map(x => Object.assign(x, {type_ : this.getTypeFromClass(this.tableName())}))
 		result.length  = result.length > limit ? limit: result.length
 		return result
 	}
 
 	public static changedItems(syncTarget, limit) {
-		return this.db().getAll().filter(x => {
-			const { syncedTargets = [], syncTimes = {}, updated } = x
-			return syncedTargets.includes(syncTarget) && syncTimes[syncTarget] < updated
-		}).map(x => Object.assign({}, x, { syncTime: x.syncTimes[syncTarget]}))
+		const result = this.getAll().filter(x => {
+			const syncedTargets = SyncedItem.getSyncedTargets(x.id)
+			const lastSyncedAt = SyncedItem.getLastSyncedTime(syncTarget, x.id) 
+			return syncedTargets.includes(syncTarget) && lastSyncedAt < x.updatedAt
+		}).map(x => Object.assign(x, {type_ : this.getTypeFromClass(this.tableName())}))
+
+		result.length  = result.length > limit ? limit: result.length
+		return result
+		// .map(x => Object.assign({}, x, { syncTime: x.syncTimes[syncTarget]}))
 	}
 
 	// public static async itemHasBeenSynced(itemId: string): Promise<boolean> {
@@ -480,9 +494,9 @@ export default class BaseItem extends BaseModel {
 			const className = classNames[i];
 			const ItemClass = this.getClass(className);
 			// TODO: Sort by descending updated time
-			const neverSyncedItems = await ItemClass.neverSyncedItem(syncTarget, limit);
+			const neverSyncedItems = await ItemClass.neverSyncedItems(syncTarget, limit);
 			const newLimit = limit - neverSyncedItems.length;
-			const changedItems = newLimit > 0 ? await ItemClass.changedItems(syncTarget, newLimit) : []
+			const changedItems = await ItemClass.changedItems(syncTarget, newLimit)
 
 			const neverSyncedItemIds = neverSyncedItems.map((it: any) => it.id);
 			const items = neverSyncedItems.concat(changedItems);
@@ -512,16 +526,14 @@ export default class BaseItem extends BaseModel {
 		return ItemClass.serialize(item, shownKeys);
 	}
 
-	static async saveSyncTime(syncTarget: number, item: any, syncTime: number) {
-		return SyncedItem.save({syncTarget, type: item.type_, itemId: item.id, syncTime})
+	static async saveSyncTime(syncTarget: number, item: any, syncedAt: number) {
+		return SyncedItem.save({syncTarget, type_: item.type_, itemId: item.id, syncedAt})
 	}
 
 	// Returns the IDs of the items that have been synced at least once
 	static async syncedItemIds(syncTarget: number) {
 		if (!syncTarget) throw new Error('No syncTarget specified');
-		return SyncedItem.getAll()
-						 .filter(x => x.itemId && x.syncTarget === syncTarget)
-						 .map(x => x.itemId)
+		return SyncedItem.getByAttrWithValue('syncTarget', syncTarget).map(x => x.itemId)
 	}
 	
 	static pathToId(path: string) {
@@ -708,7 +720,7 @@ export default class BaseItem extends BaseModel {
 	// 	await ItemClass.save({
 	// 		id: item.id,
 	// 		is_shared: isShared ? 1 : 0,
-	// 		updated_time: Date.now(),
+	// 		updatedAt: Date.now(),
 	// 	}, { autoTimestamp: false });
 
 	// 	// The timestamps have not been changed but still need the note to be synced

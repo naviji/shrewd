@@ -2,7 +2,7 @@ import Setting from "../models/Setting";
 import FileApi from "../lib/FileApi";
 
 const localSyncInfo = () => {
-    return JSON.parse(Setting.get('localSyncInfo'));
+	return new SyncInfo(Setting.get('localSyncInfo'))
 }
 
 const saveLocalSyncInfo = (syncInfo) => {
@@ -36,9 +36,9 @@ export class SyncInfo {
 	// private ppk_: SyncInfoValuePublicPrivateKeyPair;
 
 	public constructor(serialized: string = null) {
-		// this.e2ee_ = { value: false, updatedTime: 0 };
-		// this.activeMasterKeyId_ = { value: '', updatedTime: 0 };
-		// this.ppk_ = { value: null, updatedTime: 0 };
+		// this.e2ee_ = { value: false, updatedAt: 0 };
+		// this.activeMasterKeyId_ = { value: '', updatedAt: 0 };
+		// this.ppk_ = { value: null, updatedAt: 0 };
 
 		if (serialized) this.load(serialized);
 	}
@@ -60,10 +60,10 @@ export class SyncInfo {
 	public load(serialized: string) {
 		const s: any = JSON.parse(serialized);
 		this.version = 'version' in s ? s.version : 0;
-		// this.e2ee_ = 'e2ee' in s ? s.e2ee : { value: false, updatedTime: 0 };
-		// this.activeMasterKeyId_ = 'activeMasterKeyId' in s ? s.activeMasterKeyId : { value: '', updatedTime: 0 };
+		// this.e2ee_ = 'e2ee' in s ? s.e2ee : { value: false, updatedAt: 0 };
+		// this.activeMasterKeyId_ = 'activeMasterKeyId' in s ? s.activeMasterKeyId : { value: '', updatedAt: 0 };
 		// this.masterKeys_ = 'masterKeys' in s ? s.masterKeys : [];
-		// this.ppk_ = 'ppk' in s ? s.ppk : { value: null, updatedTime: 0 };
+		// this.ppk_ = 'ppk' in s ? s.ppk : { value: null, updatedAt: 0 };
 	}
 
 	// public setWithTimestamp(fromSyncInfo: SyncInfo, propName: string) {

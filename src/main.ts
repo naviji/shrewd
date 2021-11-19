@@ -1,5 +1,5 @@
 import BudgetApplication from './classes/BudgetApplication'
-import { unixMsFromDate, todayInUnixMs } from "./utils/timeUtils"
+import { unixMsFromDate, timeInUnixMs } from "./utils/timeUtils"
 
 
 const app = new BudgetApplication()
@@ -38,3 +38,22 @@ let giftFromRaju = app.addTransaction({
 })
 
 app.render()
+
+
+/// DEBUGGING Synchronization
+
+// import Account from './models/Account';
+// import { setupDatabaseAndSynchronizer, switchClient, afterAllCleanUp, synchronizerStart } from './tests/testUtils'
+
+// async function test() {
+//     await setupDatabaseAndSynchronizer(1);
+//     await setupDatabaseAndSynchronizer(2);
+//     await switchClient(1);
+
+//     const account = await Account.save({type: Account.TYPE_SAVINGS, name: "Savings", amount: 1000 })
+
+//     await synchronizerStart();
+
+// }
+
+// test()

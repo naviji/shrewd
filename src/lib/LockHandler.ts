@@ -7,6 +7,7 @@
 import { Dirnames } from "./types";
 import { filename, fileExtension } from "./FsDriverBase";
 import timeUtils from "../utils/timeUtils";
+import Logger from "./Logger";
 
 // export enum LockType {
 // 	None = '',
@@ -16,7 +17,7 @@ import timeUtils from "../utils/timeUtils";
 export interface Lock {
 	clientType: string;
 	clientId: string;
-	updatedTime?: number;
+	updatedAt?: number;
 }
 
 export interface AcquireLockOptions {
@@ -101,14 +102,15 @@ export default class LockHandler {
 		const p = filename(file.path).split('_');
 
 		return {
-			clientType: p[1],
-			clientId: p[2],
-			updatedTime: file.updated_time,
+			clientType: p[0],
+			clientId: p[1],
+			updatedAt: file.updatedAt,
 		};
 	}
 
 	async locks(): Promise<Lock[]> {
 		const result = await this.api_.list(Dirnames.Locks);
+		console.log(`result in LockHandler: locks: ${JSON.stringify(result)}`)
 		if (result.hasMore) throw new Error('hasMore not handled'); // Shouldn't happen anyway
 
 		const output = [];
@@ -123,7 +125,7 @@ export default class LockHandler {
 	}
 
 	private lockIsActive(lock: Lock, currentDate: Date): boolean {
-		return currentDate.getTime() - lock.updatedTime < this.lockTtl;
+		return currentDate.getTime() - lock.updatedAt < this.lockTtl;
 	}
 
 	async hasActiveLock(clientType: string = null, clientId: string = null) {
@@ -141,10 +143,10 @@ export default class LockHandler {
 			.slice()
 			.filter((lock: Lock) => this.lockIsActive(lock, currentDate))
 			.sort((a: Lock, b: Lock) => {
-				if (a.updatedTime === b.updatedTime) {
+				if (a.updatedAt === b.updatedAt) {
 					return a.clientId < b.clientId ? -1 : +1;
 				}
-				return a.updatedTime < b.updatedTime ? -1 : +1;
+				return a.updatedAt < b.updatedAt ? -1 : +1;
 			});
 
 		if (!activeLocks.length) return null;
@@ -180,7 +182,7 @@ export default class LockHandler {
 	// 			if (syncLock) {
 	// 				// Normally the second pass should happen immediately afterwards, but if for some reason
 	// 				// (slow network, etc.) it took more than 10 seconds then refresh the lock.
-	// 				if (isFirstPass || Date.now() - syncLock.updatedTime > 1000 * 10) {
+	// 				if (isFirstPass || Date.now() - syncLock.updatedAt > 1000 * 10) {
 	// 					await this.saveLock(syncLock);
 	// 				}
 	// 				return syncLock;
@@ -253,7 +255,8 @@ export default class LockHandler {
 				// }
 
 				if (activeExclusiveLock) {
-					if (activeExclusiveLock.clientId === clientId) {
+					// We use == here so that '1' and 1 are considered equal
+					if (activeExclusiveLock.clientId == clientId) { 
 						// Save it again to refresh the timestamp
 						await this.saveLock(activeExclusiveLock);
 						return activeExclusiveLock;

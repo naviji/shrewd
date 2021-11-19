@@ -1,8 +1,27 @@
-import BaseModel from "./BaseModel"
+import BaseItem from "./BaseItem"
 import Transaction from "./Transaction"
 
-class Account extends BaseModel {
-    static tableName = () => "account"
+
+export enum AccountType {
+	Savings = 1,
+	Current = 2,
+}
+
+// class BaseModel {
+
+//     public static TYPE_ACCOUNT = ModelType.Account;
+// 	public static TYPE_CATEGORY = ModelType.Category;
+// 	public static TYPE_CATEGORY_GROUP = ModelType.CategoryGroup;
+// 	public static TYPE_TARGET = ModelType.Target;
+// 	public static TYPE_TRANSACTION = ModelType.Transaction;
+// 	public static TYPE_TRANSFER = ModelType.Transfer;
+
+
+class Account extends BaseItem {
+    static tableName = () => 'Account'
+
+    public static TYPE_SAVINGS = AccountType.Savings
+    public static TYPE_CURRENT = AccountType.Savings
 
     static fieldNames() {
         return ["id", "type", "name", "amount"]

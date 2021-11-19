@@ -1,8 +1,8 @@
-import BaseModel from "./BaseModel"
+import BaseItem from "./BaseItem"
 import Category from "./Category"
 
-class CategoryGroup extends BaseModel {
-    static tableName = () => "categoryGroup"
+class CategoryGroup extends BaseItem {
+    static tableName = () => "CategoryGroup"
 
     static fieldNames() {
         return ["id", "name"]

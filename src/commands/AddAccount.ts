@@ -2,7 +2,7 @@ import Account from '../models/Account'
 import AddCommand from './AddCommand'
 import Transfer from '../models/Transfer'
 import AddTransfer from './AddTransfer'
-import { unixMsFromDate, todayInUnixMs, printDateOfToday } from '../utils/timeUtils'
+import { unixMsFromDate, timeInUnixMs, printDateOfToday } from '../utils/timeUtils'
 import AddTransaction from './AddTransaction'
 
 class AddAccount extends AddCommand {
@@ -21,7 +21,7 @@ class AddAccount extends AddCommand {
         const { date } = o
         const createdAccount = super.execute(o)
         const createdTransaction = this.addTransactionCmd.execute({
-            date: todayInUnixMs(),
+            date: timeInUnixMs(),
             payee: "Starting Balance",
             categoryId: null,
             accountId: createdAccount.id,

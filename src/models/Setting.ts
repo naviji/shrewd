@@ -2,7 +2,7 @@ import BaseModel from "./BaseModel"
 // import Transaction from "./Transaction"
 
 class Setting extends BaseModel {
-    static tableName = () => "setting"
+    static tableName = () => "Setting"
 
     private static constants_ = {
             env: 'Dev',
@@ -18,7 +18,7 @@ class Setting extends BaseModel {
             cacheDir: '',
             pluginDir: '',
             flagOpenDevTools: false,
-            syncVersion: 3,
+            syncVersion: 1,
             startupDevPlugins: [],
         };
 
@@ -28,7 +28,7 @@ class Setting extends BaseModel {
         if (prev) {
             Setting.save(Object.assign({}, prev, o))
         }
-        Setting.save(o)
+        return Setting.save(o)
     }
 
     static setConstant = (key: string, value: string) => {
@@ -38,7 +38,7 @@ class Setting extends BaseModel {
     static get = (key: string) => {
         if (this.constants_[key]) return this.constants_[key]
         const result = Setting.getByAttrWithValue('key', key);
-        if (result.length) return result[0]
+        if (result.length) return result[0].value
         return null
     }
 

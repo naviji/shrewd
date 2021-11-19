@@ -16,7 +16,7 @@ const logger = new Logger()
 export type ApiCallFunction = (fnName: string, ...args: any[])=> Promise<any>;
 
 interface BatchItem extends MultiPutItem {
-	localItemUpdatedTime: number;
+	localItemupdatedAt: number;
 }
 
 export default class ItemUploader {
@@ -24,7 +24,7 @@ export default class ItemUploader {
 	private api_: FileApi;
 	private apiCall_: ApiCallFunction;
 	private preUploadedItems_: Record<string, any> = {};
-	private preUploadedItemUpdatedTimes_: Record<string, number> = {};
+	private preUploadedItemupdatedAts_: Record<string, number> = {};
 	private maxBatchSize_ = 1 * 1024 * 1024; // 1MB;
 
 	public constructor(api: FileApi, apiCall: ApiCallFunction) {
@@ -41,21 +41,6 @@ export default class ItemUploader {
 	}
 
 	public async serializeAndUploadItem(ItemClass: any, path: string, local: BaseItemEntity) {
-		const preUploadItem = this.preUploadedItems_[path];
-		if (preUploadItem) {
-			if (this.preUploadedItemUpdatedTimes_[path] !== local.updated_time) {
-				// Normally this should be rare as it can only happen if the
-				// item has been changed between the moment it was pre-uploaded
-				// and the moment where it's being processed by the
-				// synchronizer. It could happen for example for a note being
-				// edited just at the same time. In that case, we proceed with
-				// the regular upload.
-				logger.log(`Pre-uploaded item updated_time has changed. It is going to be re-uploaded again: ${path} (From ${this.preUploadedItemUpdatedTimes_[path]} to ${local.updated_time})`);
-			} else {
-				if (preUploadItem.error) throw new Error(preUploadItem.error.message ? preUploadItem.error.message : 'Unknown pre-upload error');
-				return;
-			}
-		}
 		const content = await ItemClass.serializeForSync(local);
 		await this.apiCall_('put', path, content);
 	}
@@ -71,7 +56,7 @@ export default class ItemUploader {
 			itemsToUpload.push({
 				name: BaseItem.systemPath(local),
 				body: await ItemClass.serializeForSync(local),
-				localItemUpdatedTime: local.updated_time,
+				localItemupdatedAt: local.updatedAt,
 			});
 		}
 
@@ -80,7 +65,7 @@ export default class ItemUploader {
 
 		const uploadBatch = async (batch: BatchItem[]) => {
 			for (const batchItem of batch) {
-				this.preUploadedItemUpdatedTimes_[batchItem.name] = batchItem.localItemUpdatedTime;
+				this.preUploadedItemupdatedAts_[batchItem.name] = batchItem.localItemupdatedAt;
 			}
 
 			const response = await this.apiCall_('multiPut', batch);

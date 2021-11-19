@@ -4,7 +4,7 @@
   "description": "Budget freely forever",
   "main": "index.js",
   "scripts": {
-    "start": "npx tsc; node ./built/main.js",
+    "start": "node ./built/main.js",
     "test": "jest"
   },
   "author": "",

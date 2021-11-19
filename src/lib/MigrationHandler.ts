@@ -115,7 +115,6 @@ export default class MigrationHandler extends BaseService {
 
 		this.logger().info('MigrationHandler: Acquiring exclusive lock');
 		const exclusiveLock = await this.lockHandler_.acquireLock(this.clientType_, this.clientId_, {
-			clearExistingSyncLocksFromTheSameClient: true,
 			timeoutMs: 1000 * 30,
 		});
 

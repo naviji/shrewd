@@ -5,7 +5,7 @@ export enum Dirnames {
 
 export interface BaseItemEntity {
     id?: string;
-    updated_time?: number;
-    created_time?: number;
+    updatedAt?: number;
+    createdAt?: number;
   }
   

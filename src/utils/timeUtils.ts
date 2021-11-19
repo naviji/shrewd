@@ -22,7 +22,7 @@ export const dateFromUnixMs = (value) => {
     return dayjs(unixMs).format('DD/MM/YYYY')
 }
 
-export const todayInUnixMs = () => {
+export const timeInUnixMs = () => {
     return dayjs().valueOf()
 }
 
@@ -92,7 +92,7 @@ export const serializeDate = (value) => {
     return `${dayjs(Number(value)).format('YYYY-MM-DDTHH:mm:ss.SSS')}Z`
 }
 
-// if (['created_time', 'updated_time', 'sync_time', 'user_updated_time', 'user_created_time'].indexOf(propName) >= 0) {
+// if (['createdAt', 'updatedAt', 'sync_time', 'user_updatedAt', 'user_createdAt'].indexOf(propName) >= 0) {
 //     if (!propValue) return '';
 //     propValue = `${moment.unix(propValue / 1000).utc().format('YYYY-MM-DDTHH:mm:ss.SSS')}Z`;
 // } 
@@ -100,7 +100,7 @@ export const serializeDate = (value) => {
 export default {
     unixMsFromDate,
     dateFromUnixMs,
-    todayInUnixMs,
+    timeInUnixMs,
     endOfMonth,
     startOfMonth,
     subtractMonth,

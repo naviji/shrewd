@@ -16,14 +16,18 @@ import CategoryGroup from "../models/CategoryGroup"
 import Target from "../models/Target"
 import Transaction from "../models/Transaction"
 import Transfer from "../models/Transfer"
+import SyncTargetRegistry from "../lib/SyncTargetRegistry"
+import SyncTargetNone from "../lib/SyncTargetNone"
+import { Dirnames } from "../lib/types"
 
 const logger = new Logger()
 const databases_ = new Map<number, Database>()
-const fileApi_ = new FileApi('/root', new FileApiDriverMemory());
+const fileApis_: Record<number, FileApi>  = {}
+// const fileApi_ = new FileApi('/root', new FileApiDriverMemory());
 const synchronizers_ = new Map<number, any>()
 const settings = new Map<string, string>()
 
-let currentClient_ = 1;
+// let currentClient_ = 1;
 
 BaseItem.loadClass('Account', Account);
 BaseItem.loadClass('Category', Category);
@@ -61,37 +65,89 @@ fs.mkdirpSync(dataDir);
 fs.mkdirpSync(profileDir);
 
 
+SyncTargetRegistry.addClass(SyncTargetNone);
+SyncTargetRegistry.addClass(SyncTargetMemory);
+// SyncTargetRegistry.addClass(SyncTargetFilesystem);
+
+let syncTargetName_ = '';
+let syncTargetId_: number = null;
+let sleepTime = 0;
+let isNetworkSyncTarget_ = false;
+
+setSyncTargetName('memory');
+// setSyncTargetName('filesystem');
+
+
+
 export const setupDatabaseAndSynchronizer = async (id) => {
     // console.log("Calling setup", n)
     BaseService.logger_ = logger
     databases_[id] = new Database(logger)
     BaseModel.setDb(databases_[id])
-
+	Setting.set('clientId', id)
+	console.log(`currClientId = ${Setting.get('clientId')}`)
     if (!synchronizers_[id]) {
 		const syncTarget = new SyncTargetMemory(databases_[id]);
-        
-		syncTarget.setFileApi(fileApi_);
+        await initFileApi()
+		syncTarget.setFileApi(fileApi());
 		syncTarget.setLogger(logger);
 		synchronizers_[id] = await syncTarget.synchronizer();
 	}
 
-    fileApi_.initialize();
-    fileApi_.clearRoot();
+    fileApi().initialize();
+    fileApi().clearRoot();
 }
 
-const fileApi = () => fileApi_
+async function initFileApi() {
+	if (fileApis_[syncTargetId_]) return;
+
+	let fileApi = null;
+	if (syncTargetId_ == SyncTargetRegistry.nameToId('memory')) {
+		fileApi = new FileApi('/root', new FileApiDriverMemory());
+	} 
+
+	fileApi.setLogger(logger);
+	fileApi.setSyncTargetId(syncTargetId_);
+	fileApi.setTempDirName(Dirnames.Temp);
+	fileApi.requestRepeatCount_ = isNetworkSyncTarget_ ? 1 : 0;
+
+	fileApis_[syncTargetId_] = fileApi;
+}
+
+function fileApi() {
+	return fileApis_[syncTargetId_];
+}
 
 const synchronizer = (id: number = null) => {
-	if (id === null) id = currentClient_;
+	if (id === null) id = Setting.get('clientId');
 	return synchronizers_[id];
+}
+
+function syncTargetName() {
+	return syncTargetName_;
+}
+
+// function currentClientId() {
+// 	return currentClient_;
+// }
+
+function setSyncTargetName(name: string) {
+	if (name === syncTargetName_) return syncTargetName_;
+	const previousName = syncTargetName_;
+	syncTargetName_ = name;
+	syncTargetId_ = SyncTargetRegistry.nameToId(syncTargetName_);
+	sleepTime = 100;
+	isNetworkSyncTarget_ = ['nextcloud', 'dropbox', 'onedrive', 'amazon_s3', 'joplinServer'].includes(syncTargetName_);
+	return previousName;
 }
 
 export const switchClient = async (id) => {
     // console.log("Calling switch", n)
 	if (!databases_[id]) throw new Error(`Call setupDatabaseAndSynchronizer(${id}) first!!`);
-    currentClient_ = id;
-	await timeUtils.msleep(10); // Always leave a little time so that updated_time properties don't overlap
+    // currentClient_ = id;
+	await timeUtils.msleep(10); // Always leave a little time so that updatedAt properties don't overlap
 	BaseModel.setDb(databases_[id]);
+	Setting.set('clientId', id)
 }
 
 
@@ -106,7 +162,7 @@ export async function afterAllCleanUp() {
 }
 
 export async function synchronizerStart(id = null, extraOptions = {}) {
-    if (id === null) id = currentClient_;
+    if (id === null) id = Setting.get('clientId');
     const context = Setting.get('context') ? JSON.parse(Setting.get('context')) : {};
     const options = Object.assign({ context : context, throwOnError : true }, extraOptions);
 

@@ -1,6 +1,6 @@
 
 import Logger from "./Logger"
-import { todayInUnixMs } from "../utils/timeUtils"
+import { timeInUnixMs } from "../utils/timeUtils"
 
 
 let globalCounter = 0
@@ -25,10 +25,10 @@ class Database {
         if (!this[tableName]) this[tableName] = []
         const _createMockObjectDefaults = () => {
             const id = Math.floor(Math.random()*10000000)
-            const created =  todayInUnixMs()
-            const updated =  todayInUnixMs()
-            const index = globalCounter++
-            return {id, created, updated, index}
+            const createdAt =  timeInUnixMs()
+            const updatedAt =  timeInUnixMs()
+            const index = globalCounter++ // TODO: Remove
+            return {id, createdAt, updatedAt, index}
         }
 
         const { id } = o
@@ -42,12 +42,14 @@ class Database {
                 // create a new object with exactly this id
 
                 //TODO place object in exactly same index
-                databaseObj = Object.assign({}, o, {updated : todayInUnixMs()})
+                databaseObj = Object.assign({}, o, {
+                    updatedAt : timeInUnixMs(),
+                    createdAt : timeInUnixMs()})
                 this[tableName].push(databaseObj)
             }
             else {
                 // updating existing object with this id
-                databaseObj = Object.assign(found,  o, {updated : todayInUnixMs()})
+                databaseObj = Object.assign(found,  o, {updated : timeInUnixMs()})
             }
         } else {
             // this.logger().debug(`Creating ${tableName}`, o)

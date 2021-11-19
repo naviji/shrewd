@@ -1,8 +1,8 @@
-import BaseModel from "./BaseModel"
+import BaseItem from "./BaseItem"
 import Calendar from "../lib/Calendar"
 
-class Transfer extends BaseModel {
-    static tableName = () => "transfer"
+class Transfer extends BaseItem {
+    static tableName = () => "Transfer"
 
     static fieldNames() {
         return ["id", "categoryId", "amount", "date"]

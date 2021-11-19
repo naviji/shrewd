@@ -1,4 +1,5 @@
 // const BaseSyncTarget = require('./BaseSyncTarget').default;
+import Setting from "../models/Setting";
 import BaseSyncTarget from "./BaseSyncTarget";
 import FileApi from "./FileApi";
 import FileApiDriverMemory from "./FileApiDriverMemory";
@@ -33,7 +34,7 @@ class SyncTargetMemory extends BaseSyncTarget {
 	}
 
 	async initSynchronizer() {
-		return new Synchronizer(this.db(), await this.fileApi(), 'test');
+		return new Synchronizer(this.db(), await this.fileApi(), Setting.get('appType'));
 	}
 }
 

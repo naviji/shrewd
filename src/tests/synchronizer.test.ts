@@ -16,11 +16,14 @@ describe('Synchronizer should', function() {
 
 
   it('create remote items', async () => {
-    expect(1).toBe(1);
-    // const account = Account.save({type: "savings", name: "Savings", amount: 1000 })
+    
+    const account = await Account.save({type: Account.TYPE_SAVINGS, name: "Savings", amount: 1000 })
     // const accounts = Account.getAll()
 
-    // await synchronizerStart();
+    await synchronizerStart();
+    
+    // const remoteAccounts = 
+    expect(1).toBe(1);
   })
 
 })

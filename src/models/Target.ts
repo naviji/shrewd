@@ -1,5 +1,5 @@
-import BaseModel from "./BaseModel"
-class Target extends BaseModel {
+import BaseItem from "./BaseItem"
+class Target extends BaseItem {
     static tableName = () => "Target"
 
     static getByCategoryId = (categoryId)=>{

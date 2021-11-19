@@ -44,13 +44,13 @@ interface RemoteItem {
 	// This the time when the file was created on the server. It is used for
 	// example for the locking mechanim or any file that's not an actual Joplin
 	// item.
-	updated_time?: number;
+	updatedAt?: number;
 
-	// This is the time that corresponds to the actual Joplin item updated_time
-	// value. A note is always uploaded with a delay so the server updated_time
+	// This is the time that corresponds to the actual Joplin item updatedAt
+	// value. A note is always uploaded with a delay so the server updatedAt
 	// value will always be ahead. However for synchronising we need to know the
-	// exact Joplin item updated_time value.
-	app_updated_time?: number;
+	// exact Joplin item updatedAt value.
+	app_updatedAt?: number;
 }
 
 // function isCannotSyncError(error: any): boolean {
@@ -399,12 +399,12 @@ export default class Synchronizer {
 		// const masterKeysBefore = await MasterKey.count();
 		// let hasAutoEnabledEncryption = false;
 
-		// TODO: Rename todayInUnixMs to currTimeInUnixMs()
-		const synchronizationId = timeUtils.todayInUnixMs() // TODO: change to etags?
+		// TODO: Rename timeInUnixMs to currTimeInUnixMs()
+		const synchronizationId = timeUtils.timeInUnixMs() // TODO: change to etags?
 
 		const outputContext = Object.assign({}, lastContext);
 
-		this.progressReport_.startTime = timeUtils.todayInUnixMs();
+		this.progressReport_.startTime = timeUtils.timeInUnixMs();
 
         this.logger().info(`Starting synchronisation to target ${syncTargetId}`)
 
@@ -421,6 +421,7 @@ export default class Synchronizer {
 			try {
 				let remoteInfo = await syncInfoUtils.fetchSyncInfo(this.api());
 				this.logger().info(`Sync target remote info: ${remoteInfo}`);
+				this.logger().info(`Setting.get('syncVersion') = ${Setting.get('syncVersion')}`)
 
 				if (!remoteInfo.version) {
 					this.logger().info('Sync target is new - setting it up...');
@@ -434,7 +435,7 @@ export default class Synchronizer {
 
 				let localInfo = syncInfoUtils.localSyncInfo()
 
-				this.logger().info(`Sync target local info: ${localInfo}`);
+				this.logger().info(`Sync target local info: ${JSON.stringify(localInfo)}`);
 
 			} catch (error) {
 				this.logger().log(error)
@@ -492,7 +493,7 @@ export default class Synchronizer {
 					const result = await BaseItem.itemsThatNeedSync(syncTargetId);
 					const locals = result.items;
 
-					await itemUploader.preUploadItems(result.items.filter((it: any) => result.neverSyncedItemIds.includes(it.id)));
+
 
 					for (let i = 0; i < locals.length; i++) {
 						if (this.cancelling()) break;
@@ -507,8 +508,8 @@ export default class Synchronizer {
 						// - It can also happen if the item is directly modified in the sync target, and set with an update_time in the future. In that case,
 						//   the local sync_time will be updated to Date.now() but on the next loop it will see that the remote item still has a date ahead
 						//   and will see a conflict. There's currently no automatic fix for this - the remote item on the sync target must be fixed manually
-						//   (by setting an updated_time less than current time).
-						if (donePaths.indexOf(path) >= 0) throw new Error(`Processing a path that has already been done: %s. sync_time was not updated? Remote item has an updated_time in the future?', path), 'processingPathTwice`);
+						//   (by setting an updatedAt less than current time).
+						if (donePaths.indexOf(path) >= 0) throw new Error(`Processing a path that has already been done: %s. sync_time was not updated? Remote item has an updatedAt in the future?', path), 'processingPathTwice`);
 
 						const remote: RemoteItem = result.neverSyncedItemIds.includes(local.id) ? null : await this.apiCall('stat', path);
 						let action = null;
@@ -523,20 +524,21 @@ export default class Synchronizer {
 						// };
 
 						if (!remote) {
-							if (!local.syncTime) {
+							if (!local.syncedAt) {
 								action = 'createRemote';
 								reason = 'remote does not exist, and local is new and has never been synced';
 							} else {
-								// Note or item was modified after having been deleted remotely
-								// "itemConflict" is for all the items except the notes, which are dealt with in a special way
-								action = 'deleteLocal';
+								// Item was modified after having been deleted remotely
+								// Conflict items are not created; 
+								// No action in UPLOAD step; but item will be delted in DELTA step
+								action = 'noop';
 								reason = 'remote has been deleted, but local has changes';
 							}
 						} else {
-							// Note: in order to know the real updated_time value, we need to load the content. In theory we could
-							// rely on the file timestamp (in remote.updated_time) but in practice it's not accurate enough and
+							// Note: in order to know the real updatedAt value, we need to load the content. In theory we could
+							// rely on the file timestamp (in remote.updatedAt) but in practice it's not accurate enough and
 							// can lead to conflicts (for example when the file timestamp is slightly ahead of it's real
-							// updated_time). updated_time is set and managed by clients so it's always accurate.
+							// updatedAt). updatedAt is set and managed by clients so it's always accurate.
 							// Same situation below for updateLocal.
 							//
 							// This is a bit inefficient because if the resulting action is "updateRemote" we don't need the whole
@@ -563,11 +565,11 @@ export default class Synchronizer {
 							if (!remoteContent) throw new Error(`Got metadata for path but could not fetch content: ${path}`);
 							remoteContent = await BaseItem.unserialize(remoteContent);
 
-							if (remoteContent.updatedTime > local.syncTime) {
+							if (remoteContent.updatedAt > local.syncedAt) {
 								// Since, in this loop, we are only dealing with items that require sync, if the
 								// remote has been modified after the sync time, it means both items have been
 								// modified and so there's a conflict.
-								if (remoteContent.updatedTime > local.updatedTime) {
+								if (remoteContent.updatedAt > local.updatedAt) {
 									action = 'updateLocal'
 									reason = 'both remote and local have changes with remote having the latest update';
 								} else {
@@ -596,11 +598,8 @@ export default class Synchronizer {
 							}
 
 							if (canSync) {
-								await ItemClass.saveSyncTime(syncTargetId, local, local.updatedTime);
+								await ItemClass.saveSyncTime(syncTargetId, local, local.updatedAt);
 							}
-						} else if (action == 'deleteLocal') {
-							// Item got changed after deleting in remote; Delete locally as well;
-							await ItemClass.delete(local.id);
 						}
 
 						completeItemProcessing(path);
@@ -648,6 +647,7 @@ export default class Synchronizer {
 						logger: this.logger(),
 					});
 
+					// TODO: DEBUG: Check why this is getting undefined.md
 					const remotes: RemoteItem[] = listResult.items;
 
 					const remoteIds = remotes.map(r => BaseItem.pathToId(r.path));
@@ -706,7 +706,7 @@ export default class Synchronizer {
 								} else {
 									// TODO: Use streams to only load part of the content
 									content = await loadContent();
-									if (content && content.updated_time > local.updated_time) {
+									if (content && content.updatedAt > local.updatedAt) {
 										action = 'updateLocal';
 										reason = 'remote is more recent than local';
 									}
@@ -725,13 +725,13 @@ export default class Synchronizer {
 							}
 							// content = ItemClass.filter(content);
 
-							// 2017-12-03: This was added because the new user_updated_time and user_created_time properties were added
+							// 2017-12-03: This was added because the new user_updatedAt and user_createdAt properties were added
 							// to the items. However changing the database is not enough since remote items that haven't been synced yet
 							// will not have these properties and, since they are required, it would cause a problem. So this check
 							// if they are present and, if not, set them to a reasonable default.
 							// Let's leave these two lines for 6 months, by which time all the clients should have been synced.
-							// if (!content.user_updated_time) content.user_updated_time = content.updated_time;
-							// if (!content.user_created_time) content.user_created_time = content.created_time;
+							// if (!content.user_updatedAt) content.user_updatedAt = content.updatedAt;
+							// if (!content.user_createdAt) content.user_createdAt = content.createdAt;
 
 							SyncedItem.save(content)
 
@@ -787,7 +787,7 @@ export default class Synchronizer {
 			this.cancelling_ = false;
 		}
 
-		this.progressReport_.completedTime = timeUtils.todayInUnixMs();
+		this.progressReport_.completedTime = timeUtils.timeInUnixMs();
 
 		this.state_ = 'idle';
 

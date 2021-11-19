@@ -19,7 +19,7 @@ class BaseModel {
 
     private static db_
     
-    static tableName() {
+    static tableName(): string {
         throw new Error("Needs to be overriden")
     }
 
@@ -48,7 +48,7 @@ class BaseModel {
     }
 
     static getByAttrWithValue(attr, value) {
-        return this.db().getAll(this.tableName()).filter(x => x.attr === value)
+        return this.db().getAll(this.tableName()).filter(x => x[attr] === value)
     }
 
     static getByAttrMap(map) {

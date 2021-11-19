@@ -1,6 +1,7 @@
 // import time from './time';
 import timeUtils from '../utils/timeUtils';
 import * as fs from 'fs-extra';
+import { basicDelta }  from './FileApi';
 // import { basicDelta, MultiPutItem } from './file-api';
 
 export default class FileApiDriverMemory {
@@ -46,12 +47,12 @@ export default class FileApiDriverMemory {
 	}
 
 	newItem(path: string, isDir = false) {
-		const now = timeUtils.todayInUnixMs();
+		const now = timeUtils.timeInUnixMs();
 		return {
 			path: path,
 			isDir: isDir,
-			updated_time: now, // In milliseconds!!
-			// created_time: now, // In milliseconds!!
+			updatedAt: now, // In milliseconds!!
+			createdAt: now, // In milliseconds!!
 			content: '',
 		};
 	}
@@ -64,7 +65,7 @@ export default class FileApiDriverMemory {
 	async setTimestamp(path: string, timestampMs: number): Promise<any> {
 		const item = this.itemByPath(path);
 		if (!item) return Promise.reject(new Error(`File not found: ${path}`));
-		item.updated_time = timestampMs;
+		item.updatedAt = timestampMs;
 	}
 
 	async list(path: string) {
@@ -125,7 +126,7 @@ export default class FileApiDriverMemory {
 			return item;
 		} else {
 			this.items_[index].content = this.encodeContent_(content);
-			this.items_[index].updated_time = timeUtils.todayInUnixMs();;
+			this.items_[index].updatedAt = timeUtils.timeInUnixMs();;
 			return this.items_[index];
 		}
 	}
@@ -158,7 +159,7 @@ export default class FileApiDriverMemory {
 		if (index >= 0) {
 			const item = Object.assign({}, this.items_[index]);
 			item.isDeleted = true;
-			item.updated_time = timeUtils.todayInUnixMs();;
+			item.updatedAt = timeUtils.timeInUnixMs();;
 			this.deletedItems_.push(item);
 			this.items_.splice(index, 1);
 		}
@@ -175,20 +176,20 @@ export default class FileApiDriverMemory {
 		this.items_ = [];
 	}
 
-	// async delta(path: string, options: any = null) {
-	// 	const getStatFn = async (path: string) => {
-	// 		const output = this.items_.slice();
-	// 		for (let i = 0; i < output.length; i++) {
-	// 			const item = Object.assign({}, output[i]);
-	// 			item.path = item.path.substr(path.length + 1);
-	// 			output[i] = item;
-	// 		}
-	// 		return output;
-	// 	};
+	async delta(path: string, options: any = null) {
+		const getStatFn = async (path: string) => {
+			const output = this.items_.slice();
+			for (let i = 0; i < output.length; i++) {
+				const item = Object.assign({}, output[i]);
+				item.path = item.path.substr(path.length + 1);
+				output[i] = item;
+			}
+			return output;
+		};
 
-	// 	const output = await basicDelta(path, getStatFn, options);
-	// 	return output;
-	// }
+		const output = await basicDelta(path, getStatFn, options);
+		return output;
+	}
 
 	async clearRoot() {
 		this.items_ = [];
