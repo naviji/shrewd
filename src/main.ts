@@ -41,6 +41,8 @@ app.render()
 
 
 /// DEBUGGING Synchronization
+// TODO: Setting file of joplin has default values for many settings/
+// Do that instead of Setting.get('') || someDefault
 
 // import Account from './models/Account';
 // import { setupDatabaseAndSynchronizer, switchClient, afterAllCleanUp, synchronizerStart } from './tests/testUtils'

@@ -9,7 +9,7 @@ class Category extends BaseItem {
 
 
     static fieldNames() {
-        return ["id", "parentId", "name"]
+        return ["id", "parentId", "name", "updatedAt", "createdAt"]
     }
 
     static save =  (o) => {

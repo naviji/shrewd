@@ -552,7 +552,7 @@ export default class BaseItem extends BaseModel {
 		let output: any[] = [];
 		for (let i = 0; i < classes.length; i++) {
 			const ItemClass = this.getClass(classes[i]);
-			output = output.concat(ItemClass.getAll().filter(x => ids.indexOf(x.id) > -1))
+			output = output.concat(ItemClass.getAll().filter(x => ids.indexOf(String(x.id)) > -1))
 		}
 		return output;
 	}
@@ -564,7 +564,8 @@ export default class BaseItem extends BaseModel {
 		p = p[p.length - 1];
 		p = p.split('.');
 		if (p.length != 2) return false;
-		return p[0].length == 32 && p[1] == 'md';
+		// return p[0].length == 32 && p[1] == 'md'; TODO: convert Ids to UUID
+		return p[1] === 'md';
 	}
 
 	// static updateSyncTimeQueries(syncTarget: number, item: any, syncTime: number, syncDisabled = false, syncDisabledReason = '', itemLocation: number = null) {

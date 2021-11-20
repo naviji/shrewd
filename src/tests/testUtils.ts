@@ -85,7 +85,6 @@ export const setupDatabaseAndSynchronizer = async (id) => {
     databases_[id] = new Database(logger)
     BaseModel.setDb(databases_[id])
 	Setting.set('clientId', id)
-	console.log(`currClientId = ${Setting.get('clientId')}`)
     if (!synchronizers_[id]) {
 		const syncTarget = new SyncTargetMemory(databases_[id]);
         await initFileApi()
@@ -114,7 +113,7 @@ async function initFileApi() {
 	fileApis_[syncTargetId_] = fileApi;
 }
 
-function fileApi() {
+export function fileApi() {
 	return fileApis_[syncTargetId_];
 }
 

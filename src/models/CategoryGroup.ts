@@ -5,7 +5,7 @@ class CategoryGroup extends BaseItem {
     static tableName = () => "CategoryGroup"
 
     static fieldNames() {
-        return ["id", "name"]
+        return ["id", "name", "updatedAt", "createdAt"]
     }
 
     static getAllCategoriesFromId = (id) => {

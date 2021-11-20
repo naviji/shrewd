@@ -3,7 +3,7 @@ class Transaction extends BaseItem {
     static tableName = () => "Transaction"
 
     static fieldNames() {
-        return ["id", "date", "payee", "categoryId", "accountId", "memo", "outflow", "inflow", "cleared"]
+        return ["id", "date", "payee", "categoryId", "accountId", "memo", "outflow", "inflow", "cleared", "updatedAt", "createdAt"]
     }
 }
 

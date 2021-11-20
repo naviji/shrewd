@@ -685,7 +685,7 @@ export default class Synchronizer {
 						const remoteId = BaseItem.pathToId(path);
 						let action = null;
 						let reason = '';
-						let local = locals.find(l => l.id === remoteId);
+						let local = locals.find(l => l.id == remoteId);
 						let ItemClass = null;
 						let content = null;
 
@@ -699,7 +699,7 @@ export default class Synchronizer {
 								}
 							} else {
 								ItemClass = BaseItem.itemClass(local);
-								local = ItemClass.filter(local);
+								// local = ItemClass.filter(local);
 								if (remote.isDeleted) {
 									action = 'deleteLocal';
 									reason = 'remote has been deleted';
@@ -749,7 +749,7 @@ export default class Synchronizer {
 					// items being synced twice as an update. If the local and remote items are identical
 					// the update will simply be skipped.
 					if (!hasCancelled) {
-						if (options.saveContextHandler) {
+						if (options.saveContextHandler) { // TODO: This is defined in the registry
 							const deltaToSave = Object.assign({}, listResult.context);
 							// Remove these two variables because they can be large and can be rebuilt
 							// the next time the sync is started.

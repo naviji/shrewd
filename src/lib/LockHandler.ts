@@ -110,7 +110,6 @@ export default class LockHandler {
 
 	async locks(): Promise<Lock[]> {
 		const result = await this.api_.list(Dirnames.Locks);
-		console.log(`result in LockHandler: locks: ${JSON.stringify(result)}`)
 		if (result.hasMore) throw new Error('hasMore not handled'); // Shouldn't happen anyway
 
 		const output = [];

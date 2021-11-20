@@ -24,7 +24,7 @@ class Account extends BaseItem {
     public static TYPE_CURRENT = AccountType.Savings
 
     static fieldNames() {
-        return ["id", "type", "name", "amount"]
+        return ["id", "type", "name", "amount", "updatedAt", "createdAt"]
     }
 
     static save =  (o) => {

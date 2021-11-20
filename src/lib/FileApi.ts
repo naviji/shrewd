@@ -4,6 +4,7 @@ import FsDriverBase from './FsDriverBase';
 import FsDriverNode from './FsDriverNode';
 import BaseItem from '../models/BaseItem';
 import { binarySearch } from './ArrayUtils';
+import { isHidden } from '../utils/pathUtils';
 // import shim from './shim';
 // import BaseItem from './models/BaseItem';
 // import time from './time';
@@ -262,9 +263,31 @@ class FileApi {
 	// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 	async list(path = '', options: any = null) {
 		if (!options) options = {};
+		if (!('includeHidden' in options)) options.includeHidden = false;
+		if (!('context' in options)) options.context = null;
+		if (!('includeDirs' in options)) options.includeDirs = true;
+		if (!('syncItemsOnly' in options)) options.syncItemsOnly = false;
+
+		
+		logger.debug(`list ${this.baseDir()}`);
 
 		const result = await tryAndRepeat(() => this.driver_.list(this.fullPath(path), options), this.requestRepeatCount());
 
+		if (!options.includeHidden) {
+			const temp = [];
+			for (let i = 0; i < result.items.length; i++) {
+				if (!isHidden(result.items[i].path)) temp.push(result.items[i]);
+			}
+			result.items = temp;
+		}
+
+		if (!options.includeDirs) {
+			result.items = result.items.filter((f: any) => !f.isDir);
+		}
+
+		if (options.syncItemsOnly) {
+			result.items = result.items.filter((f: any) => !f.isDir && BaseItem.isSystemPath(f.path));
+		}
 
 		return result;
 	}

@@ -5,7 +5,7 @@ class Transfer extends BaseItem {
     static tableName = () => "Transfer"
 
     static fieldNames() {
-        return ["id", "categoryId", "amount", "date"]
+        return ["id", "categoryId", "amount", "date", "updatedAt", "createdAt"]
     }
 
     static save = (o) => {

@@ -33,7 +33,7 @@ export default class TaskQueue {
 	}
 
 	concurrency() {
-		return Setting.get('sync.maxConcurrentConnections');
+		return Setting.get('sync.maxConcurrentConnections') || 5;
 	}
 
 	push(id: string, callback: Function) {

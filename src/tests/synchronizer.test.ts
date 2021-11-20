@@ -1,6 +1,10 @@
 
 import Account from '../models/Account';
+import BaseItem from '../models/BaseItem';
+import BaseModel, { ModelType } from '../models/BaseModel';
 import { setupDatabaseAndSynchronizer, switchClient, afterAllCleanUp, synchronizerStart } from './testUtils'
+import { remoteItemsByType } from './testUtilsSync';
+
 
 describe('Synchronizer should', function() {
 
@@ -21,9 +25,12 @@ describe('Synchronizer should', function() {
     // const accounts = Account.getAll()
 
     await synchronizerStart();
-    
+
+    const localAccounts = Account.getAll()
+    const remoteAccounts = await remoteItemsByType([BaseModel.TYPE_ACCOUNT])
+    expect(remoteAccounts.length).toBe(localAccounts.length);
     // const remoteAccounts = 
-    expect(1).toBe(1);
+    // expect(1).toBe(1);
   })
 
 })
