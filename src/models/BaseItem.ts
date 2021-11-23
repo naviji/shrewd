@@ -59,6 +59,10 @@ export default class BaseItem extends BaseModel {
 		{ type: BaseModel.TYPE_TRANSFER, className: 'Transfer' }
 	];
 
+	static fieldTypes() {
+        return {}
+    }
+
 	// public static SYNC_ITEM_LOCATION_LOCAL = 1;
 	// public static SYNC_ITEM_LOCATION_REMOTE = 2;
 
@@ -179,6 +183,10 @@ export default class BaseItem extends BaseModel {
 			throw new Error(`Unknown type: ${item}`);
 		}
 	}
+
+	static convertToOriginalType(propName: string, propValue: any) {
+        return this.fieldTypes()[propName] ? this.fieldTypes()[propName](propValue) : propValue
+    }
 
 	// // Returns the IDs of the items that have been synced at least once
 	// static async syncedItemIds(syncTarget: number) {
@@ -337,19 +345,27 @@ export default class BaseItem extends BaseModel {
 		return output;
 	}
 
+	// static convertToOriginalType(propName: string, propValue: any) {
+	// 	return propValue
+	// }
+
 
 	static unserialize_format(type: ModelType, propName: string, propValue: any) {
 		if (propName[propName.length - 1] == '_') return propValue; // Private property
 
-		// const ItemClass = this.itemClass(type);
+		const ItemClass = this.itemClass(type);
+		propValue = ItemClass.convertToOriginalType(propName, propValue)
 
-		if (['date'].indexOf(propName) >= 0) {
-			propValue = (!propValue) ? '0' : timeUtils.unserializeDate(propValue)
+		if (['updatedAt', 'createdAt'].indexOf(propName) >= 0) {
+			propValue = (!propValue) ? 0 : Number(propValue)
 		}
 		return propValue
 	}
 
 	static async serialize(item: any, shownKeys: any[] = null) {
+
+		// console.log('to serialize', item)
+
 		if (shownKeys === null) {
 			shownKeys = this.itemClass(item).fieldNames();
 			shownKeys.push('type_');
@@ -362,15 +378,18 @@ export default class BaseItem extends BaseModel {
 			const value = this.serialize_format(key, item[key]);
 			output.push(`${key}: ${value}`);
 		}
+
+		// console.log('serialized', output)
+
 		return output.join('\n');
 	}
 
 
 	static serialize_format(propName: string, propValue: any) {
-		if (['date'].indexOf(propName) >= 0) {
-			if (!propValue) return '';
-			return timeUtils.serializeDate(propValue)
-		}
+		// if (['date'].indexOf(propName) >= 0) {
+		// 	if (!propValue) return '';
+		// 	return timeUtils.serializeDate(propValue)
+		// }
 		return propValue
 	}
 	
@@ -552,7 +571,7 @@ export default class BaseItem extends BaseModel {
 		let output: any[] = [];
 		for (let i = 0; i < classes.length; i++) {
 			const ItemClass = this.getClass(classes[i]);
-			output = output.concat(ItemClass.getAll().filter(x => ids.indexOf(String(x.id)) > -1))
+			output = output.concat(ItemClass.getAll().filter(x => ids.indexOf(x.id) > -1))
 		}
 		return output;
 	}
@@ -567,205 +586,5 @@ export default class BaseItem extends BaseModel {
 		// return p[0].length == 32 && p[1] == 'md'; TODO: convert Ids to UUID
 		return p[1] === 'md';
 	}
-
-	// static updateSyncTimeQueries(syncTarget: number, item: any, syncTime: number, syncDisabled = false, syncDisabledReason = '', itemLocation: number = null) {
-	// 	const itemType = item.type_;
-	// 	const itemId = item.id;
-	// 	if (!itemType || !itemId || syncTime === undefined) throw new Error(sprintf('Invalid parameters in updateSyncTimeQueries(): %d, %s, %d', syncTarget, JSON.stringify(item), syncTime));
-
-	// 	if (itemLocation === null) itemLocation = BaseItem.SYNC_ITEM_LOCATION_LOCAL;
-
-	// 	return [
-	// 		{
-	// 			sql: 'DELETE FROM sync_items WHERE sync_target = ? AND item_type = ? AND item_id = ?',
-	// 			params: [syncTarget, itemType, itemId],
-	// 		},
-	// 		{
-	// 			sql: 'INSERT INTO sync_items (sync_target, item_type, item_id, item_location, sync_time, sync_disabled, sync_disabled_reason) VALUES (?, ?, ?, ?, ?, ?, ?)',
-	// 			params: [syncTarget, itemType, itemId, itemLocation, syncTime, syncDisabled ? 1 : 0, `${syncDisabledReason}`],
-	// 		},
-	// 	];
-	// }
-
-	// static encryptableItemClassNames() {
-	// 	const temp = this.syncItemClassNames();
-	// 	const output = [];
-	// 	for (let i = 0; i < temp.length; i++) {
-	// 		if (temp[i] === 'MasterKey') continue;
-	// 		output.push(temp[i]);
-	// 	}
-	// 	return output;
-	// }
-
-	// public static syncItemTypes(): ModelType[] {
-	// 	return BaseItem.syncItemDefinitions_.map((def: any) => {
-	// 		return def.type;
-	// 	});
-	// }
-
-	// static modelTypeToClassName(type: number) {
-	// 	for (let i = 0; i < BaseItem.syncItemDefinitions_.length; i++) {
-	// 		if (BaseItem.syncItemDefinitions_[i].type == type) return BaseItem.syncItemDefinitions_[i].className;
-	// 	}
-	// 	throw new Error(`Invalid type: ${type}`);
-	// }
-
-	// static async syncDisabledItems(syncTargetId: number) {
-	// 	const rows = await this.db().selectAll('SELECT * FROM sync_items WHERE sync_disabled = 1 AND sync_target = ?', [syncTargetId]);
-	// 	const output = [];
-	// 	for (let i = 0; i < rows.length; i++) {
-	// 		const row = rows[i];
-	// 		const item = await this.loadItem(row.item_type, row.item_id);
-	// 		if (row.item_location === BaseItem.SYNC_ITEM_LOCATION_LOCAL && !item) continue; // The referenced item no longer exist
-
-	// 		output.push({
-	// 			syncInfo: row,
-	// 			location: row.item_location,
-	// 			item: item,
-	// 		});
-	// 	}
-	// 	return output;
-	// }
-
-	// static updateSyncTimeQueries(syncTarget: number, item: any, syncTime: number, syncDisabled = false, syncDisabledReason = '', itemLocation: number = null) {
-	// 	const itemType = item.type_;
-	// 	const itemId = item.id;
-	// 	if (!itemType || !itemId || syncTime === undefined) throw new Error(sprintf('Invalid parameters in updateSyncTimeQueries(): %d, %s, %d', syncTarget, JSON.stringify(item), syncTime));
-
-	// 	if (itemLocation === null) itemLocation = BaseItem.SYNC_ITEM_LOCATION_LOCAL;
-
-	// 	return [
-	// 		{
-	// 			sql: 'DELETE FROM sync_items WHERE sync_target = ? AND item_type = ? AND item_id = ?',
-	// 			params: [syncTarget, itemType, itemId],
-	// 		},
-	// 		{
-	// 			sql: 'INSERT INTO sync_items (sync_target, item_type, item_id, item_location, sync_time, sync_disabled, sync_disabled_reason) VALUES (?, ?, ?, ?, ?, ?, ?)',
-	// 			params: [syncTarget, itemType, itemId, itemLocation, syncTime, syncDisabled ? 1 : 0, `${syncDisabledReason}`],
-	// 		},
-	// 	];
-	// }
-
-	// static async saveSyncTime(syncTarget: number, item: any, syncTime: number) {
-	// 	const queries = this.updateSyncTimeQueries(syncTarget, item, syncTime);
-	// 	return this.db().transactionExecBatch(queries);
-	// }
-
-	// static async saveSyncDisabled(syncTargetId: number, item: any, syncDisabledReason: string, itemLocation: number = null) {
-	// 	const syncTime = 'sync_time' in item ? item.sync_time : 0;
-	// 	const queries = this.updateSyncTimeQueries(syncTargetId, item, syncTime, true, syncDisabledReason, itemLocation);
-	// 	return this.db().transactionExecBatch(queries);
-	// }
-
-	// public static async saveSyncEnabled(itemType: ModelType, itemId: string) {
-	// 	await this.db().exec('DELETE FROM sync_items WHERE item_type = ? AND item_id = ?', [itemType, itemId]);
-	// }
-
-	// // When an item is deleted, its associated sync_items data is not immediately deleted for
-	// // performance reason. So this function is used to look for these remaining sync_items and
-	// // delete them.
-	// static async deleteOrphanSyncItems() {
-	// 	const classNames = this.syncItemClassNames();
-
-	// 	const queries = [];
-	// 	for (let i = 0; i < classNames.length; i++) {
-	// 		const className = classNames[i];
-	// 		const ItemClass = this.getClass(className);
-
-	// 		let selectSql = `SELECT id FROM ${ItemClass.tableName()}`;
-	// 		if (ItemClass.modelType() == this.TYPE_NOTE) selectSql += ' WHERE is_conflict = 0';
-
-	// 		queries.push(`DELETE FROM sync_items WHERE item_location = ${BaseItem.SYNC_ITEM_LOCATION_LOCAL} AND item_type = ${ItemClass.modelType()} AND item_id NOT IN (${selectSql})`);
-	// 	}
-
-	// 	await this.db().transactionExecBatch(queries);
-	// }
-
-	// static displayTitle(item: any) {
-	// 	if (!item) return '';
-	// 	if (item.encryption_applied) return `🔑 ${_('Encrypted')}`;
-	// 	return item.title ? item.title : _('Untitled');
-	// }
-
-	// static async markAllNonEncryptedForSync() {
-	// 	const classNames = this.encryptableItemClassNames();
-
-	// 	for (let i = 0; i < classNames.length; i++) {
-	// 		const className = classNames[i];
-	// 		const ItemClass = this.getClass(className);
-
-	// 		const sql = sprintf(
-	// 			`
-	// 			SELECT id
-	// 			FROM %s
-	// 			WHERE encryption_applied = 0`,
-	// 			this.db().escapeField(ItemClass.tableName())
-	// 		);
-
-	// 		const items = await ItemClass.modelSelectAll(sql);
-	// 		const ids = items.map((item: any) => {
-	// 			return item.id;
-	// 		});
-	// 		if (!ids.length) continue;
-
-	// 		await this.db().exec(`UPDATE sync_items SET force_sync = 1 WHERE item_id IN ("${ids.join('","')}")`);
-	// 	}
-	// }
-
-	// static async updateShareStatus(item: BaseItemEntity, isShared: boolean) {
-	// 	if (!item.id || !item.type_) throw new Error('Item must have an ID and a type');
-	// 	if (!!item.is_shared === !!isShared) return false;
-	// 	const ItemClass = this.getClassByItemType(item.type_);
-
-	// 	// No auto-timestamp because sharing a note is not seen as an update
-	// 	await ItemClass.save({
-	// 		id: item.id,
-	// 		is_shared: isShared ? 1 : 0,
-	// 		updatedAt: Date.now(),
-	// 	}, { autoTimestamp: false });
-
-	// 	// The timestamps have not been changed but still need the note to be synced
-	// 	// so we force-sync it.
-	// 	// await this.forceSync(item.id);
-
-	// 	return true;
-	// }
-
-	// static async forceSync(itemId: string) {
-	// 	await this.db().exec('UPDATE sync_items SET force_sync = 1 WHERE item_id = ?', [itemId]);
-	// }
-
-	// static async forceSyncAll() {
-	// 	await this.db().exec('UPDATE sync_items SET force_sync = 1');
-	// }
-
-	// static async save(o: any, options: any = null) {
-	// 	if (!options) options = {};
-
-	// 	if (options.userSideValidation === true) {
-	// 		if (o.encryption_applied) throw new Error(_('Encrypted items cannot be modified'));
-	// 	}
-
-	// 	return super.save(o, options);
-	// }
-
-	// static markdownTag(itemOrId: any) {
-	// 	const item = typeof itemOrId === 'object' ? itemOrId : {
-	// 		id: itemOrId,
-	// 		title: '',
-	// 	};
-
-	// 	const output = [];
-	// 	output.push('[');
-	// 	output.push(markdownUtils.escapeTitleText(item.title));
-	// 	output.push(']');
-	// 	output.push(`(:/${item.id})`);
-	// 	return output.join('');
-	// }
-
-	// static isMarkdownTag(md: any) {
-	// 	if (!md) return false;
-	// 	return !!md.match(/^\[.*?\]\(:\/[0-9a-zA-Z]{32}\)$/);
-	// }
 
 }

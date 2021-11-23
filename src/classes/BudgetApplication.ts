@@ -12,6 +12,7 @@ import Calendar from "../lib/Calendar"
 import { dateFromUnixMs } from '../utils/timeUtils'
 import Target from "../models/Target"
 import timeUtils from "../utils/timeUtils"
+import Setting from "../models/Setting"
 
 // const appLogger = new Logger()
 class BudgetApplication {
@@ -62,7 +63,7 @@ class BudgetApplication {
     }
 
     addAccount(o) {
-        return CommandService.instance().execute('AddAccount', Object.assign(o, { date : this.getSelectedMonth()}))
+        return CommandService.instance().execute('AddAccount', o)
     }
 
     addCategoryGroup(o) {
@@ -82,9 +83,8 @@ class BudgetApplication {
     }
 
     assignMoney(o) {
-        const { categoryId } = o
-        // null refers to ready to assign category
-        this.moveMoney(Object.assign(o, { from : null, to: categoryId, categoryId: undefined}))
+        const { to, amount } = o
+        this.moveMoney({from : Setting.get('readyToAssignId'), to, amount })
     }
 
     addTransaction(o) {
@@ -96,8 +96,7 @@ class BudgetApplication {
     }
 
     moveMoney(o) {
-
-        return CommandService.instance().execute('MoveMoney', Object.assign(o, { date : this.getSelectedMonth()} ))
+        return CommandService.instance().execute('AddTransfer', o)
     }
 
     registerCommands() {
@@ -120,7 +119,7 @@ class BudgetApplication {
 
     firstTransferToReadyToAssign() {
         // const INFINITY
-        let transferDates =  Transfer.getAll().filter(x => x.categoryId === null).map(x => x.date)
+        let transferDates =  Transfer.getAll().filter(x => x.to === Setting.get('readyToAssignId')).map(x => x.createdMonth)
         // transferDates.push(100000000000000)
         // this.logger().debug(transferDates)
         transferDates.sort((a, b)=>a-b)
@@ -130,15 +129,16 @@ class BudgetApplication {
 
     readyToAssign() {
         // Category id with null indicates the Ready to Assign category
-        if (this.firstTransferToReadyToAssign() > this.getSelectedMonth()) return 0
-        return Category.getAllAssigned(null)
+        // Change this condition to use the date in which account gets created instead?
+        // if (this.firstTransferToReadyToAssign() > this.getSelectedMonth()) return 0
+        return Category.getAllAssigned(Setting.get('readyToAssignId'))
     }
 
 
 
     assignedThisMonth(categoryId) {
         const month = this.getSelectedMonth()
-        return Category.getAssignedOfMonth(categoryId, month)
+        return Category.getAllAssignedUptillMonth(categoryId, month)
     }
 
     leftOverFromLastMonth(categoryId) {
@@ -193,7 +193,7 @@ class BudgetApplication {
         this.logger().log("Transactions:")
         const transactions = Transaction.getAll()
         for (let transaction of transactions) {
-            this.logger().log(`${dateFromUnixMs(transaction.date)} | ${Account.getNameFromId(transaction.accountId)}  | ${transaction.payee} | ${Category.getNameFromId(transaction.categoryId)} | ${transaction.memo} | ${transaction.outflow} | ${transaction.inflow} | ${transaction.cleared}`)
+            this.logger().log(`${dateFromUnixMs(transaction.createdDay)} | ${Account.getNameFromId(transaction.accountId)}  | ${transaction.payee} | ${Category.getNameFromId(transaction.categoryId)} | ${transaction.memo} | ${transaction.outflow} | ${transaction.inflow} | ${transaction.cleared}`)
         }
     }
 
@@ -209,7 +209,7 @@ class BudgetApplication {
     renderTargets_(categoryId) {
         const assignedThisMonth = this.assignedThisMonth(categoryId)
         const target = Target.getByCategoryId(categoryId)
-        if (target && (target.date <= this.getSelectedMonth()))
+        if (target && (target.createdMonth <= this.getSelectedMonth()))
             this.logger().log(`             --- Every ${target.every} ${target.type} ${target.amount} ( You need ${(target.amount /target.every) - (assignedThisMonth + Category.getAllActivity(categoryId))} this ${target.type})`)
     }
 

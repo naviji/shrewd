@@ -4,7 +4,7 @@ import BaseModel from "./BaseModel"
 class Setting extends BaseModel {
     static tableName = () => "Setting"
 
-    private static constants_ = {
+    public static constants_ = {
             env: 'Dev',
             isDemo: false,
             appName: 'joplin',
@@ -20,6 +20,8 @@ class Setting extends BaseModel {
             flagOpenDevTools: false,
             syncVersion: 1,
             startupDevPlugins: [],
+            readyToAssignId: '007',
+            moneyTreeId: '420'
         };
 
     static set = (key: string, value: string) => {

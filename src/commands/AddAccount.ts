@@ -2,8 +2,9 @@ import Account from '../models/Account'
 import AddCommand from './AddCommand'
 import Transfer from '../models/Transfer'
 import AddTransfer from './AddTransfer'
-import { unixMsFromDate, timeInUnixMs, printDateOfToday } from '../utils/timeUtils'
+import timeUtils, { unixMsFromDate, timeInUnixMs, printDateOfToday } from '../utils/timeUtils'
 import AddTransaction from './AddTransaction'
+import Setting from '../models/Setting'
 
 class AddAccount extends AddCommand {
     private addTransferCmd
@@ -18,22 +19,24 @@ class AddAccount extends AddCommand {
     }
 
     execute (o) {
-        const { date } = o
-        const createdAccount = super.execute(o)
+        const createdMonth = timeUtils.timeInUnixMs()
+        const createdAccount = super.execute(Object.assign({}, o, { createdMonth }))
+        // console.log(Setting.constants_)
         const createdTransaction = this.addTransactionCmd.execute({
-            date: timeInUnixMs(),
+            createdDay: timeInUnixMs(),
             payee: "Starting Balance",
-            categoryId: null,
+            categoryId: Setting.get('readyToAssignId'),
             accountId: createdAccount.id,
-            memo: null,
+            memo: '--',
             outflow: 0,
             inflow: o.amount,
             cleared: true
         })
 
         const createdTransfer = this.addTransferCmd.execute({
-            date: date,
-            categoryId: null,
+            from: Setting.get('moneyTreeId'),
+            to: Setting.get('readyToAssignId'),
+            createdMonth,
             amount: o.amount
         })
         return createdAccount
@@ -41,7 +44,7 @@ class AddAccount extends AddCommand {
 
     undo() {
         this.addTransactionCmd.undo()
-        this.addTransferCmd.undo()
+        // this.addTransferCmd.undo()
         super.undo()
     }
 

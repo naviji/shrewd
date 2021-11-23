@@ -6,7 +6,7 @@ class AddTarget extends AddCommand {
     model = () => Target
 
     execute = (o) => {
-        return super.execute(Object.assign(o, { date: Calendar.instance().startOfMonth() }));
+        return super.execute(Object.assign(o, { createdMonth: Calendar.instance().startOfMonth() }));
     }
 }
 

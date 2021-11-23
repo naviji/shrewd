@@ -2,6 +2,7 @@ import Transfer from '../models/Transfer'
 import AddCommand from './AddCommand'
 import AddTransfer from './AddTransfer'
 
+// TODO : Remove
 class MoveMoney extends AddCommand {
     private fromMove
     private toMove

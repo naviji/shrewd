@@ -2,6 +2,7 @@ import BaseItem from "./BaseItem"
 import Transfer from "./Transfer"
 import Transaction from "./Transaction"
 import { endOfMonth, startOfMonth } from "../utils/timeUtils"
+import Setting from "./Setting"
 
 
 class Category extends BaseItem {
@@ -26,32 +27,33 @@ class Category extends BaseItem {
     }
 
     static assignedTillMonth = (id, month) => {
-        const transfers = Transfer.getAll().filter(x => x.categoryId === id && x.date < month)
+        const transfers = Transfer.getAll().filter(x => x.categoryId === id && x.createdMonth < month)
         return transfers.length ? transfers.map(x => x.amount).reduce((a, b) => a+b, 0) : 0
     }
 
     static activityTillMonth = (id, month) => {
         const transactions = Transaction.getAll().filter(x => x.categoryId === id)
-        const relevantTransactions = transactions.filter( x => x.date < month)
+        const relevantTransactions = transactions.filter( x => x.createdDay < month)
         const relevantAmounts =  relevantTransactions.map(x => x.inflow - x.outflow)
         return relevantAmounts.length ? relevantAmounts.reduce((a, b) => a+b, 0) : 0
     }
 
-    static getAssignedOfMonth = (id, month) => {
-        const transfers = Transfer.getAll().filter(x => x.categoryId === id && x.date === month)
-        if (transfers.length) {
-            let result = transfers.map(x => x.amount)
-            result = result.reduce((a, b) => a+b, 0)
-            return result
-        }
-        return 0
-    }
+    // static getAssignedOfMonth = (id, month) => {
+    //     const result = this.getAllAssignedUptillMonth(id, month)
+    //     const transfers = Transfer.getAll().filter(x => x.categoryId === id && x.createdMonth === month)
+    //     if (transfers.length) {
+    //         let result = transfers.map(x => x.amount)
+    //         result = result.reduce((a, b) => a+b, 0)
+    //         return result
+    //     }
+    //     return 0
+    // }
 
     static getActivityOfMonth = (id, month) => {
         const transactions = Transaction.getAll().filter(x => x.categoryId === id)
         const start = startOfMonth(month)
         const end = endOfMonth(month)
-        const relevantTransactions = transactions.filter( x => (start <= x.date && x.date <= end))
+        const relevantTransactions = transactions.filter( x => (start <= x.createdDay && x.createdDay <= end))
         const relevantAmounts =  relevantTransactions.map(x => x.inflow - x.outflow)
         return relevantAmounts.length ? relevantAmounts.reduce((a, b) => a+b, 0) : 0
     }
@@ -63,13 +65,24 @@ class Category extends BaseItem {
     }
 
     static getAllAssigned(id) {
-        const transfers = Transfer.getAll().filter(x => x.categoryId === id)
-        const relevantAmounts =  transfers.map(x => x.amount)
-        return relevantAmounts.length ? relevantAmounts.reduce((a, b) => a+b, 0) : 0
+        const _sum = (l) => l.length ? l.reduce((a, b) => a+b, 0) : 0
+
+        const outflows = _sum(Transfer.getAll().filter(x => x.from === id).map(x => x.amount))
+        const inflows = _sum(Transfer.getAll().filter(x => x.to === id).map(x => x.amount))
+        return inflows - outflows
+    }
+
+    static getAllAssignedUptillMonth(id, month) {
+        const _sum = (l) => l.length ? l.reduce((a, b) => a+b, 0) : 0
+
+        const outflows = _sum(Transfer.getAll().filter(x => x.from === id && x.createdMonth <= month).map(x => x.amount))
+        const inflows = _sum(Transfer.getAll().filter(x => x.to === id && x.createdMonth <= month).map(x => x.amount))
+        return inflows - outflows
     }
 
     static getNameFromId = (id) => {
         if (!id) return '--'
+        if (id === Setting.get('readyToAssignId')) return 'Inflow: Ready to Assign'
         return Category.getById(id).name
     }
 }

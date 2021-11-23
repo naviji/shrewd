@@ -24,11 +24,11 @@ class Database {
     save(tableName, o) {
         if (!this[tableName]) this[tableName] = []
         const _createMockObjectDefaults = () => {
-            const id = Math.floor(Math.random()*10000000)
+            const id = String(Math.floor(Math.random()*10000000))
             const createdAt =  timeInUnixMs()
             const updatedAt =  timeInUnixMs()
-            const index = globalCounter++ // TODO: Remove
-            return {id, createdAt, updatedAt, index}
+            // const index = globalCounter++ // TODO: Remove
+            return {id, createdAt, updatedAt }
         }
 
         const { id } = o
@@ -57,7 +57,7 @@ class Database {
             this[tableName].push(databaseObj)
         }
         
-        this[tableName].sort((a, b) => a.index - b.index)
+        // this[tableName].sort((a, b) => a.index - b.index)
         return databaseObj
     }
 

@@ -3,7 +3,13 @@ class Target extends BaseItem {
     static tableName = () => "Target"
 
     static fieldNames() {
-        return ["id", "name", "updatedAt", "createdAt"]
+        return ["id", "name", "updatedAt", "createdAt", "createdMonth"]
+    }
+
+    static fieldTypes() {
+        return {
+            "createdMonth": Number
+        }
     }
 
     static getByCategoryId = (categoryId)=>{
