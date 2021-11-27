@@ -23,7 +23,7 @@ class BudgetApplication {
 
     start(options) {
         this.setLogger(new Logger(options.debugMode ? LogLevel.Debug : LogLevel.Info))
-        this.setupDatabase()
+        this.setupDatabase(options.debugMode)
         this.registerCommands()
         this.calendar_ = Calendar.instance()
     }
@@ -35,7 +35,7 @@ class BudgetApplication {
         return this.calendar().printYear()
     }
 
-    getSelectedMonth() {
+    private getSelectedMonth() {
         return this.calendar().timeInUnixMs()
     }
 
@@ -47,19 +47,19 @@ class BudgetApplication {
         return this.calendar().selectPreviousMonth()
     }
 
-    calendar() {
+    private calendar() {
         return this.calendar_
     }
 
-    setupDatabase() {
-        BaseModel.setDb(new Database(this.logger()))
+    private setupDatabase(debugMode) {
+        BaseModel.setDb(new Database(this.logger(), debugMode))
     }
 
-    logger() {
+    private logger() {
         return this.logger_;
     }
 
-    setLogger(logger) {
+    private setLogger(logger) {
         this.logger_ = logger
     }
 
@@ -100,7 +100,7 @@ class BudgetApplication {
         return CommandService.instance().execute('AddTransfer', o)
     }
 
-    registerCommands() {
+    private registerCommands() {
         CommandService.instance().registerAll()
     }
 
@@ -126,37 +126,30 @@ class BudgetApplication {
         ImportService.instance().importFromBudget(path)
     }
 
-    firstTransferToReadyToAssign() {
-        // const INFINITY
-        let transferDates =  Transfer.getAll().filter(x => x.to === Setting.get('readyToAssignId')).map(x => x.createdMonth)
-        // transferDates.push(100000000000000)
-        // this.logger().debug(transferDates)
-        transferDates.sort((a, b)=>a-b)
-        // this.logger().debug(transferDates)
-        return transferDates.length ? transferDates[0] : Infinity
-    }
-
-    readyToAssign() {
-        // Category id with null indicates the Ready to Assign category
-        // Change this condition to use the date in which account gets created instead?
-        // if (this.firstTransferToReadyToAssign() > this.getSelectedMonth()) return 0
+    private readyToAssign() {
         return Category.getAllAssigned(Setting.get('readyToAssignId'))
     }
 
-
-
-    assignedThisMonth(categoryId) {
+    private assignedThisMonth(categoryId) {
         const month = this.getSelectedMonth()
-        return Category.getAllAssignedThisMonth(categoryId, month)
+        return Category.getAssignedOfMonth(categoryId, month)
     }
 
-    availableThisMonth(categoryId) {
-        const lastTrasferMonth = timeUtils.unixMsFromMonth('Sep 2021')
+    private firstTransferToReadyToAssign() {
+        let transferDates =  Transfer.getAll().filter(x => x.to === Setting.get('readyToAssignId')).map(x => x.createdMonth)
+        transferDates.sort((a, b)=>a-b)
+        return transferDates.length ? transferDates[0] : -Infinity
+    }
+
+    private availableThisMonth(categoryId) {
+        // TO DO: Change this static date to the month of last known transfer
+        const firstTransferMonth = timeUtils.unixMsFromMonth('Jan 2021')
+        // const firstTransferMonth = this.firstTransferToReadyToAssign()
 
         const _availableOnMonth = (categoryId, month) => {
-            if (month < lastTrasferMonth) return 0
+            if (month < firstTransferMonth) return 0
             const prevMonth = timeUtils.subtractMonth(month)
-            return Category.getAllAssignedThisMonth(categoryId, month) +
+            return Category.getAssignedOfMonth(categoryId, month) +
                    Category.getActivityOfMonth(categoryId, month) +
                    _availableOnMonth(categoryId, prevMonth)
         }
@@ -165,21 +158,12 @@ class BudgetApplication {
         return _availableOnMonth(categoryId, month)
     }
 
-    activityTillMonth(categoryId, month) {
-        return Category.activityTillMonth(categoryId, month)
-    }
-
-    assignedTillMonth(categoryId, month) {
-        return Category.assignedTillMonth(categoryId, month)
-    }
-
-
-    activityThisMonth(categoryId) {
+    private activityThisMonth(categoryId) {
         const month = this.getSelectedMonth()
         return Category.getActivityOfMonth(categoryId, month)
     }
 
-    renderCategories_() {
+    private renderCategories_() {
         this.logger().log("Category Groups:")
         const groups = CategoryGroup.getAll()
         for (let group of groups) {
@@ -207,7 +191,7 @@ class BudgetApplication {
         }
     }
 
-    renderTransactions_() {
+    private renderTransactions_() {
         this.logger().log("Transactions:")
         const transactions = Transaction.getAll()
 
@@ -217,7 +201,7 @@ class BudgetApplication {
         }
     }
 
-    renderAccounts_() {
+    private renderAccounts_() {
         this.logger().log("Accounts: ")
         const accounts = Account.getAll()
         for (let account of accounts) {
@@ -226,7 +210,7 @@ class BudgetApplication {
         }
     }
 
-    renderTargets_(categoryId) {
+    private renderTargets_(categoryId) {
         const assignedThisMonth = this.assignedThisMonth(categoryId)
         const target = Target.getByCategoryId(categoryId)
         if (target && (target.createdMonth <= this.getSelectedMonth()))

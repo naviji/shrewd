@@ -80,7 +80,7 @@ class Category extends BaseItem {
         return inflows - outflows
     }
 
-    static getAllAssignedThisMonth(id, month) {
+    static getAssignedOfMonth(id, month) {
         const _sum = (l) => l.length ? l.reduce((a, b) => a+b, 0) : 0
 
         const outflows = _sum(Transfer.getAll().filter(x => x.from === id && x.createdMonth === month).map(x => x.amount))

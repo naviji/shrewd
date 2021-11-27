@@ -1,14 +1,15 @@
 
 import Logger from "./Logger"
 import { timeInUnixMs } from "../utils/timeUtils"
-
-
-let globalCounter = 0
+import * as fs from 'fs';
 class Database {
 
     private logger_: Logger
+    private _debugMode = false
 
-    constructor(logger) {
+    constructor(logger, debugMode = true) {
+        this.load()
+        this._debugMode = debugMode
         this.setLogger(logger)
         this.logger().debug("Database initialized")
     }
@@ -19,6 +20,25 @@ class Database {
 
     logger() {
         return this.logger_
+    }
+
+    flush () {
+        if (this._debugMode)
+            fs.writeFileSync("db-test.json", JSON.stringify(this))
+        else
+            fs.writeFileSync("db.json", JSON.stringify(this))
+    }
+
+    load () {
+        let str = ''
+        if (this._debugMode)
+            str = fs.readFileSync("db-test.json", { encoding: 'utf-8' })
+        else
+            str = fs.readFileSync("db.json", { encoding: 'utf-8' })
+        const data = JSON.parse(str)
+        for (const key in data) {
+            this[key] = data[key]
+        }
     }
 
     save(tableName, o) {
@@ -58,6 +78,7 @@ class Database {
         }
         
         // this[tableName].sort((a, b) => a.index - b.index)
+        this.flush()
         return databaseObj
     }
 
@@ -71,6 +92,7 @@ class Database {
 
     deleteById(tableName, id) {
         this[tableName] = this[tableName].filter(x => x.id !== id)
+        this.flush()
     }
 
     getById(tableName, id) {
