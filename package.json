@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "clean": "rimraf built",
-    "start": "npm-run-all clean build watch:app",
+    "start": "npm-run-all clean build run:app",
     "test": "jest",
-    "run": "node ./built/main.js",
+    "run:app": "node ./built/main.js",
     "build": "npx tsc --build tsconfig.json",
     "watch:build": "npx tsc --build tsconfig.json --watch",
     "watch:app": "npx nodemon ./built/main.js --watch ./built"
@@ -19,6 +19,7 @@
     "dayjs": "^1.10.7",
     "fs-extra": "^10.0.0",
     "nanotimer": "^0.3.15",
+    "papaparse": "^5.3.1",
     "path": "^0.12.7",
     "sprintf-js": "^1.1.2",
     "timers-browserify": "^2.0.12"

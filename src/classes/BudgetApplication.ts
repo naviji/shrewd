@@ -13,6 +13,7 @@ import { dateFromUnixMs } from '../utils/timeUtils'
 import Target from "../models/Target"
 import timeUtils from "../utils/timeUtils"
 import Setting from "../models/Setting"
+import ImportService from "../services/ImportService"
 
 // const appLogger = new Logger()
 class BudgetApplication {
@@ -117,6 +118,10 @@ class BudgetApplication {
         return this
     }
 
+    importFromRegister(path) {
+        ImportService.instance().importFromRegister(path)
+    }
+
     firstTransferToReadyToAssign() {
         // const INFINITY
         let transferDates =  Transfer.getAll().filter(x => x.to === Setting.get('readyToAssignId')).map(x => x.createdMonth)
@@ -192,8 +197,17 @@ class BudgetApplication {
     renderTransactions_() {
         this.logger().log("Transactions:")
         const transactions = Transaction.getAll()
+
+        // let inflows = 0
+        // let outflows = 0
+        // let count = 0
         for (let transaction of transactions) {
+            if (Account.getNameFromId(transaction.accountId) !== 'Savings Axis' ) continue;
             this.logger().log(`${dateFromUnixMs(transaction.createdDay)} | ${Account.getNameFromId(transaction.accountId)}  | ${transaction.payee} | ${Category.getNameFromId(transaction.categoryId)} | ${transaction.memo} | ${transaction.outflow} | ${transaction.inflow} | ${transaction.cleared}`)
+
+            // inflows += transaction.inflow
+            // outflows += transaction.outflow
+            // count++
         }
     }
 
@@ -214,7 +228,6 @@ class BudgetApplication {
     }
 
     render() {
-        const targets = Target.getAll()
         this.logger().log(`\n--- BUDGET APP ---`)
         this.logger().log(`Month: ${this.printSelectedMonth()}`)
         this.logger().log(`Year: ${this.printSelectedYear()}`)

@@ -19,11 +19,13 @@ class AddAccount extends AddCommand {
     }
 
     execute (o) {
-        const createdMonth = timeUtils.timeInUnixMs()
+        const { createdDay } =  o 
+        // TODO : Add 2 transactions for Transfer between accounts;
+        const createdMonth = createdDay || timeUtils.timeInUnixMs()
         const createdAccount = super.execute(Object.assign({}, o, { createdMonth }))
         // console.log(Setting.constants_)
         const createdTransaction = this.addTransactionCmd.execute({
-            createdDay: timeInUnixMs(),
+            createdDay: createdMonth,
             payee: "Starting Balance",
             categoryId: Setting.get('readyToAssignId'),
             accountId: createdAccount.id,

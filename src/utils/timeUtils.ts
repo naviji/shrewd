@@ -1,5 +1,7 @@
 import * as dayjs from "dayjs"
-var NanoTimer = require('nanotimer');
+const customParseFormat = require('dayjs/plugin/customParseFormat')
+dayjs.extend(customParseFormat)
+const NanoTimer = require('nanotimer');
 // var NanoTimer = require('nanotimer');
  
 // import timers from "timers"
@@ -14,7 +16,7 @@ export const unixMsFromDate = (dateString) => {
     if (!dateString) {
         throw new Error("Provide dateString")
     }
-    return dayjs(new Date(dateString)).valueOf()
+    return dayjs(dateString, 'DD/MM/YYYY').valueOf()
 }
 
 export const dateFromUnixMs = (value) => {

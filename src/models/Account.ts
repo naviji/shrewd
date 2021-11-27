@@ -1,3 +1,4 @@
+import timeUtils from "../utils/timeUtils"
 import BaseItem from "./BaseItem"
 import Transaction from "./Transaction"
 
@@ -49,7 +50,8 @@ class Account extends BaseItem {
     }
 
     static getBalance = (id) => {
-        const balance = Transaction.getAll().filter(x => x.accountId === id)
+        const balance = Transaction.getAll().filter(x => x.accountId === id && 
+                                                    x.createdDay <= timeUtils.timeInUnixMs())
                             .map(x => x.inflow - x.outflow)
                             .reduce((a, b) => a + b, 0)
         return balance
