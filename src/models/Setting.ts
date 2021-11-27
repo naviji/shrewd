@@ -20,8 +20,8 @@ class Setting extends BaseModel {
             flagOpenDevTools: false,
             syncVersion: 1,
             startupDevPlugins: [],
-            readyToAssignId: '007',
-            moneyTreeId: '420'
+            readyToAssignId: 'READY-TO-ASSIGN',
+            moneyTreeId: 'MONEY-TREE'
         };
 
     static set = (key: string, value: string) => {

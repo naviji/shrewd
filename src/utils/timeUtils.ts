@@ -101,7 +101,9 @@ export const serializeDate = (value) => {
     return `${dayjs(Number(value)).format('YYYY-MM-DDTHH:mm:ss.SSS')}Z`
 }
 
-
+const getMonthFromDay = (value) => {
+    return dayjs(Number(value)).startOf('month')
+}
 // if (['createdAt', 'updatedAt', 'sync_time', 'user_updatedAt', 'user_createdAt'].indexOf(propName) >= 0) {
 //     if (!propValue) return '';
 //     propValue = `${moment.unix(propValue / 1000).utc().format('YYYY-MM-DDTHH:mm:ss.SSS')}Z`;
@@ -123,5 +125,6 @@ export default {
     clearInterval,
     unserializeDate,
     serializeDate,
-    unixMsFromMonth
+    unixMsFromMonth,
+    getMonthFromDay
 }

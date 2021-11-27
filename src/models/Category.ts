@@ -89,8 +89,9 @@ class Category extends BaseItem {
     }
 
     static getNameFromId = (id) => {
-        if (!id) return '--'
+        if (!id) throw new Error(`Id can't be missing: ${id}`)
         if (id === Setting.get('readyToAssignId')) return 'Inflow: Ready to Assign'
+        if (id === Setting.get('moneyTreeId')) return 'Money Tree: --'
         return Category.getById(id).name
     }
 }

@@ -34,14 +34,16 @@ class ImportService extends BaseService {
 
     private _createCategoryGroupIfNeeded = (data) => {
         const name = data['Category Group']
-        if (name === 'Inflow' || name === '') return Setting.get('moneyTreeId')
+        if (name === 'Inflow') return { id: Setting.get('readyToAssignId') }
+        if (name === '') return { id: Setting.get('moneyTreeId') }
         const group = CategoryGroup.getByAttrWithValue('name', name)
         return group.length > 0 ? group[0] : CommandService.instance().execute('AddCategoryGroup', {name})
     }
 
     private _createCategoryIfNeeded = (data, parentId) => {
         const name = data['Category']
-        if (name === 'Ready to Assign' || name === '') return Setting.get('readyToAssignId')
+        if (name === 'Ready to Assign') return { id: Setting.get('readyToAssignId') }
+        if (name === '') return { id: Setting.get('moneyTreeId') }
         const category = Category.getByAttrWithValue('name', name)
         return category.length > 0 ? category[0] : CommandService.instance().execute('AddCategory', {name, parentId})
     }
@@ -70,13 +72,24 @@ class ImportService extends BaseService {
     public importFromRegister = (path) => {
         const processFile = (input) => {
             const { data } = Papa.parse(input, {header: true, transformHeader: this._trimQuotes}, )
-            const actualData = data.reverse()
-            // console.log(actualData)
-            // console.log("========")
-            actualData.forEach(x => 
+
+            const _sortByDateandPayee = (a, b) => {
+                const timeOfA = timeUtils.unixMsFromDate(a['Date'])
+                const timeOfB = timeUtils.unixMsFromDate(b['Date'])
+                if (timeOfA === timeOfB) {
+                    return a['Payee'] < b['Payee'] ? -1 : a['Payee'] > b['Payee'] ? 1 : 0
+                } else {
+                    return timeOfA < timeOfB ? -1 : 1
+                }
+            }
+
+            //Reversed to start from older to newer
+            // Sorted by Payee to make sure "Starting Balance" transactions come before "Transfer" 
+            const orderedData = data.sort(_sortByDateandPayee)
+            orderedData.forEach(x => 
                 {
                     const { created, account } = this._createAccountIfNeeded(x)
-                    if (created) return undefined
+                    if (created) return
                     const categoryGroup = this._createCategoryGroupIfNeeded(x)
                     const category = this._createCategoryIfNeeded(x, categoryGroup.id)
                     const transaction = this._createTransaction(x, category.id, account.id)

@@ -192,7 +192,6 @@ class BudgetApplication {
             for (let category of categories) {
                 category.assignedThisMonth = this.assignedThisMonth(category.id)
                 category.activityThisMonth =  this.activityThisMonth(category.id)
-                // category.activityTillThisMonth = this.activityTillMonth(category.id) 
                 category.availableThisMonth = this.availableThisMonth(category.id)
 
                 totalAssignedThisMonth += category.assignedThisMonth
@@ -212,16 +211,9 @@ class BudgetApplication {
         this.logger().log("Transactions:")
         const transactions = Transaction.getAll()
 
-        // let inflows = 0
-        // let outflows = 0
-        // let count = 0
         for (let transaction of transactions) {
-            if (Account.getNameFromId(transaction.accountId) !== 'Savings Axis' ) continue;
-            this.logger().log(`${dateFromUnixMs(transaction.createdDay)} | ${Account.getNameFromId(transaction.accountId)}  | ${transaction.payee} | ${Category.getNameFromId(transaction.categoryId)} | ${transaction.memo} | ${transaction.outflow} | ${transaction.inflow} | ${transaction.cleared}`)
 
-            // inflows += transaction.inflow
-            // outflows += transaction.outflow
-            // count++
+            this.logger().log(`${dateFromUnixMs(transaction.createdDay)} | ${Account.getNameFromId(transaction.accountId)}  | ${transaction.payee} | ${Category.getNameFromId(transaction.categoryId)} | ${transaction.memo} | ${transaction.outflow} | ${transaction.inflow} | ${transaction.cleared}`)
         }
     }
 

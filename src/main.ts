@@ -16,6 +16,22 @@ app.importFromBudget('/Users/fc19503/Projects/personal/bff/data/Budget.csv')
 
 app.render()
 
+/*
+07/10/2021 | Index Funds  | Starting Balance | Inflow: Ready to Assign | -- | 0 | 24000 | true
+09/10/2021 | Index Funds  | Manual Balance Adjustment | Money Tree: -- |  | 24000 | 0 | true
+09/10/2021 | Index Funds  | Starting Balance | Money Tree: -- |  | 0 | 229255 | true
+
+Manual balance adjustment transactions (from money tree) should also create the transfers
+to ready to assing; amount = inflwo + outflow; (Since balance adjustments can be negative)
+
+
+For moving to tracking account from saving; remove the transfers but keep the transactions
+Keep a referring transaction id in the transfer? So that you can know what to delete?
+
+Considered as inflow to ready to assign even though it is a tracking account.
+Problem is we don't know it's a tracking account
+*/
+
 // const axis = app.addAccount({ type: "Savings", name: "Axis", amount: 1000 })
 // const sbi = app.addAccount({ type: "Savings", name: "SBI", amount: 2000 })
 // // const creditCard = app.addAccount({ type: "CreditCard", name: "MyCreditCard", amount: 1000})
