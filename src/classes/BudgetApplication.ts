@@ -122,6 +122,10 @@ class BudgetApplication {
         ImportService.instance().importFromRegister(path)
     }
 
+    importFromBudget(path) {
+        ImportService.instance().importFromBudget(path)
+    }
+
     firstTransferToReadyToAssign() {
         // const INFINITY
         let transferDates =  Transfer.getAll().filter(x => x.to === Setting.get('readyToAssignId')).map(x => x.createdMonth)
@@ -143,13 +147,22 @@ class BudgetApplication {
 
     assignedThisMonth(categoryId) {
         const month = this.getSelectedMonth()
-        return Category.getAllAssignedUptillMonth(categoryId, month)
+        return Category.getAllAssignedThisMonth(categoryId, month)
     }
 
-    leftOverFromLastMonth(categoryId) {
+    availableThisMonth(categoryId) {
+        const lastTrasferMonth = timeUtils.unixMsFromMonth('Sep 2021')
+
+        const _availableOnMonth = (categoryId, month) => {
+            if (month < lastTrasferMonth) return 0
+            const prevMonth = timeUtils.subtractMonth(month)
+            return Category.getAllAssignedThisMonth(categoryId, month) +
+                   Category.getActivityOfMonth(categoryId, month) +
+                   _availableOnMonth(categoryId, prevMonth)
+        }
+
         const month = this.getSelectedMonth()
-        // const prevMonth = timeUtils.subtractMonth(month)
-        return this.activityTillMonth(categoryId, month) + this.assignedTillMonth(categoryId, month)
+        return _availableOnMonth(categoryId, month)
     }
 
     activityTillMonth(categoryId, month) {
@@ -180,7 +193,8 @@ class BudgetApplication {
                 category.assignedThisMonth = this.assignedThisMonth(category.id)
                 category.activityThisMonth =  this.activityThisMonth(category.id)
                 // category.activityTillThisMonth = this.activityTillMonth(category.id) 
-                category.availableThisMonth = category.assignedThisMonth + category.activityThisMonth + this.leftOverFromLastMonth(category.id)
+                category.availableThisMonth = this.availableThisMonth(category.id)
+
                 totalAssignedThisMonth += category.assignedThisMonth
                 totalActivityThisMonth += category.activityThisMonth
                 totalAvailableThisMonth += category.availableThisMonth

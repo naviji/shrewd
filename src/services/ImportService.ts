@@ -3,6 +3,7 @@ import Account from "../models/Account"
 import Category from "../models/Category"
 import CategoryGroup from "../models/CategoryGroup"
 import Setting from "../models/Setting"
+import Transfer from "../models/Transfer"
 import timeUtils from "../utils/timeUtils"
 import BaseService from "./BaseService"
 import CommandService from "./CommandService"
@@ -67,27 +68,57 @@ class ImportService extends BaseService {
 
 
     public importFromRegister = (path) => {
+        const processFile = (input) => {
+            const { data } = Papa.parse(input, {header: true, transformHeader: this._trimQuotes}, )
+            const actualData = data.reverse()
+            // console.log(actualData)
+            // console.log("========")
+            actualData.forEach(x => 
+                {
+                    const { created, account } = this._createAccountIfNeeded(x)
+                    if (created) return undefined
+                    const categoryGroup = this._createCategoryGroupIfNeeded(x)
+                    const category = this._createCategoryIfNeeded(x, categoryGroup.id)
+                    const transaction = this._createTransaction(x, category.id, account.id)
+                    
+                })
+        }
+
         const content = fs.readFileSync(path,
             {encoding:'utf8', flag:'r'});
-        this.processFile(content);
+        processFile(content);
+    }
+
+
+    public importFromBudget = (path) => {
+        const _getAmountFromString = (str) => {
+            if (str.startsWith("-")) return -Number(str.slice(1).trim().substr(1))
+            return Number(str.trim().substr(1))
+        }
+        const processFile = (input) => {
+            const { data } = Papa.parse(input, {header: true, transformHeader: this._trimQuotes}, )
+            data.forEach(x => 
+                {
+                    const categoryGroup = this._createCategoryGroupIfNeeded(x)
+                    const category = this._createCategoryIfNeeded(x, categoryGroup.id)
+                    const transfer = CommandService.instance().execute('AddTransfer', {
+                        from: Setting.get('readyToAssignId'),
+                        to: category.id,
+                        amount: _getAmountFromString(x['Budgeted']),
+                        createdMonth: timeUtils.unixMsFromMonth(x['Month'])
+                    })
+                })
+
+            // console.log(Transfer.getAll())
+        }
+
+        const content = fs.readFileSync(path,
+            {encoding:'utf8', flag:'r'});
+        processFile(content);
     }
 
         
-    private processFile = (input) => {
-        const { data } = Papa.parse(input, {header: true, transformHeader: this._trimQuotes}, )
-        const actualData = data.reverse()
-        // console.log(actualData)
-        // console.log("========")
-        actualData.forEach(x => 
-            {
-                const { created, account } = this._createAccountIfNeeded(x)
-                if (created) return undefined
-                const categoryGroup = this._createCategoryGroupIfNeeded(x)
-                const category = this._createCategoryIfNeeded(x, categoryGroup.id)
-                const transaction = this._createTransaction(x, category.id, account.id)
-                
-            })
-    }
+    
         // }}
 }
 

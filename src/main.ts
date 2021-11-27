@@ -11,6 +11,8 @@ const options = {
 app.start(options)
 
 app.importFromRegister('/Users/fc19503/Projects/personal/bff/data/Register.csv')
+app.importFromBudget('/Users/fc19503/Projects/personal/bff/data/Budget.csv')
+
 
 app.render()
 

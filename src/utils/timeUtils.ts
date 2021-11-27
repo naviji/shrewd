@@ -19,6 +19,13 @@ export const unixMsFromDate = (dateString) => {
     return dayjs(dateString, 'DD/MM/YYYY').valueOf()
 }
 
+const unixMsFromMonth = (dateString) => {
+    if (!dateString) {
+        throw new Error("Provide dateString")
+    }
+    return dayjs(new Date(dateString)).valueOf()
+}
+
 export const dateFromUnixMs = (value) => {
     const unixMs = Number(value)
     return dayjs(unixMs).format('DD/MM/YYYY')
@@ -94,6 +101,7 @@ export const serializeDate = (value) => {
     return `${dayjs(Number(value)).format('YYYY-MM-DDTHH:mm:ss.SSS')}Z`
 }
 
+
 // if (['createdAt', 'updatedAt', 'sync_time', 'user_updatedAt', 'user_createdAt'].indexOf(propName) >= 0) {
 //     if (!propValue) return '';
 //     propValue = `${moment.unix(propValue / 1000).utc().format('YYYY-MM-DDTHH:mm:ss.SSS')}Z`;
@@ -114,5 +122,6 @@ export default {
     clearTimeout,
     clearInterval,
     unserializeDate,
-    serializeDate
+    serializeDate,
+    unixMsFromMonth
 }

@@ -15,12 +15,12 @@ class Transfer extends BaseItem {
         }
     }
 
-    static save = (o) => {
-        // TODO: Create an update function for this purpose?
-        // return super.save({...o, month: o.month ? o.month : Calendar.instance().timeInUnixMs()})
-        return super.save({...o, createdMonth: Calendar.instance().timeInUnixMs()})
+    // static save = (o) => {
+    //     // TODO: Create an update function for this purpose?
+    //     // return super.save({...o, month: o.month ? o.month : Calendar.instance().timeInUnixMs()})
+    //     return super.save({...o, createdMonth: Calendar.instance().timeInUnixMs()})
 
-    }
+    // }
 
 }
 

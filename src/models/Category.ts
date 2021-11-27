@@ -80,6 +80,14 @@ class Category extends BaseItem {
         return inflows - outflows
     }
 
+    static getAllAssignedThisMonth(id, month) {
+        const _sum = (l) => l.length ? l.reduce((a, b) => a+b, 0) : 0
+
+        const outflows = _sum(Transfer.getAll().filter(x => x.from === id && x.createdMonth === month).map(x => x.amount))
+        const inflows = _sum(Transfer.getAll().filter(x => x.to === id && x.createdMonth === month).map(x => x.amount))
+        return inflows - outflows
+    }
+
     static getNameFromId = (id) => {
         if (!id) return '--'
         if (id === Setting.get('readyToAssignId')) return 'Inflow: Ready to Assign'
