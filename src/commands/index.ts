@@ -7,6 +7,7 @@ import AddTarget from "./AddTarget";
 import RemoveCategory from "./RemoveCategory";
 import RemoveCategoryGroup from "./RemoveCategoryGroup";
 import RemoveTransaction from "./RemoveTransaction";
+import ConvertAccount from "./ConvertAccount";
 
 export const commands = {
     AddAccount,
@@ -17,7 +18,8 @@ export const commands = {
     AddTarget,
     RemoveCategory,
     RemoveCategoryGroup,
-    RemoveTransaction
+    RemoveTransaction,
+    ConvertAccount
     // RemoveAccount,
     // RemoveCategoryGroup,
     // RemoveCategory,

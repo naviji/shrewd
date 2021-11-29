@@ -16,7 +16,7 @@ class AddTransaction extends AddCommand {
 
 
     execute (o) {
-        const { categoryId, createdDay, inflow, outflow } =  o 
+        const { categoryId, createdDay, inflow, outflow, accountId } =  o 
 
         const createdTransaction = super.execute(o)
 
@@ -29,7 +29,8 @@ class AddTransaction extends AddCommand {
                 from: Setting.get('moneyTreeId'),
                 to: Setting.get('readyToAssignId'),
                 amount: inflow - outflow,
-                createdMonth: timeUtils.getMonthFromDay(createdDay)
+                createdMonth: timeUtils.getMonthFromDay(createdDay),
+                accountId: accountId
             })
         }
         

@@ -102,7 +102,7 @@ export const serializeDate = (value) => {
 }
 
 const getMonthFromDay = (value) => {
-    return dayjs(Number(value)).startOf('month')
+    return dayjs(Number(value)).startOf('month').valueOf()
 }
 // if (['createdAt', 'updatedAt', 'sync_time', 'user_updatedAt', 'user_createdAt'].indexOf(propName) >= 0) {
 //     if (!propValue) return '';

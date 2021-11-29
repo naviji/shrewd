@@ -83,13 +83,12 @@ class ImportService extends BaseService {
                 }
             }
 
-            //Reversed to start from older to newer
             // Sorted by Payee to make sure "Starting Balance" transactions come before "Transfer" 
             const orderedData = data.sort(_sortByDateandPayee)
             orderedData.forEach(x => 
                 {
                     const { created, account } = this._createAccountIfNeeded(x)
-                    if (created) return
+                    if (created) return // creating an account already creates the transaction
                     const categoryGroup = this._createCategoryGroupIfNeeded(x)
                     const category = this._createCategoryIfNeeded(x, categoryGroup.id)
                     const transaction = this._createTransaction(x, category.id, account.id)

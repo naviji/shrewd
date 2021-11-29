@@ -5,8 +5,9 @@ class AddTransfer extends AddCommand {
     model = () => Transfer
 
     execute = (o) => {
-        const { createdMonth } = o
-        o = Object.assign(o, { createdMonth: createdMonth || Calendar.instance().startOfMonth() })
+        const { createdMonth, accountId } = o
+        o = Object.assign(o, { createdMonth: createdMonth || Calendar.instance().startOfMonth(),
+        accountId: accountId || '' })
         return super.execute(o);
     }
 }

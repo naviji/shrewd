@@ -24,6 +24,7 @@ const app = new BudgetApplication()
 
 /*
     // COMMAND HELP SECTION //
+    * convertToBudgetAccount()
     * removeCategory() and removeCategoryGroup() and removeTransaction()
     *. addTarget() 
     -2. importFromRegister() and importFromBudget()
@@ -53,9 +54,19 @@ const app = new BudgetApplication()
 */
 
 const options = {
-    debugMode: true
+    debugMode: true,
+    saveChanges: false,
+    loadData: true
 }
 
 app.start(options)
+
+// app.importFromRegister('./data/Register.csv')
+// app.importFromBudget('./data/Budget.csv')
+
+// const indexFund = Account.getByAttrWithValue('name', 'Index Funds')[0]
+// console.log('Fund is ', indexFund)
+// console.log('Id is ', indexFund.id)
+// app.convertToBudgetAccount(indexFund.id)
 
 app.render()

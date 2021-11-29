@@ -23,7 +23,7 @@ class BudgetApplication {
 
     start(options) {
         this.setLogger(new Logger(options.debugMode ? LogLevel.Debug : LogLevel.Info))
-        this.setupDatabase(options.debugMode)
+        this.setupDatabase(options)
         this.registerCommands()
         this.calendar_ = Calendar.instance()
     }
@@ -51,8 +51,8 @@ class BudgetApplication {
         return this.calendar_
     }
 
-    private setupDatabase(debugMode) {
-        BaseModel.setDb(new Database(this.logger(), debugMode))
+    private setupDatabase(options) {
+        BaseModel.setDb(new Database(this.logger(), options))
     }
 
     private logger() {
@@ -106,6 +106,10 @@ class BudgetApplication {
 
     addTarget(o) {
         return CommandService.instance().execute('AddTarget', o)
+    }
+
+    convertToBudgetAccount(accountId) {
+        CommandService.instance().execute('ConvertAccount', { accountId })
     }
 
     undo() {
@@ -225,7 +229,7 @@ class BudgetApplication {
 
         this.renderAccounts_();
         this.renderCategories_();
-        this.renderTransactions_();
+        // this.renderTransactions_();
         return this
     }
 

@@ -5,11 +5,18 @@ import * as fs from 'fs';
 class Database {
 
     private logger_: Logger
-    private _debugMode = false
+    private debugMode: Boolean
+    private saveChanges: Boolean
+    private loadData: Boolean
 
-    constructor(logger, debugMode = true) {
+    constructor(logger, options: any = {}) {
+        const { debugMode = true, saveChanges = false, loadData = false } = options
+        
+        this.debugMode = debugMode
+        this.saveChanges = saveChanges
+        this.loadData = loadData
+
         this.load()
-        this._debugMode = debugMode
         this.setLogger(logger)
         this.logger().debug("Database initialized")
     }
@@ -23,15 +30,17 @@ class Database {
     }
 
     flush () {
-        if (this._debugMode)
+        if (!this.saveChanges) return
+        if (this.debugMode)
             fs.writeFileSync("db-test.json", JSON.stringify(this))
         else
             fs.writeFileSync("db.json", JSON.stringify(this))
     }
 
     load () {
-        let str = ''
-        if (this._debugMode)
+        if (!this.loadData) return
+        let str = '{}'
+        if (this.debugMode)
             str = fs.readFileSync("db-test.json", { encoding: 'utf-8' })
         else
             str = fs.readFileSync("db.json", { encoding: 'utf-8' })

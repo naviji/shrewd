@@ -6,7 +6,7 @@ class Transfer extends BaseItem {
     static tableName = () => "Transfer"
 
     static fieldNames() {
-        return ["id", "from", "to", "amount", "updatedAt", "createdAt", "createdMonth"]
+        return ["id", "from", "to", "amount", "updatedAt", "createdAt", "createdMonth", "accountId"]
     }
 
     static fieldTypes() {
@@ -16,15 +16,15 @@ class Transfer extends BaseItem {
         }
     }
 
-    static save = (o) => {
-        // TODO: Create an update function for this purpose?
-        // return super.save({...o, month: o.month ? o.month : Calendar.instance().timeInUnixMs()})
-        if (o.to === Setting.get('readyToAssignId')) {
-            console.log(`Transfering ${o.amount} to readyToAssign`)
-        }
-        return super.save(o)
+    // static save = (o) => {
+    //     // TODO: Create an update function for this purpose?
+    //     // return super.save({...o, month: o.month ? o.month : Calendar.instance().timeInUnixMs()})
+    //     if (o.to === Setting.get('readyToAssignId')) {
+    //         console.log(`Transfering ${o.amount} to readyToAssign`)
+    //     }
+    //     return super.save(o)
 
-    }
+    // }
 
 }
 

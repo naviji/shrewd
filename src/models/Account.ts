@@ -49,6 +49,11 @@ class Account extends BaseItem {
         return Account.getById(id).name
     }
 
+    static findByName = (name) => {
+        const result =  Account.getByAttrWithValue('name', name)
+        return result.length ? result[0] : null
+    }
+
     static getBalance = (id) => {
         const balance = Transaction.getAll().filter(x => x.accountId === id && 
                                                     x.createdDay <= timeUtils.timeInUnixMs())
