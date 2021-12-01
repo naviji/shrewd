@@ -1,12 +1,12 @@
-// import { commands } from "../commands/index"
 import Account from "../models/Account"
 import Category from "../models/Category"
 import CategoryGroup from "../models/CategoryGroup"
 import Setting from "../models/Setting"
+import Transaction from "../models/Transaction"
 import Transfer from "../models/Transfer"
 import timeUtils from "../utils/timeUtils"
 import BaseService from "./BaseService"
-import CommandService from "./CommandService"
+
 const Papa = require('papaparse')
 const fs  = require('fs')
 
@@ -28,7 +28,7 @@ class ImportService extends BaseService {
         const name = data['Account']
         const account = Account.getByAttrWithValue('name', name)
         return account.length > 0 ? { created: false , account: account[0] } : 
-        { created: true, account: CommandService.instance().execute('AddAccount', {name, type: Account.TYPE_SAVINGS, amount: Number(data['Inflow'].trim().slice(1)) || 0 , 
+        { created: true, account: Account.add({name, type: Account.TYPE_SAVINGS, amount: Number(data['Inflow'].trim().slice(1)) || 0 , 
         createdDay: timeUtils.unixMsFromDate(data['Date'])}) }
     }
 
@@ -37,7 +37,7 @@ class ImportService extends BaseService {
         if (name === 'Inflow') return { id: Setting.get('readyToAssignId') }
         if (name === '') return { id: Setting.get('moneyTreeId') }
         const group = CategoryGroup.getByAttrWithValue('name', name)
-        return group.length > 0 ? group[0] : CommandService.instance().execute('AddCategoryGroup', {name})
+        return group.length > 0 ? group[0] : CategoryGroup.add({name})
     }
 
     private _createCategoryIfNeeded = (data, parentId) => {
@@ -45,11 +45,11 @@ class ImportService extends BaseService {
         if (name === 'Ready to Assign') return { id: Setting.get('readyToAssignId') }
         if (name === '') return { id: Setting.get('moneyTreeId') }
         const category = Category.getByAttrWithValue('name', name)
-        return category.length > 0 ? category[0] : CommandService.instance().execute('AddCategory', {name, parentId})
+        return category.length > 0 ? category[0] : Category.add({name, parentId})
     }
 
     private _createTransaction = (x, categoryId, accountId) => {
-        CommandService.instance().execute('AddTransaction', {
+        Transaction.add({
             createdDay: timeUtils.unixMsFromDate(x['Date']),
             payee: x['Payee'],
             categoryId: categoryId,
@@ -115,7 +115,7 @@ class ImportService extends BaseService {
                 {
                     const categoryGroup = this._createCategoryGroupIfNeeded(x)
                     const category = this._createCategoryIfNeeded(x, categoryGroup.id)
-                    const transfer = CommandService.instance().execute('AddTransfer', {
+                    const transfer = Transfer.add({
                         from: Setting.get('readyToAssignId'),
                         to: category.id,
                         amount: _getAmountFromString(x['Budgeted']),
