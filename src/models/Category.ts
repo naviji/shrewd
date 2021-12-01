@@ -3,6 +3,7 @@ import Transfer from "./Transfer"
 import Transaction from "./Transaction"
 import timeUtils, { endOfMonth, startOfMonth } from "../utils/timeUtils"
 import Setting from "./Setting"
+import Account from "./Account"
 
 
 class Category extends BaseItem {
@@ -83,12 +84,14 @@ class Category extends BaseItem {
     }
 
     static getAvailableOfMonth(categoryId, month) {
-        // TO DO: Change this static date to the month of last known transfer
-        const firstTransferMonth = timeUtils.unixMsFromMonth('Jan 2000')
-        // const firstTransferMonth = this.firstTransferToReadyToAssign()
+        // Available of a month is found recursively, with the base case taken
+        // either as the month of first account creation date or Jan 2000 (arbitrary old date) if no accounts are created yet.
+        const accounts = Account.getAll().sort((a, b)=> a.createdDay - b.createdDay)
+        const dayOfFirstAccountCreation = accounts.length ? accounts[0].createdDay : timeUtils.unixMsFromMonth('Jan 2000')
+        const monthOfFirstAccountCreation = timeUtils.monthFromUnixMs(dayOfFirstAccountCreation)
 
         const _availableOnMonth = (categoryId, month) => {
-            if (month < firstTransferMonth) return 0
+            if (month < monthOfFirstAccountCreation) return 0
             const prevMonth = timeUtils.subtractMonth(month)
             return Category.getAssignedOfMonth(categoryId, month) +
                    Category.getActivityOfMonth(categoryId, month) +

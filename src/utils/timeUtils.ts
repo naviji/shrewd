@@ -20,6 +20,8 @@ export const unixMsFromDate = (dateString) => {
 }
 
 const unixMsFromMonth = (dateString) => {
+    // eg: Jan 2020 or MM/DD/YYYY format;
+    // Using the Date constructor is discouraged; Should change to using dayjs exclusively
     // TODO: Remove and use unixMsFromDate with MM/DD/YYYY format instead
     // dateString in MM/DD/YYYY format
     if (!dateString) {

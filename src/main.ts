@@ -11,16 +11,7 @@ import timeUtils, { unixMsFromDate, timeInUnixMs } from "./utils/timeUtils"
 TODO
 https://github.com/cronvel/terminal-kit
 *. Whenever you make transactions on tracking account, don't create transfers.
-0. Use joplin CLI and find out how to design a CLI interface
-1. Add option to mark a savings account as tracking
-    a) Keep transactions but remove associated transfers to readyToAssign
-    b) Associate transfers with transactionId so that 
-        acc1 -> moneyTree and moneyTree -> acc2 can be identified with the same 
-        transactionId.
-        This further means that we *DO* need to keep each transfer separate!!!
-    c) Find all transactions with that account and remove the associated transfers.
 2. Get Targets working correctly
-3. Remove static date in readyToAssign render helper
 4. Read cleared and reconciled status from import
 */
 
