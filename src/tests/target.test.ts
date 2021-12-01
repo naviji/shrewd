@@ -7,7 +7,7 @@ import timeUtils from "../utils/timeUtils";
 import { setupDatabase, switchClient } from "./testUtils";
 
 describe('Target should calculate', function() {
-    const today = timeUtils.unixMsFromDate('01/11/2021')
+    const today = timeUtils.unixMsFromDate('01/01/2021')
     let account, categoryGroup, category
 
     beforeEach(async () => {
@@ -20,12 +20,34 @@ describe('Target should calculate', function() {
       });
   
     it('amount needed per month by date', async () => {
-        const futureDay = timeUtils.unixMsFromDate('01/12/2021')
+        /* TODO
+            If amountToSaveThisMonth is called with currentDate > endDate
+            either the target is not needed anymore (since we've passed the target date)
+            or the target endDate needs to be reset to a suitable value in case REPEAT is enabled.
+        */
+        
+        const futureDay = timeUtils.unixMsFromDate('01/02/2021')
         const target = await Target.add({amount: 100, categoryId: category.id, endDate: futureDay})
-    
-        expect(Target.amountToSaveThisMonth(target.id, today)).toBe(50)
-        expect(Target.amountToSaveThisMonth(target.id, timeUtils.unixMsFromDate('01/12/2021'))).toBe(100)
-        expect(Target.amountToSaveThisMonth(target.id, timeUtils.unixMsFromDate('15/11/2021'))).toBe(50)
+        expect(Target.amountToSaveThisDay(target.id, today)).toBe(50)
+        expect(Target.amountToSaveThisDay(target.id, timeUtils.unixMsFromDate('15/01/2021'))).toBe(50)
+        expect(Target.amountToSaveThisDay(target.id, timeUtils.unixMsFromDate('01/02/2021'))).toBe(100)
+    })
+
+    it('amount needed per month by date if extra assigned on the prev month', async () => {
+        /* TODO
+            If amountToSaveThisMonth is called with currentDate > endDate
+            either the target is not needed anymore (since we've passed the target date)
+            or the target endDate needs to be reset to a suitable value in case REPEAT is enabled.
+
+            For weekly targets, the time to check available becomes weekly
+        */
+        
+        const futureDay = timeUtils.unixMsFromDate('01/02/2021')
+        const target = await Target.add({amount: 100, categoryId: category.id, endDate: futureDay})
+        Category.assignMoney(category.id, 75, today)
+        expect(Target.amountToSaveThisDay(target.id, today)).toBe(50)
+        expect(Target.amountToSaveThisDay(target.id, futureDay)).toBe(25)
+
     })
   
   })

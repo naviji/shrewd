@@ -27,7 +27,7 @@ class Category extends BaseItem {
     }
 
     static assignMoney = (id, amount, date) => {
-        const month = timeUtils.unixMsFromDate(date)
+        const month = timeUtils.monthFromUnixMs(date)
         const transfer = Transfer.add({from: Setting.get('readyToAssignId'), to: id, amount, createdMonth: month})
     }
 
@@ -84,7 +84,7 @@ class Category extends BaseItem {
 
     static getAvailableOfMonth(categoryId, month) {
         // TO DO: Change this static date to the month of last known transfer
-        const firstTransferMonth = timeUtils.unixMsFromMonth('Jan 2021')
+        const firstTransferMonth = timeUtils.unixMsFromMonth('Jan 2000')
         // const firstTransferMonth = this.firstTransferToReadyToAssign()
 
         const _availableOnMonth = (categoryId, month) => {

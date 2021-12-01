@@ -31,11 +31,13 @@ class Target extends BaseItem {
                      .find(target => target.categoryId === categoryId)
     }
 
-    static amountToSaveThisMonth = (targetId, currDate) => {
+    static amountToSaveThisDay = (targetId, currDate) => {
         const target = Target.getById(targetId)
-        const funded = Category.getAvailableOfMonth(target.categoryId, currDate)
+        const currMonth = timeUtils.monthFromUnixMs(currDate)
+        const prevMonth = timeUtils.getPrevMonthUnixMs(currDate)
+        const funded = Category.getAvailableOfMonth(target.categoryId, prevMonth)
         const amountLeft = target.amount - funded
-        const monthsLeft = timeUtils.getMonthsTillDate(currDate, target.endDate)
+        const monthsLeft = timeUtils.getMonthsTillDate(currMonth, target.endDate)
         const neededPerMonth = (amountLeft/monthsLeft)
         return neededPerMonth
     }
