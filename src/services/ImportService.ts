@@ -84,7 +84,9 @@ class ImportService extends BaseService {
             }
 
             // Sorted by Payee to make sure "Starting Balance" transactions come before "Transfer" 
+            // Also filter out scheduled transactions
             const orderedData = data.sort(_sortByDateandPayee)
+                                    .filter(x =>  timeUtils.unixMsFromDate(x['Date']) <= timeUtils.timeInUnixMs())
             orderedData.forEach(x => 
                 {
                     const { created, account } = this._createAccountIfNeeded(x)

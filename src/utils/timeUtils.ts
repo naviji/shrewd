@@ -20,6 +20,8 @@ export const unixMsFromDate = (dateString) => {
 }
 
 const unixMsFromMonth = (dateString) => {
+    // TODO: Remove and use unixMsFromDate with MM/DD/YYYY format instead
+    // dateString in MM/DD/YYYY format
     if (!dateString) {
         throw new Error("Provide dateString")
     }

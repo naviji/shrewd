@@ -16,7 +16,15 @@ class Transfer extends BaseItem {
         }
     }
 
-    // static save = (o) => {
+    
+
+    static save = (o) => {
+        const { id, accountId } = o
+        if (!id && !accountId) {
+            // New accounts are open by default
+            o.accountId = ''
+        }
+        return super.save(o);
     //     // TODO: Create an update function for this purpose?
     //     // return super.save({...o, month: o.month ? o.month : Calendar.instance().timeInUnixMs()})
     //     if (o.to === Setting.get('readyToAssignId')) {
@@ -24,7 +32,7 @@ class Transfer extends BaseItem {
     //     }
     //     return super.save(o)
 
-    // }
+    }
 
 }
 

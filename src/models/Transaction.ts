@@ -8,10 +8,10 @@ class Transaction extends BaseItem {
 
     static fieldTypes() {
         return {
-            "createdDay": Number,
             "inflow": Number,
             "outflow": Number,
-            "cleared": x => !(x == 'false')
+            "cleared": x => !(x == 'false'),
+            "createdDay": Number
         }
     }
 }

@@ -1,7 +1,7 @@
 import BaseItem from "./BaseItem"
 import Transfer from "./Transfer"
 import Transaction from "./Transaction"
-import { endOfMonth, startOfMonth } from "../utils/timeUtils"
+import timeUtils, { endOfMonth, startOfMonth } from "../utils/timeUtils"
 import Setting from "./Setting"
 
 
@@ -37,17 +37,6 @@ class Category extends BaseItem {
         const relevantAmounts =  relevantTransactions.map(x => x.inflow - x.outflow)
         return relevantAmounts.length ? relevantAmounts.reduce((a, b) => a+b, 0) : 0
     }
-
-    // static getAssignedOfMonth = (id, month) => {
-    //     const result = this.getAllAssignedUptillMonth(id, month)
-    //     const transfers = Transfer.getAll().filter(x => x.categoryId === id && x.createdMonth === month)
-    //     if (transfers.length) {
-    //         let result = transfers.map(x => x.amount)
-    //         result = result.reduce((a, b) => a+b, 0)
-    //         return result
-    //     }
-    //     return 0
-    // }
 
     static getActivityOfMonth = (id, month) => {
         const transactions = Transaction.getAll().filter(x => x.categoryId === id)
@@ -86,6 +75,22 @@ class Category extends BaseItem {
         const outflows = _sum(Transfer.getAll().filter(x => x.from === id && x.createdMonth === month).map(x => x.amount))
         const inflows = _sum(Transfer.getAll().filter(x => x.to === id && x.createdMonth === month).map(x => x.amount))
         return inflows - outflows
+    }
+
+    static getAvailableOfMonth(categoryId, month) {
+        // TO DO: Change this static date to the month of last known transfer
+        const firstTransferMonth = timeUtils.unixMsFromMonth('Jan 2021')
+        // const firstTransferMonth = this.firstTransferToReadyToAssign()
+
+        const _availableOnMonth = (categoryId, month) => {
+            if (month < firstTransferMonth) return 0
+            const prevMonth = timeUtils.subtractMonth(month)
+            return Category.getAssignedOfMonth(categoryId, month) +
+                   Category.getActivityOfMonth(categoryId, month) +
+                   _availableOnMonth(categoryId, prevMonth)
+        }
+
+        return _availableOnMonth(categoryId, month)
     }
 
     static getNameFromId = (id) => {

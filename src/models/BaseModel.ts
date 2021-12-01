@@ -51,6 +51,11 @@ class BaseModel {
         return this.db().getAll(this.tableName()).filter(x => x[attr] === value)
     }
 
+    static findByName(name) {
+        const result = this.db().getAll(this.tableName()).filter(x => x['name'] === name)
+        return result.length ? result[0] : null
+    }
+
     static getByAttrMap(map) {
         const _checkValues = (x: string, map: any) => {
             Object.keys(map).forEach(k => x[k] === map[k])

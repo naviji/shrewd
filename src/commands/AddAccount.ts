@@ -17,17 +17,10 @@ class AddAccount extends AddCommand {
     }
 
     execute (o) {
-
-        // TODO: Make commands atomic so that the state doesnot become inconsistent
-        // Transfers and transactions created should either get reflected in the database together or not at all.
-        const { createdDay } =  o 
-        // TODO : Make account hold createdDay instead of createdMonth
-        // Only transfers should have created month
-        const createdMonth = createdDay || timeUtils.timeInUnixMs()
-        const createdAccount = super.execute(Object.assign({}, o, { createdMonth })) // TODO: change to created Day
-        // console.log(Setting.constants_)
+        const { createdDay = timeUtils.timeInUnixMs() } =  o 
+        const createdAccount = super.execute(Object.assign({}, o, { createdDay }))
         const createdTransaction = this.addTransactionCmd.execute({
-            createdDay: createdMonth,
+            createdDay,
             payee: "Starting Balance",
             categoryId: Setting.get('readyToAssignId'),
             accountId: createdAccount.id,

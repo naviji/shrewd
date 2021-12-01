@@ -77,14 +77,15 @@ let isNetworkSyncTarget_ = false;
 setSyncTargetName('memory');
 // setSyncTargetName('filesystem');
 
-
+export const setupDatabase = (id) => {
+	BaseService.logger_ = logger
+	databases_[id] = new Database(logger)
+	BaseModel.setDb(databases_[id])
+	Setting.set('clientId', id)
+}
 
 export const setupDatabaseAndSynchronizer = async (id) => {
-    // console.log("Calling setup", n)
-    BaseService.logger_ = logger
-    databases_[id] = new Database(logger)
-    BaseModel.setDb(databases_[id])
-	Setting.set('clientId', id)
+    setupDatabase(id)
     if (!synchronizers_[id]) {
 		const syncTarget = new SyncTargetMemory(databases_[id]);
         await initFileApi()
@@ -116,6 +117,7 @@ async function initFileApi() {
 export function fileApi() {
 	return fileApis_[syncTargetId_];
 }
+
 
 const synchronizer = (id: number = null) => {
 	if (id === null) id = Setting.get('clientId');

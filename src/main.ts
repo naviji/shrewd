@@ -1,5 +1,8 @@
 import BudgetApplication from './classes/BudgetApplication'
+import Logger from './lib/Logger'
 import Account from './models/Account'
+import Category from './models/Category'
+import Target from './models/Target'
 import timeUtils, { unixMsFromDate, timeInUnixMs } from "./utils/timeUtils"
 
 
@@ -7,6 +10,7 @@ import timeUtils, { unixMsFromDate, timeInUnixMs } from "./utils/timeUtils"
 
 TODO
 https://github.com/cronvel/terminal-kit
+*. Whenever you make transactions on tracking account, don't create transfers.
 0. Use joplin CLI and find out how to design a CLI interface
 1. Add option to mark a savings account as tracking
     a) Keep transactions but remove associated transfers to readyToAssign
@@ -24,7 +28,6 @@ const app = new BudgetApplication()
 
 /*
     // COMMAND HELP SECTION //
-    * convertToBudgetAccount()
     * removeCategory() and removeCategoryGroup() and removeTransaction()
     *. addTarget() 
     -2. importFromRegister() and importFromBudget()
@@ -56,17 +59,28 @@ const app = new BudgetApplication()
 const options = {
     debugMode: true,
     saveChanges: false,
-    loadData: true
+    loadData: false
 }
 
 app.start(options)
 
-// app.importFromRegister('./data/Register.csv')
-// app.importFromBudget('./data/Budget.csv')
 
+app.importFromRegister('./data/Register.csv')
+app.importFromBudget('./data/Budget.csv')
+
+const indexFund = Account.findByName('Index Funds')
+app.convertToOffBudgetAccount(indexFund.id)
+
+// const airpods = Category.findByName('AirPods Pro')
+
+// Save x by date y already have available (with repeats)
+// app.addTarget({categoryId: airpods.id, amount: 1000, date: '11/12/2021'})
+
+
+// app.selectPreviousMonth()
 // const indexFund = Account.getByAttrWithValue('name', 'Index Funds')[0]
 // console.log('Fund is ', indexFund)
 // console.log('Id is ', indexFund.id)
-// app.convertToBudgetAccount(indexFund.id)
+// app.convertToOffBudgetAccount(indexFund.id)
 
 app.render()

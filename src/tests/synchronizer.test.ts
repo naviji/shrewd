@@ -43,10 +43,10 @@ describe('Synchronizer should', function() {
 
   it('create remote items', async () => {
     
-    const account = await Account.save({type: Account.TYPE_SAVINGS, name: "Savings", amount: 1000 })
+    const account = await Account.save({type: Account.TYPE_SAVINGS, name: "Savings", amount: 1000, createdDay: timeUtils.timeInUnixMs()})
     const categoryGroup = await CategoryGroup.save({name: "Wishlist"})
     const category = await Category.save({name: "House", parentId: categoryGroup.id})
-    const target = await Target.save({name: "Target#1", createdMonth: timeUtils.timeInUnixMs()})
+    const target = await Target.save({amount: 100, categoryId: category.id, endDate: timeUtils.timeInUnixMs()})
     const transfer = await Transfer.save({from: Setting.get('readyToAssignId'), to: category.id, amount: 100, createdMonth: timeUtils.timeInUnixMs()})
     const transaction = await Transaction.save({
       createdDay: timeUtils.timeInUnixMs(),

@@ -108,7 +108,7 @@ class BudgetApplication {
         return CommandService.instance().execute('AddTarget', o)
     }
 
-    convertToBudgetAccount(accountId) {
+    convertToOffBudgetAccount(accountId) {
         CommandService.instance().execute('ConvertAccount', { accountId })
     }
 
@@ -145,21 +145,9 @@ class BudgetApplication {
         return transferDates.length ? transferDates[0] : -Infinity
     }
 
-    private availableThisMonth(categoryId) {
-        // TO DO: Change this static date to the month of last known transfer
-        const firstTransferMonth = timeUtils.unixMsFromMonth('Jan 2021')
-        // const firstTransferMonth = this.firstTransferToReadyToAssign()
-
-        const _availableOnMonth = (categoryId, month) => {
-            if (month < firstTransferMonth) return 0
-            const prevMonth = timeUtils.subtractMonth(month)
-            return Category.getAssignedOfMonth(categoryId, month) +
-                   Category.getActivityOfMonth(categoryId, month) +
-                   _availableOnMonth(categoryId, prevMonth)
-        }
-
+    public availableThisMonth(categoryId) {
         const month = this.getSelectedMonth()
-        return _availableOnMonth(categoryId, month)
+        return Category.getAvailableOfMonth(categoryId, month)
     }
 
     private activityThisMonth(categoryId) {

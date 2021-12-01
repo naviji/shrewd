@@ -20,9 +20,6 @@ class AddTransaction extends AddCommand {
 
         const createdTransaction = super.execute(o)
 
-        // Assumption: All transaction made to readyToAssign are Inflows;
-        // Cannot spend from ready to assign directly
-        // 249002
         if ( categoryId === Setting.get('readyToAssignId') || categoryId === Setting.get('moneyTreeId')) { 
             this.addTransferCmd = new AddTransfer()
             this.addTransferCmd.execute({

@@ -25,14 +25,15 @@ class Account extends BaseItem {
     public static TYPE_CURRENT = AccountType.Savings
 
     static fieldNames() {
-        return ["id", "type", "name", "amount", "updatedAt", "createdAt", "closed"]
+        return ["id", "type", "name", "amount", "updatedAt", "createdAt", "closed", "createdDay"]
     }
 
     static fieldTypes() {
         return {
             "type": Number,
             "amount": Number,
-            "closed": (x) => !(x == 'false')
+            "closed": (x) => !(x == 'false'),
+            "createdDay": Number
         }
     }
 
@@ -48,11 +49,7 @@ class Account extends BaseItem {
     static getNameFromId = (id) => {
         return Account.getById(id).name
     }
-
-    static findByName = (name) => {
-        const result =  Account.getByAttrWithValue('name', name)
-        return result.length ? result[0] : null
-    }
+    
 
     static getBalance = (id) => {
         const balance = Transaction.getAll().filter(x => x.accountId === id && 
