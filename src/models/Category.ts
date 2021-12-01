@@ -26,6 +26,11 @@ class Category extends BaseItem {
         return super.save(o);
     }
 
+    static assignMoney = (id, amount, date) => {
+        const month = timeUtils.unixMsFromDate(date)
+        const transfer = Transfer.add({from: Setting.get('readyToAssignId'), to: id, amount, createdMonth: month})
+    }
+
     static assignedTillMonth = (id, month) => {
         const transfers = Transfer.getAll().filter(x => x.categoryId === id && x.createdMonth < month)
         return transfers.length ? transfers.map(x => x.amount).reduce((a, b) => a+b, 0) : 0
@@ -98,6 +103,10 @@ class Category extends BaseItem {
         if (id === Setting.get('readyToAssignId')) return 'Inflow: Ready to Assign'
         if (id === Setting.get('moneyTreeId')) return 'Money Tree: --'
         return Category.getById(id).name
+    }
+
+    static assignMoneyOnMonth = (id, amount, month) => {
+
     }
 }
 

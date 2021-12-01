@@ -1,6 +1,8 @@
 import timeUtils from "../utils/timeUtils"
 import BaseItem from "./BaseItem"
+import Setting from "./Setting"
 import Transaction from "./Transaction"
+import Transfer from "./Transfer"
 
 
 export enum AccountType {
@@ -38,11 +40,12 @@ class Account extends BaseItem {
     }
 
     static save =  (o) => {
-        const { id, closed } = o
+        const { id, closed, createdDay } = o
         if (!id && !closed) {
             // New accounts are open by default
             o.closed = false
         }
+
         return super.save(o);
     }
 
@@ -57,6 +60,21 @@ class Account extends BaseItem {
                             .map(x => x.inflow - x.outflow)
                             .reduce((a, b) => a + b, 0)
         return balance
+    }
+
+    static add = ({name, amount, type, createdDay}) => {
+        const account = this.save({name, amount, type, createdDay})
+        Transaction.add({
+            createdDay,
+            payee: "Starting Balance",
+            categoryId: Setting.get('readyToAssignId'),
+            accountId: account.id,
+            memo: '--',
+            outflow: 0,
+            inflow: amount,
+            cleared: true
+        })
+        return account
     }
 }
 

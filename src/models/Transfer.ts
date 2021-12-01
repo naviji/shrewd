@@ -1,6 +1,7 @@
 import BaseItem from "./BaseItem"
 import Calendar from "../lib/Calendar"
 import Setting from "./Setting"
+import timeUtils from "../utils/timeUtils"
 
 class Transfer extends BaseItem {
     static tableName = () => "Transfer"
@@ -16,22 +17,18 @@ class Transfer extends BaseItem {
         }
     }
 
-    
-
     static save = (o) => {
-        const { id, accountId } = o
+        const { id, accountId,  createdMonth} = o
+
         if (!id && !accountId) {
-            // New accounts are open by default
             o.accountId = ''
         }
-        return super.save(o);
-    //     // TODO: Create an update function for this purpose?
-    //     // return super.save({...o, month: o.month ? o.month : Calendar.instance().timeInUnixMs()})
-    //     if (o.to === Setting.get('readyToAssignId')) {
-    //         console.log(`Transfering ${o.amount} to readyToAssign`)
-    //     }
-    //     return super.save(o)
 
+        if (!id && !createdMonth) {
+            o.createdMonth = timeUtils.monthInUnixMs()
+        }
+
+        return super.save(o);
     }
 
 }

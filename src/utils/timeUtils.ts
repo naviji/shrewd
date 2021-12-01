@@ -37,6 +37,10 @@ export const timeInUnixMs = () => {
     return dayjs().valueOf()
 }
 
+export const monthInUnixMs = () => {
+    return dayjs().startOf('month').valueOf()
+}
+
 export const endOfMonth = (value) => {
     return dayjs(value).endOf('month')
 }
@@ -106,6 +110,16 @@ export const serializeDate = (value) => {
 const getMonthFromDay = (value) => {
     return dayjs(Number(value)).startOf('month').valueOf()
 }
+
+const getMonthsTillDate = (currentDate, endDate) => {
+    const currentMonth = dayjs(currentDate).startOf('month')
+    const endMonth = dayjs(endDate).startOf('month')
+    return endMonth.diff(currentMonth, 'month') + 1
+}
+
+const monthFromUnixMs = (value) => {
+    return dayjs(Number(value)).startOf('month').valueOf()
+}
 // if (['createdAt', 'updatedAt', 'sync_time', 'user_updatedAt', 'user_createdAt'].indexOf(propName) >= 0) {
 //     if (!propValue) return '';
 //     propValue = `${moment.unix(propValue / 1000).utc().format('YYYY-MM-DDTHH:mm:ss.SSS')}Z`;
@@ -128,5 +142,8 @@ export default {
     unserializeDate,
     serializeDate,
     unixMsFromMonth,
-    getMonthFromDay
+    getMonthFromDay,
+    getMonthsTillDate,
+    monthInUnixMs,
+    monthFromUnixMs
 }

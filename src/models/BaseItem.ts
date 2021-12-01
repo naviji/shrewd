@@ -63,6 +63,10 @@ export default class BaseItem extends BaseModel {
         return {}
     }
 
+	static add(o) {
+		return super.save(o)
+	}
+
 	// public static SYNC_ITEM_LOCATION_LOCAL = 1;
 	// public static SYNC_ITEM_LOCATION_REMOTE = 2;
 

@@ -17,8 +17,8 @@ class AddAccount extends AddCommand {
     }
 
     execute (o) {
-        const { createdDay = timeUtils.timeInUnixMs() } =  o 
-        const createdAccount = super.execute(Object.assign({}, o, { createdDay }))
+        const { createdDay } = o
+        const createdAccount = super.execute(o)
         const createdTransaction = this.addTransactionCmd.execute({
             createdDay,
             payee: "Starting Balance",

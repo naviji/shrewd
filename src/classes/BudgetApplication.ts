@@ -85,7 +85,7 @@ class BudgetApplication {
 
     assignMoney(o) {
         const { to, amount } = o
-        this.moveMoney({from : Setting.get('readyToAssignId'), to, amount })
+        this.moveMoney({from : Setting.get('readyToAssignId'), to, amount, createdMonth: Calendar.instance().startOfMonth()})
     }
 
     addTransaction(o) {
