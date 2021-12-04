@@ -18,7 +18,7 @@ import ImportService from "../services/ImportService"
 // const appLogger = new Logger()
 class BudgetApplication {
 
-    private calendar_
+    private calendar_ : Calendar = Calendar.instance()
     private logger_
 
     start(options) {

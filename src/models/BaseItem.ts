@@ -19,7 +19,7 @@ import timeUtils from '../utils/timeUtils';
 
 import BaseModel, { ModelType } from "./BaseModel";
 import DeletedItem from "./DeletedItem";
-import SyncedItem from './SyncedItems';
+import SyncedItem from './SyncedItem';
 
 export interface ItemsThatNeedDecryptionResult {
 	hasMore: boolean;

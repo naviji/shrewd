@@ -1,3 +1,4 @@
+import Account from '../models/Account'
 import Transfer from '../models/Transfer'
 
 class ConvertAccount {
@@ -7,6 +8,7 @@ class ConvertAccount {
 
     private transfers
     private accountId
+    private oldAccount
 
     // model = () => Account
 
@@ -14,13 +16,14 @@ class ConvertAccount {
         // this.addTransactionCmd = new AddTransaction()
         this.transfers = []
         this.accountId = null
+        this.oldAccount = null
     }
 
     execute (o) {
+        this.oldAccount = o
+        Account.save({...o, type: Account.TYPE_OFF_BUDGET})
 
-        // get all transfers with this accountId and delete them
         const { accountId } =  o 
-        this.accountId = accountId
         this.transfers = Transfer.getByAttrWithValue('accountId', accountId)
 
         for (const transfer of this.transfers) {
@@ -32,6 +35,8 @@ class ConvertAccount {
         for (const transfer of this.transfers) {
             Transfer.save(transfer)
         }
+
+        Account.save(this.oldAccount)
     }
 
     redo() {

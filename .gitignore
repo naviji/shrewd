@@ -1,5 +1,5 @@
 # Dependency directories
 node_modules/
-built/
+build/
 data/
 .DS_Store

@@ -126,6 +126,10 @@ const monthFromUnixMs = (value) => {
 const getPrevMonthUnixMs = (value) => {
     return dayjs(Number(value)).startOf('month').subtract(1, 'month').valueOf()
 }
+
+const addMonthsToDateUnixMs = (currDate, monthsToAdd) => {
+    return dayjs(Number(currDate)).add(monthsToAdd, 'month').valueOf()
+}
 // if (['createdAt', 'updatedAt', 'sync_time', 'user_updatedAt', 'user_createdAt'].indexOf(propName) >= 0) {
 //     if (!propValue) return '';
 //     propValue = `${moment.unix(propValue / 1000).utc().format('YYYY-MM-DDTHH:mm:ss.SSS')}Z`;
@@ -152,5 +156,6 @@ export default {
     getMonthsTillDate,
     monthInUnixMs,
     monthFromUnixMs,
-    getPrevMonthUnixMs
+    getPrevMonthUnixMs,
+    addMonthsToDateUnixMs
 }

@@ -1,3 +1,5 @@
+import FsDriverNode from "./FsDriverNode"
+
 export const LogLevel = {
     None : 0,
     Error : 10,
@@ -7,9 +9,15 @@ export const LogLevel = {
 }
 
 class Logger {
+    private static fsDriver: null | FsDriverNode
     private logLevel: number
+
     constructor (level = LogLevel.Warn) {
         this.logLevel = level
+    }
+
+    static setFsDriver(fsDriver: FsDriverNode) {
+        this.fsDriver = fsDriver
     }
 
     setLevel (level) {

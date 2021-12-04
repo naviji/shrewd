@@ -75,7 +75,7 @@ import FileApi from "./FileApi";
 import LockHandler from "./LockHandler";
 import Setting from '../models/Setting'
 import TaskQueue from './TaskQueue';
-import SyncedItem from '../models/SyncedItems';
+import SyncedItem from '../models/SyncedItem';
 import MigrationHandler from './MigrationHandler';
 
 export default class Synchronizer {

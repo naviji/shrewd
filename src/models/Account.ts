@@ -8,6 +8,7 @@ import Transfer from "./Transfer"
 export enum AccountType {
 	Savings = 1,
 	Current = 2,
+    OffBudget = 3
 }
 
 // class BaseModel {
@@ -24,7 +25,8 @@ class Account extends BaseItem {
     static tableName = () => 'Account'
 
     public static TYPE_SAVINGS = AccountType.Savings
-    public static TYPE_CURRENT = AccountType.Savings
+    public static TYPE_CURRENT = AccountType.Current
+    public static TYPE_OFF_BUDGET = AccountType.Savings
 
     static fieldNames() {
         return ["id", "type", "name", "amount", "updatedAt", "createdAt", "closed", "createdDay"]
