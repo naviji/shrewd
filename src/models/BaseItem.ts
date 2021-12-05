@@ -10,7 +10,7 @@
 // import ShareService from '../services/share/ShareService';
 // import itemCanBeEncrypted from './utils/itemCanBeEncrypted';
 // import { getEncryptionEnabled } from '../services/synchronizer/syncInfoUtils';
-// const JoplinError = require('../JoplinError.js');
+// const stoicError = require('../stoicError.js');
 // const { sprintf } = require('sprintf-js');
 // const moment = require('moment');
 // import moment from 'moment'	

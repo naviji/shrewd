@@ -10,7 +10,7 @@ import { isHidden } from '../utils/pathUtils';
 // import time from './time';
 
 // const { isHidden } = require('./path-utils');
-// import JoplinError from './JoplinError';
+// import stoicError from './stoicError';
 // const ArrayUtils = require('./ArrayUtils');
 // const { sprintf } = require('sprintf-js');
 const Mutex = require('async-mutex').Mutex;
@@ -133,7 +133,7 @@ class FileApi {
 
 
 // 	// This can be true if the driver implements uploading items in batch. Will
-// 	// probably only be supported by Joplin Server.
+// 	// probably only be supported by stoic Server.
 // 	public get supportsMultiPut(): boolean {
 // 		return !!this.driver().supportsMultiPut;
 // 	}
@@ -145,7 +145,7 @@ class FileApi {
 // 	// relied on, and even OneDrive for some reason doesn't guarantee that the
 // 	// timestamp you set is what you get back).
 // 	//
-// 	// The only reliable one at the moment is Joplin Server since it reads the
+// 	// The only reliable one at the moment is stoic Server since it reads the
 // 	// updatedAt property directly from the item (it unserializes it
 // 	// server-side).
 // 	public get supportsAccurateTimestamp(): boolean {

@@ -4,7 +4,7 @@ import FileApi from "./FileApi";
 import FileApiDriverMemory from "./FileApiDriverMemory";
 import Synchronizer from "./Synchronizer";
 
-class SyncTargetFilesystem extends BaseSyncTarget {
+export default class SyncTargetFilesystem extends BaseSyncTarget {
 	static id() {
 		return 2;
 	}
@@ -40,4 +40,3 @@ class SyncTargetFilesystem extends BaseSyncTarget {
 	}
 }
 
-module.exports = SyncTargetFilesystem;

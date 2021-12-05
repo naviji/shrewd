@@ -10,3 +10,10 @@ export function isHidden(path: string) {
 	if (!b.length) throw new Error(`Path empty or not a valid path: ${path}`);
 	return b[0] === '.';
 }
+
+
+export function toSystemSlashes(path: string, os: string = null) {
+	if (os === null) os = process.platform;
+	if (os === 'win32') return path.replace(/\//g, '\\');
+	return path.replace(/\\/g, '/');
+}

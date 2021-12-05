@@ -16,13 +16,13 @@
 // import time from './time';
 // import ResourceService from './services/ResourceService';
 // import EncryptionService from './services/e2ee/EncryptionService';
-// import JoplinError from './JoplinError';
+// import stoicError from './stoicError';
 // import ShareService from './services/share/ShareService';
 // import TaskQueue from './TaskQueue';
 import ItemUploader from './ItemUploader'
 import BaseItem from '../models/BaseItem';
 // import { FileApi } from './file-api';
-// import JoplinDatabase from './JoplinDatabase';
+// import stoicDatabase from './stoicDatabase';
 // import { fetchSyncInfo, getActiveMasterKey, localSyncInfo, mergeSyncInfos, saveLocalSyncInfo, SyncInfo, syncInfoEquals, uploadSyncInfo } from './services/synchronizer/syncInfoUtils';
 // import { getMasterPassword, setupAndDisableEncryption, setupAndEnableEncryption } from './services/e2ee/utils';
 // import { generateKeyPair } from './services/e2ee/ppk';
@@ -42,14 +42,14 @@ interface RemoteItem {
 	isDeleted?: boolean;
 
 	// This the time when the file was created on the server. It is used for
-	// example for the locking mechanim or any file that's not an actual Joplin
+	// example for the locking mechanim or any file that's not an actual stoic
 	// item.
 	updatedAt?: number;
 
-	// This is the time that corresponds to the actual Joplin item updatedAt
+	// This is the time that corresponds to the actual stoic item updatedAt
 	// value. A note is always uploaded with a delay so the server updatedAt
 	// value will always be ahead. However for synchronising we need to know the
-	// exact Joplin item updatedAt value.
+	// exact stoic item updatedAt value.
 	app_updatedAt?: number;
 }
 

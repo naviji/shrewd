@@ -18,6 +18,8 @@ class BaseModel {
 	public static TYPE_TRANSFER = ModelType.Transfer;
 
     private static db_
+    public static dispatch: Function = () => {};
+
     
     static tableName(): string {
         throw new Error("Needs to be overriden")

@@ -5,7 +5,7 @@ import ElectronAppWrapper from "./classes/ElectronWrapper";
 // the main process will know or to perform actions that only the main process can do
 // Renderer script and main script are different processes;
 // Bridge exists as a remote object for renderer to coordinate with main
-class Bridge {
+export class Bridge {
     // private static instance_: Bridge = null
 	private electronWrapper_: ElectronAppWrapper = null;
 	// private lastSelectedPaths_: LastSelectedPaths;
@@ -273,7 +273,7 @@ export function initBridge(wrapper: ElectronAppWrapper) {
 	return bridge_;
 }
 
-export default function bridge() {
+export default function bridge() : Bridge {
 	if (!bridge_) throw new Error('Bridge not initialized');
 	return bridge_;
 }

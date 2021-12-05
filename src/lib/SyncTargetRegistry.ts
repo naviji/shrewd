@@ -9,7 +9,7 @@ export interface SyncTargetInfo {
 }
 
 // const syncTargetOrder = [
-// 	'joplinCloud',
+// 	'stoicCloud',
 // 	'dropbox',
 // 	'onedrive',
 // ];

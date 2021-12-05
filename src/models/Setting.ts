@@ -7,7 +7,7 @@ class Setting extends BaseModel {
     public static constants_ = {
             env: 'Dev',
             isDemo: false,
-            appName: 'joplin',
+            appName: 'stoic',
             appId: 'SET_ME', // Each app should set this identifier
             appType: 'SET_ME' as any, // 'cli' or 'mobile'
             resourceDirName: '',
@@ -43,6 +43,19 @@ class Setting extends BaseModel {
         if (result.length) return result[0].value
         return null
     }
+
+    static toPlainObject() {
+		const variableSettings = this.getAll();
+        const constantSettings = this.constants_;
+
+        const allSettings = variableSettings.concat(constantSettings)
+
+		const keyToValues: any = {};
+		for (let setting of allSettings) {
+			keyToValues[setting.key] = setting.value;
+		}
+		return keyToValues;
+	}
 
 }
 

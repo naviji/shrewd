@@ -345,9 +345,9 @@ const shim = {
 	// 	// Something went wrong installing the "sharp" module
 	// 	// /lib/x86_64-linux-gnu/libz.so.1: version `ZLIB_1.2.9' not found
 	// 	// (required by
-	// 	// /home/travis/build/laurent22/joplin/packages/app-cli/node_modules/sharp/build/Release/../../vendor/lib/libpng16.so.16)
+	// 	// /home/travis/build/laurent22/stoic/packages/app-cli/node_modules/sharp/build/Release/../../vendor/lib/libpng16.so.16)
 	// 	//
-	// 	// See: https://travis-ci.org/github/laurent22/joplin/jobs/686222036
+	// 	// See: https://travis-ci.org/github/laurent22/stoic/jobs/686222036
 	// 	//
 	// 	// Also disabled in portable mode obviously.
 

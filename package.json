@@ -7,19 +7,20 @@
   "license": "MIT",
   "scripts": {
     "clean": "rimraf build",
-    "start": "npm-run-all clean build run:app",
-    "startDesktop": "npm-run-all clean build copy-files run:desktop",
+    "start": "npm-run-all clean build run:desktop",
+    "build": "npm-run-all clean translate copy-files",
     "run:desktop": "electron . --env dev",
     "test": "jest",
     "watch:test": "npx jest --watchAll",
     "run:app": "node ./build/main.js",
-    "build": "npx tsc --build tsconfig.json",
+    "translate": "npx tsc --build tsconfig.json",
     "watch:build": "npx tsc --build tsconfig.json --watch",
     "watch:app": "npx nodemon ./build/main.js --watch ./build",
     "copy-files": "copyfiles -u 1 ./src/**/*.html src/**/*.css ./build"
   },
   "dependencies": {
     "@electron/remote": "^2.0.1",
+    "@reduxjs/toolkit": "^1.6.2",
     "async-mutex": "^0.3.2",
     "dayjs": "^1.10.7",
     "electron-window-state": "^5.0.3",
@@ -27,6 +28,9 @@
     "nanotimer": "^0.3.15",
     "papaparse": "^5.3.1",
     "path": "^0.12.7",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-redux": "^7.2.6",
     "sprintf-js": "^1.1.2",
     "timers-browserify": "^2.0.12",
     "url": "^0.11.0"

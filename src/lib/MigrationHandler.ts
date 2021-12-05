@@ -5,9 +5,9 @@
 // import migration2 from './migrations/2';
 // import migration3 from './migrations/3';
 // import Setting from '../../models/Setting';
-// import JoplinError from '../../JoplinError';
+// import stoicError from '../../stoicError';
 // import { FileApi } from '../../file-api';
-// import JoplinDatabase from '../../JoplinDatabase';
+// import stoicDatabase from '../../stoicDatabase';
 // import { fetchSyncInfo, SyncInfo } from './syncInfoUtils';
 // const { sprintf } = require('sprintf-js');
 
@@ -99,7 +99,7 @@ export default class MigrationHandler extends BaseService {
 		// if (supportedSyncTargetVersion !== migrations.length - 1) {
 		// 	// Sanity check - it means a migration has been added by syncVersion has not be incremented or vice-versa,
 		// 	// so abort as it can cause strange issues.
-		// 	throw new JoplinError('Application error: mismatch between max supported sync version and max migration number: ' + supportedSyncTargetVersion + ' / ' + (migrations.length - 1));
+		// 	throw new stoicError('Application error: mismatch between max supported sync version and max migration number: ' + supportedSyncTargetVersion + ' / ' + (migrations.length - 1));
 		// }
 
 		// Special case for version 1 because it didn't have the lock folder and without

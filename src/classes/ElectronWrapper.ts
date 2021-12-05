@@ -5,7 +5,7 @@ import { BrowserWindow, Tray, screen, ipcMain  } from 'electron';
 
 const url = require('url');
 const path = require('path');
-// const { dirname } = require('@joplin/lib/path-utils');
+// const { dirname } = require('@stoic/lib/path-utils');
 const fs = require('fs-extra');
 // const { ipcMain } = require('electron');
 
@@ -114,11 +114,10 @@ export default class ElectronAppWrapper {
 				contextIsolation: false,
 				nodeIntegration: true,
 				enableRemoteModule: false,
-				// preload: path.join(__dirname, '..', 'preload.js')
 			},
 			webviewTag: true,
 			// We start with a hidden window, which is then made visible depending on the showTrayIcon setting
-			// https://github.com/laurent22/joplin/issues/2031
+			// https://github.com/laurent22/stoic/issues/2031
 			show: debugEarlyBugs
 		};
 
@@ -239,7 +238,7 @@ export default class ElectronAppWrapper {
 		// 		// An error might happen when the app is closing and a plugin
 		// 		// sends a message. In which case, the above code would try to
 		// 		// access a destroyed webview.
-		// 		// https://github.com/laurent22/joplin/issues/4570
+		// 		// https://github.com/laurent22/stoic/issues/4570
 		// 		console.error('Could not process plugin message:', message);
 		// 		console.error(error);
 		// 	}
@@ -252,7 +251,7 @@ export default class ElectronAppWrapper {
 
 		// HACK: Ensure the window is hidden, as `windowState.manage` may make the window
 		// visible with isMaximized set to true in window-state-${this.env_}.json.
-		// https://github.com/laurent22/joplin/issues/2365
+		// https://github.com/laurent22/stoic/issues/2365
 		if (!windowOptions.show) {
 			globalWin.hide();
 		}

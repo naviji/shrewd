@@ -5,6 +5,31 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Debug main process",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceRoot}/build/main.js",
+            "stopOnEntry": false,
+            "args": [],
+            "cwd": "${workspaceRoot}",
+            "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
+            "runtimeArgs": [
+                ".",
+                "--enable-logging",
+                "--remote-debugging-port=9222",
+                "--env",
+                "dev"
+            ],
+            "env": {},
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceRoot}/build/**/*.js"
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "console": "integratedTerminal",
+            "preLaunchTask": "build"
+        },
+        {
             "type": "pwa-node",
             "request": "launch",
             "name": "Launch Program",
@@ -12,8 +37,8 @@
                 "<node_internals>/**",
                 "${workspaceFolder}/node_modules/**/*.js"
             ],
-            "program": "${workspaceFolder}/src/main.ts",
-            "preLaunchTask": "tsc: build - tsconfig.json",
+            "program": "${workspaceFolder}/src/cli.ts",
+            "preLaunchTask": "build",
             "outFiles": ["${workspaceFolder}/build/**/*.js"]
         }
     ]

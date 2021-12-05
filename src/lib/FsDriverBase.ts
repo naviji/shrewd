@@ -161,7 +161,7 @@ export default class FsDriverBase {
 		}
 	}
 
-	// TODO: move out of here and make it part of joplin-renderer
+	// TODO: move out of here and make it part of stoic-renderer
 	// or assign to option using .bind(fsDriver())
 	// public async cacheCssToFile(cssStrings: string[]) {
 	// 	const cssString = Array.isArray(cssStrings) ? cssStrings.join('\n') : cssStrings;

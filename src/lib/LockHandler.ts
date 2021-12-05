@@ -1,7 +1,7 @@
 // import { Dirnames } from './utils/types';
 // import shim from '../../shim';
 
-// import JoplinError from '../../JoplinError';
+// import stoicError from '../../stoicError';
 // import time from '../../time';
 // const { fileExtension, filename } = require('../../path-utils');
 import { Dirnames } from "./types";
@@ -31,7 +31,7 @@ export interface AcquireLockOptions {
 	// we make the behaviour explicit via this option. It is used for example
 	// when migrating a sync target.
 	//
-	// https://discourse.joplinapp.org/t/error-upgrading-to-2-3-3/19549/4?u=laurent
+	// https://discourse.stoicapp.org/t/error-upgrading-to-2-3-3/19549/4?u=laurent
 	clearExistingSyncLocksFromTheSameClient?: boolean;
 	timeoutMs?: number;
 }
@@ -175,7 +175,7 @@ export default class LockHandler {
 	// 			]);
 
 	// 			if (exclusiveLock) {
-	// 				throw new JoplinError(`Cannot acquire sync lock because the following client has an exclusive lock on the sync target: ${this.lockToClientString(exclusiveLock)}`, 'hasExclusiveLock');
+	// 				throw new stoicError(`Cannot acquire sync lock because the following client has an exclusive lock on the sync target: ${this.lockToClientString(exclusiveLock)}`, 'hasExclusiveLock');
 	// 			}
 
 	// 			if (syncLock) {
@@ -249,7 +249,7 @@ export default class LockHandler {
 				// 		await this.releaseLock(LockType.Sync, clientType, clientId);
 				// 	} else {
 				// 		if (await waitForTimeout()) continue;
-				// 		throw new JoplinError(`Cannot acquire exclusive lock because the following clients have a sync lock on the target: ${this.lockToClientString(activeSyncLock)}`, 'hasSyncLock');
+				// 		throw new stoicError(`Cannot acquire exclusive lock because the following clients have a sync lock on the target: ${this.lockToClientString(activeSyncLock)}`, 'hasSyncLock');
 				// 	}
 				// }
 
