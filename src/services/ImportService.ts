@@ -28,7 +28,7 @@ class ImportService extends BaseService {
         const name = data['Account']
         const account = Account.getByAttrWithValue('name', name)
         return account.length > 0 ? { created: false , account: account[0] } : 
-        { created: true, account: Account.add({name, type: Account.TYPE_SAVINGS, amount: Number(data['Inflow'].trim().slice(1)) || 0 , 
+        { created: true, account: Account.add({name, type: Account.TYPE_SAVINGS, amount: Number(data['Inflow'].trim().slice(1)*100) || 0 , 
         createdDay: timeUtils.unixMsFromDate(data['Date'])}) }
     }
 
@@ -55,8 +55,8 @@ class ImportService extends BaseService {
             categoryId: categoryId,
             accountId: accountId,
             memo: x['Memo'],
-            outflow: Number(x['Outflow'].trim().substr(1)),
-            inflow: Number(x['Inflow'].trim().substr(1)),
+            outflow: Number(x['Outflow'].trim().substr(1)) * 100,
+            inflow: Number(x['Inflow'].trim().substr(1)) * 100,
             cleared: true
         })
     }
@@ -106,8 +106,8 @@ class ImportService extends BaseService {
 
     public importFromBudget = (path) => {
         const _getAmountFromString = (str) => {
-            if (str.startsWith("-")) return -Number(str.slice(1).trim().substr(1))
-            return Number(str.trim().substr(1))
+            if (str.startsWith("-")) return -(Number(str.slice(1).trim().substr(1))*100)
+            return Number(str.trim().substr(1))*100
         }
         const processFile = (input) => {
             const { data } = Papa.parse(input, {header: true, transformHeader: this._trimQuotes}, )

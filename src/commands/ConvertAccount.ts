@@ -19,11 +19,13 @@ class ConvertAccount {
         this.oldAccount = null
     }
 
-    execute (o) {
-        this.oldAccount = o
-        Account.save({...o, type: Account.TYPE_OFF_BUDGET})
+    execute(o) {
+        const { accountId } = o 
+        
+        this.oldAccount = Account.getById(accountId)
+        Account.save({...this.oldAccount, type: Account.TYPE_OFF_BUDGET})
 
-        const { accountId } =  o 
+        
         this.transfers = Transfer.getByAttrWithValue('accountId', accountId)
 
         for (const transfer of this.transfers) {

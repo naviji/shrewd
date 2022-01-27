@@ -14,8 +14,14 @@ import Target from "../models/Target"
 import timeUtils from "../utils/timeUtils"
 import Setting from "../models/Setting"
 import ImportService from "../services/ImportService"
+var sprintf = require('sprintf-js').sprintf
 
 // const appLogger = new Logger()
+
+function _rupee(amount) {
+    return sprintf('%10.2f', amount/100)
+    return `Rs. ${amount/100}`
+}
 class BudgetApplication {
 
     private calendar_ : Calendar = Calendar.instance()
@@ -131,7 +137,7 @@ class BudgetApplication {
     }
 
     private readyToAssign() {
-        return Category.getAllAssigned(Setting.get('readyToAssignId'))
+        return _rupee(Category.getAllAssigned(Setting.get('readyToAssignId')))
     }
 
     private assignedThisMonth(categoryId) {
@@ -175,9 +181,9 @@ class BudgetApplication {
                 totalAvailableThisMonth += category.availableThisMonth
             }
 
-            this.logger().log(`    ${group.name} [${totalAssignedThisMonth}] [${totalActivityThisMonth}] [${totalAvailableThisMonth}]`)
+            this.logger().log(`${sprintf('%-29s', group.name)} ${_rupee(totalAssignedThisMonth)} | ${_rupee(totalActivityThisMonth)} | ${_rupee(totalAvailableThisMonth)}`)
             for (let category of categories) {
-                this.logger().log(`    --- ${category.name} [${category.assignedThisMonth}] [${category.activityThisMonth}] [${category.availableThisMonth}]  `)
+                this.logger().log(`    ${sprintf('%-25s', category.name)} ${_rupee(category.assignedThisMonth)} | ${_rupee(category.activityThisMonth)} | ${_rupee(category.availableThisMonth)}  `)
                 this.renderTargets_(category.id)
             }
         }
@@ -193,12 +199,14 @@ class BudgetApplication {
         }
     }
 
+
+
     private renderAccounts_() {
         this.logger().log("Accounts: ")
         const accounts = Account.getAll()
         for (let account of accounts) {
             // Add account init amount as a transaction
-            this.logger().log(`   ${account.name} [${Account.getBalance(account.id)}]`)
+            this.logger().log(`${sprintf('%-20s', account.name)} ${_rupee(Account.getBalance(account.id))}`)
         }
     }
 
@@ -206,14 +214,14 @@ class BudgetApplication {
         const assignedThisMonth = this.assignedThisMonth(categoryId)
         const target = Target.getByCategoryId(categoryId)
         if (target && (target.createdMonth <= this.getSelectedMonth()))
-            this.logger().log(`             --- Every ${target.every} ${target.type} ${target.amount} ( You need ${(target.amount /target.every) - (assignedThisMonth + Category.getAllActivity(categoryId))} this ${target.type})`)
+            this.logger().log(`             --- Every ${target.every} ${target.type} ${_rupee(target.amount)} ( You need ${_rupee((target.amount / target.every) - (assignedThisMonth + Category.getAllActivity(categoryId)))} this ${target.type})`)
     }
 
     render() {
         this.logger().log(`\n--- BUDGET APP ---`)
         this.logger().log(`Month: ${this.printSelectedMonth()}`)
         this.logger().log(`Year: ${this.printSelectedYear()}`)
-        this.logger().log(`Ready to assign : ${this.readyToAssign()}`)
+        this.logger().log(`Ready to assign :    ${this.readyToAssign()}`)
 
         this.renderAccounts_();
         this.renderCategories_();
