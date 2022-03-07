@@ -1,10 +1,14 @@
 import { app as electronApp } from 'electron'
+const electronReload = require('electron-reload')
+
+
 import ElectronWrapper from './classes/ElectronWrapper'
 import Logger from './lib/Logger'
 import FsDriverNode from './lib/FsDriverNode'
 import { envFromArgs, profilePathFromArgs, isDebugMode } from './lib/startupHelpers'
 import Setting from './models/Setting'
 
+electronReload(__dirname, {})
 require('@electron/remote/main').initialize();
 const { initBridge } = require('./bridge');
 
