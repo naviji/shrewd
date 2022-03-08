@@ -1,3 +1,5 @@
+import installExtension, { REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
+
 import Logger from '../lib/Logger'
 import shim from '../lib/shim'
 import { BrowserWindow, Tray, screen, ipcMain } from 'electron'
@@ -44,7 +46,15 @@ export default class ElectronAppWrapper {
       async start () {
         // Since we are doing other async things before creating the window, we might miss
         // the "ready" event. So we use the function below to make sure that the app is ready.
-        await this.waitForElectronAppReady()
+            await this.waitForElectronAppReady()
+
+            const extensions = [REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS];
+            await Promise.all(
+                  extensions.map((extension) => installExtension(extension,  { loadExtensionOptions: { allowFileAccess: true } })
+                  .then((name) => console.log("Added Extension: " + name))
+                  .catch((err) => console.log("An error occurred: ", err)))
+                );
+     
 
         const alreadyRunning = this.ensureSingleInstance()
         if (alreadyRunning) return
@@ -65,7 +75,9 @@ export default class ElectronAppWrapper {
       }
 
       async waitForElectronAppReady () {
-        if (this.electronApp().isReady()) return Promise.resolve()
+            if (this.electronApp().isReady()) {
+                  return Promise.resolve()
+            }
 
         return new Promise((resolve) => {
           const iid = setInterval(() => {
