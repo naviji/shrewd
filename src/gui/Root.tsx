@@ -33,8 +33,13 @@ function RootComponent () {
     }
   }, [])
 
+  const handleClick = (e) => {
+    console.log('hello')
+  }
+
   return (
     <div>
+      <button onClick={handleClick}>Test</button>
       <h1>testffdd33! {status}</h1>
       <h2>Good to see you here.</h2>
     </div>

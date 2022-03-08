@@ -1,0 +1,16 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "translate",
+			"problemMatcher": [],
+			"label": "npm: translate",
+			"detail": "npx tsc --build tsconfig.json",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		}
+	]
+}
