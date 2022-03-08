@@ -9,12 +9,15 @@
     "clean": "rimraf build",
     "start": "concurrently npm:watch:build npm:run:desktop",
     "build": "npm-run-all watch:build copy-files",
+    "watch:build": "npx tsc --build tsconfig.json --watch",
+
     "run:desktop": "electron . --env dev",
     "test": "jest",
     "watch:test": "npx jest --watchAll",
     "run:app": "node ./build/main.js",
+    
     "translate": "npx tsc --build tsconfig.json",
-    "watch:build": "npx tsc --build tsconfig.json --watch",
+
     "watch:app": "npx nodemon ./build/main.js --watch ./build",
     "copy-files": "copyfiles -u 1 ./src/**/*.html src/**/*.css ./build"
   },
