@@ -38,7 +38,7 @@ function RootComponent() {
 
 	return (
 		<div>
-			<h1>hellooo! {status}</h1>
+			<h1>testdd! {status}</h1>
 			<h2>Good to see you here.</h2>
 		</div>
 	);
