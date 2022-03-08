@@ -1,28 +1,28 @@
-import { app as electronApp } from 'electron'
-const electronReload = require('electron-reload')
+import { app as electronApp } from 'electron';
+const electronReload = require('electron-reload');
 
 
-import ElectronWrapper from './classes/ElectronWrapper'
-import Logger from './lib/Logger'
-import FsDriverNode from './lib/FsDriverNode'
-import { envFromArgs, profilePathFromArgs, isDebugMode } from './lib/startupHelpers'
-import Setting from './models/Setting'
+import ElectronWrapper from './classes/ElectronWrapper';
+import Logger from './lib/Logger';
+import FsDriverNode from './lib/FsDriverNode';
+import { envFromArgs, profilePathFromArgs, isDebugMode } from './lib/startupHelpers';
+import Setting from './models/Setting';
 
-electronReload(__dirname, {})
+electronReload(__dirname, {});
 require('@electron/remote/main').initialize();
 const { initBridge } = require('./bridge');
 
-Logger.setFsDriver(new FsDriverNode())
+Logger.setFsDriver(new FsDriverNode());
 
 
-const env = envFromArgs(process.argv)
-const profilePath = profilePathFromArgs(process.argv)
-const debugMode = isDebugMode(process.argv)
+const env = envFromArgs(process.argv);
+const profilePath = profilePathFromArgs(process.argv);
+const debugMode = isDebugMode(process.argv);
 
-const app = new ElectronWrapper(electronApp, env, profilePath, debugMode)
+const app = new ElectronWrapper(electronApp, env, profilePath, debugMode);
 
-initBridge(app)
+initBridge(app);
 
 app.start().catch(error => {
-    console.error('Electron app fatal error:', error);
-})
+	console.error('Electron app fatal error:', error);
+});
