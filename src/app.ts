@@ -65,11 +65,11 @@ class Application extends BaseApplication {
 		return null;
 	}
 
-    private initRedux() {
-        this.store_ = store
-        BaseModel.dispatch = this.store().dispatch;
-		BaseSyncTarget.dispatch = this.store().dispatch;
-    }
+    // private initRedux() {
+    //     this.store_ = store
+    //     BaseModel.dispatch = this.store().dispatch;
+	// 	BaseSyncTarget.dispatch = this.store().dispatch;
+    // }
 
 
 	// protected async generalMiddleware(store: any, next: any, action: any) {

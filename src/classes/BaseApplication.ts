@@ -1,11 +1,13 @@
 
-import { Store } from '@reduxjs/toolkit'
+import { createStore, Store } from '@reduxjs/toolkit'
 import bridge from '../bridge';
+import BaseSyncTarget from '../lib/BaseSyncTarget'
 import Database from "../lib/Database";
 import FileApiDriverLocal from '../lib/FileApiDriverLocal';
 import FsDriverNode from '../lib/FsDriverNode';
 import Logger from "../lib/Logger";
 import shim from "../lib/shim";
+import store from "../lib/store"
 import { envFromArgs, profilePathFromArgs, isDebugMode } from '../lib/startupHelpers';
 import SyncTargetFilesystem from '../lib/SyncTargetFilesystem';
 import SyncTargetNone from "../lib/SyncTargetNone";
@@ -121,6 +123,24 @@ export default class BaseApplication {
 		}
 
 		return toSystemSlashes(output, 'linux');
+	}
+
+	public reducer(state: any = { value: 0 }, action) {
+		switch (action.type) {
+			case 'counter/incremented':
+			return { value: state.value + 1 }
+		case 'counter/decremented':
+			return { value: state.value - 1 }
+		default:
+			return state
+		}
+	}
+
+	public initRedux() {
+		this.store_ = store
+		BaseModel.dispatch = this.store().dispatch
+		BaseSyncTarget.dispatch = this.store().dispatch
+
 	}
 
 }

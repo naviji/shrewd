@@ -1,23 +1,22 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit'
 
 
-// export interface State {
-// 	categories: any[];
-// 	selectedCategoryIds: string[];
+export interface State {
+	categories: any[];
+	selectedCategoryIds: string[];
 
-//     categoryGroups: any[];
-// 	selectedCategoryGroupId: string;
-//     collapsedCategoryGroupIds: string[];
+  categoryGroups: any[];
+	selectedCategoryGroupId: string;
+  collapsedCategoryGroupIds: string[];
 
-//     showSideMenu: boolean;
-// 	screens: any;
-//     syncInProgress: boolean
+  showSideMenu: boolean;
+	screens: any;
+  syncInProgress: boolean
+	settings: any;
+	appState: string;
+}
 
-// 	settings: any;
-// 	appState: string;
-// }
-
-export const categories = createSlice({
+export const categoriesSlice = createSlice({
     name: 'categories',
     initialState: {
         categories: [],
@@ -39,7 +38,7 @@ export const categories = createSlice({
     }
 })
 
-export const categoryGroups = createSlice({
+export const categoryGroupsSlice = createSlice({
     name: 'categoryGroups',
     initialState: {
         categoryGroups: [],
@@ -69,7 +68,7 @@ export const categoryGroups = createSlice({
     }
 })
 
-export const view = createSlice({
+export const viewSlice = createSlice({
     name: 'view',
     initialState: {
         showSideMenu: true,
@@ -95,9 +94,11 @@ export const view = createSlice({
     }
 })
 
-export const settings = createSlice({
+export const settingsSlice = createSlice({
     name: 'settings',
-    initialState: {},
+    initialState: {
+      test: 1
+    },
     reducers: {
       set: (state, action) => {
         state = Object.assign(state, action.payload)
@@ -115,10 +116,10 @@ async function generalMiddleware(store: any, next: any, action: any) {
 
 export default configureStore({
   reducer: {
-    categories: categories.reducer,
-    categoriesGroups: categoryGroups.reducer,
-    view : view.reducer,
-    settings: settings.reducer
+    categories: categoriesSlice.reducer,
+    cateogryGroups: categoryGroupsSlice.reducer,
+    view : viewSlice.reducer,
+    settings: settingsSlice.reducer
   },
 //   middleware: [generalMiddleware]
 })
