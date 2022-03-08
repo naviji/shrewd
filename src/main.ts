@@ -3,10 +3,12 @@ import ElectronWrapper from './classes/ElectronWrapper'
 import FsDriverNode from './lib/FsDriverNode'
 import Logger from './lib/Logger'
 import { envFromArgs, isDebugMode, profilePathFromArgs } from './lib/startupHelpers'
-const electronReload = require('electron-reload')
 
+// To enable hot reloading for easier front end development
+const electronReload = require('electron-reload')
 electronReload(__dirname, {})
 require('@electron/remote/main').initialize()
+
 const { initBridge } = require('./bridge')
 
 Logger.setFsDriver(new FsDriverNode())
