@@ -1,4 +1,4 @@
-import installExtension, { REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer'
+// import installExtension, { REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer'
 import { app as electronApp, BrowserWindow, screen, ipcMain } from 'electron'
 
 const url = require('url')
@@ -60,6 +60,8 @@ export default class ElectronAppWrapper {
     }
 
     async installDeveloperExtensions () {
+      const { default: installExtension, REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } = require('electron-devtools-installer')
+
       const extensions = [REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS]
       await Promise.all(
         extensions.map((extension) => installExtension(extension, { loadExtensionOptions: { allowFileAccess: true } })
