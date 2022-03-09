@@ -3,8 +3,7 @@ import * as ReactDOM from 'react-dom'
 import { Provider, useDispatch, useSelector } from 'react-redux'
 import app from '../app'
 import { setAppState, State } from '../lib/store'
-
-const bridge = require('@electron/remote').require('./bridge').default
+// const ipcRenderer = require('electron').ipcRenderer
 
 // interface Props {
 //   themeId: number;
@@ -22,14 +21,28 @@ function RootComponent () {
   const status = useSelector((state: State) => state.appState.status)
   const dispatch = useDispatch()
 
+  // React.useEffect(() => {
+  //   async function onAppClose () {
+  //     const canClose = true
+  //     // Do some clean up
+  //     ipcRenderer.send('appCloseReply', {
+  //       canClose: canClose
+  //     })
+  //   }
+  //   ipcRenderer.on('appClose', onAppClose)
+  //   return () => {
+  //     ipcRenderer.off('appClose', onAppClose)
+  //   }
+  // }, [])
+
   React.useEffect(() => {
-    async function initializeApp () {
+    async function appInit () {
       dispatch(setAppState({ status: 'initializing' }))
       await initialize()
       dispatch(setAppState({ status: 'ready' }))
     }
     if (status === 'starting') {
-      initializeApp()
+      appInit()
     }
   }, [])
 
@@ -40,15 +53,15 @@ function RootComponent () {
   return (
     <div>
       <button onClick={handleClick}>Test</button>
-      <h1>testffdd33! {status}</h1>
-      <h2>Good to see you here.</h2>
+      <h1>harry22dd! {status}</h1>
+      <h2>Good22 to see you here.</h2>
     </div>
   )
 }
 
 ReactDOM.render(
-  <Provider store={app().store()}>
+   <Provider store={app().store()}>
     <RootComponent />,
   </Provider>,
-  document.getElementById('react-root')
+   document.getElementById('react-root')
 )

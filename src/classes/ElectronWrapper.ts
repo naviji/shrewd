@@ -60,14 +60,24 @@ export default class ElectronAppWrapper {
     }
 
     async installDeveloperExtensions () {
-      const { default: installExtension, REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } = require('electron-devtools-installer')
+      const {
+        default: installExtension,
+        REACT_DEVELOPER_TOOLS,
+        REDUX_DEVTOOLS
+      } = require('electron-devtools-installer')
 
       const extensions = [REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS]
       await Promise.all(
-        extensions.map((extension) => installExtension(extension, { loadExtensionOptions: { allowFileAccess: true } })
+        extensions.map((extension) => installExtension(extension,
+          { loadExtensionOptions: { allowFileAccess: true } })
           .then((name) => console.log('Added Extension: ' + name))
           .catch((err) => console.log('An error occurred: ', err)))
       )
+    }
+
+    enableHotReload () {
+      const electronReload = require('electron-reload')
+      electronReload(__dirname, {})
     }
 
     electronApp () {
@@ -75,14 +85,19 @@ export default class ElectronAppWrapper {
     }
 
     async start () {
-    // Since we are doing other async things before creating the window, we might miss
-    // the "ready" event. So we use the function below to make sure that the app is ready.
-      await this.waitForElectronAppReady()
+      require('@electron/remote/main').initialize()
+
+      this.enableHotReload()
+
       await this.installDeveloperExtensions()
+
+      // Since we are doing other async things before creating the window, we might miss
+      // the "ready" event. So we use the function below to make sure that the app is ready.
+      await this.waitForElectronAppReady()
 
       if (this.isAlreadyRunning()) return
 
-      this.createWindow()
+      this.createMainWindow()
 
       this.electronApp().on('before-quit', () => {
         this.willQuitApp_ = true
@@ -135,7 +150,7 @@ export default class ElectronAppWrapper {
       return false
     }
 
-    createWindow () {
+    createMainWindow () {
       const primaryDisplay = screen.getPrimaryDisplay()
       const { width, height } = primaryDisplay.workAreaSize
 
@@ -161,10 +176,12 @@ export default class ElectronAppWrapper {
         minHeight: 100,
         backgroundColor: '#fff', // required to enable sub pixel rendering, can't be in css
         webPreferences: {
+          // Although it would be better to turn contextIsolation on,
+          // it will cause 'require' and other core node modules to be not easily accessible.
+          // If we use webpack, we lose debugging convenience
           contextIsolation: false,
           nodeIntegration: true,
           enableRemoteModule: true
-          // preload: path.join(__dirname, '..', 'preload.js')
         },
         webviewTag: true,
         // We start with a hidden window, which is then made visible depending on the showTrayIcon setting
