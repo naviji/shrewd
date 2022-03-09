@@ -1,61 +1,184 @@
 import FsDriverNode from './FsDriverNode'
+import dayjs from 'dayjs'
+const { sprintf } = require('sprintf-js')
 
-export const LogLevel = {
-  None: 0,
-  Error: 10,
-  Warn: 20,
-  Info: 30,
-  Debug: 40
+export enum TargetType {
+    Console = 'console'
+}
+
+export enum LogLevel {
+    None = 0,
+    Error = 10,
+    Warn = 20,
+    Info = 30,
+    Debug = 40,
+}
+
+interface TargetOptions {
+    level?: LogLevel;
+    console?: any;
+    prefix?: string;
+    path?: string;
+    source?: string;
+
+    // Default message format
+    format?: string;
+
+    // If specified, will use this as format if it's an info message
+    customInfoFormat?: string;
+}
+
+interface Target extends TargetOptions {
+    type: TargetType;
+}
+
+export interface LoggerWrapper {
+    debug: Function;
+    info: Function;
+    warn: Function;
+    error: Function;
 }
 
 class Logger {
     private static fsDriver: null | FsDriverNode
-    private logLevel: number
+    private static globalLogger: Logger = null;
 
-    constructor (level = LogLevel.Warn) {
-      this.logLevel = level
+    private targets_: Target[] = [];
+    private level_: LogLevel = LogLevel.Info;
+    private enabled: boolean = true;
+
+    constructor (level = LogLevel.Info) {
+      this.level_ = level
     }
 
-    static setFsDriver (fsDriver: FsDriverNode) {
-      this.fsDriver = fsDriver
+    public setLevel (level: LogLevel) {
+      const previous = this.level
+      this.level_ = level
+      return previous
     }
 
-    setLevel (level) {
-      this.logLevel = level
+    public level () {
+      return this.level_
     }
 
-    _log (level, prefix, str) {
-      if (this.logLevel < level) return
-      if (prefix !== '') { process.stdout.write(`[${prefix}] `) }
-      console.log(str)
-      // for (let msg of rest) {
-      //     if (typeof msg === 'string') {
-      //         process.stdout.write(` ${msg} `);
-      //     } else {
-      //         process.stdout.write(` ${JSON.stringify(msg)} `)
-      //     }
-      // }
-      // process.stdout.write(`\n`);
+    public targets () {
+      return this.targets_
     }
 
-    log (str) {
-      this._log(this.logLevel, '', str)
+    public addTarget (type: TargetType, options: TargetOptions = null) {
+      const target = { type: type, ...options }
+      this.targets_.push(target)
     }
 
-    debug (str) {
-      this._log(LogLevel.Debug, 'Debug', str)
+    objectToString (object: any) {
+      let output = ''
+
+      if (typeof object === 'object') {
+        if (object instanceof Error) {
+          object = object as any
+          output = object.toString()
+          if (object.code) output += `\nCode: ${object.code}`
+          if (object.headers) output += `\nHeader: ${JSON.stringify(object.headers)}`
+          if (object.request) output += `\nRequest: ${object.request.substr ? object.request.substr(0, 1024) : ''}`
+          if (object.stack) output += `\n${object.stack}`
+        } else {
+          output = JSON.stringify(object)
+        }
+      } else {
+        output = object
+      }
+
+      return output
     }
 
-    info (str) {
-      this._log(LogLevel.Info, 'Info', str)
+    objectsToString (...object: any[]) {
+      const output = []
+      for (let i = 0; i < object.length; i++) {
+        output.push(`"${this.objectToString(object[i])}"`)
+      }
+      return output.join(', ')
     }
 
-    warn (str) {
-      this._log(LogLevel.Warn, 'Warn', str)
+    targetLevel (target: Target) {
+      if ('level' in target) return target.level
+      return this.level()
     }
 
-    error (str) {
-      this._log(LogLevel.Error, 'Error', str)
+    private log (level: LogLevel, prefix: string, ...object: any[]) {
+      if (!this.targets_.length || !this.enabled) return
+
+      for (let i = 0; i < this.targets_.length; i++) {
+        const target = this.targets_[i]
+        const targetPrefix = prefix || target.prefix
+
+        if (this.targetLevel(target) < level) continue
+
+        if (target.type === 'console') {
+          let fn = 'log'
+          if (level === LogLevel.Error) fn = 'error'
+          if (level === LogLevel.Warn) fn = 'warn'
+          if (level === LogLevel.Info) fn = 'info'
+          const consoleObj = target.console ? target.console : console
+          let items: any[] = []
+
+          if (target.format) {
+            const format = level === LogLevel.Info && target.customInfoFormat ? target.customInfoFormat : target.format
+
+            const s = sprintf(format, {
+              date_time: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+              level: Logger.levelIdToString(level),
+              prefix: targetPrefix || '',
+              message: ''
+            })
+
+            items = [s.trim()].concat(...object)
+          } else {
+            const prefixItems = [dayjs().format('HH:mm:ss')]
+            if (targetPrefix) prefixItems.push(targetPrefix)
+            items = [`${prefixItems.join(': ')}:`].concat(...object)
+          }
+
+          consoleObj[fn](...items)
+        }
+      }
+    }
+
+    error (...object: any[]) {
+      return this.log(LogLevel.Error, null, ...object)
+    }
+
+    warn (...object: any[]) {
+      return this.log(LogLevel.Warn, null, ...object)
+    }
+
+    info (...object: any[]) {
+      return this.log(LogLevel.Info, null, ...object)
+    }
+
+    debug (...object: any[]) {
+      return this.log(LogLevel.Debug, null, ...object)
+    }
+
+    // private static levelStringToId (s: string) {
+    //   if (s === 'none') return LogLevel.None
+    //   if (s === 'error') return LogLevel.Error
+    //   if (s === 'warn') return LogLevel.Warn
+    //   if (s === 'info') return LogLevel.Info
+    //   if (s === 'debug') return LogLevel.Debug
+    //   throw new Error(`Unknown log level: ${s}`)
+    // }
+
+    static levelIdToString (id: LogLevel) {
+      if (id === LogLevel.None) return 'none'
+      if (id === LogLevel.Error) return 'error'
+      if (id === LogLevel.Warn) return 'warn'
+      if (id === LogLevel.Info) return 'info'
+      if (id === LogLevel.Debug) return 'debug'
+      throw new Error(`Unknown level ID: ${id}`)
+    }
+
+    static levelIds () {
+      return [LogLevel.None, LogLevel.Error, LogLevel.Warn, LogLevel.Info, LogLevel.Debug]
     }
 }
 

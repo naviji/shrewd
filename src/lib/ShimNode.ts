@@ -1,9 +1,9 @@
 // // 'use strict';
 
-import FsDriverNode from "./FsDriverNode";
+import FsDriverNode from './FsDriverNode'
 
-const fs = require('fs-extra');
-const shim = require('./shim').default;
+// const fs = require('fs-extra');
+const shim = require('./shim').default
 // // const { GeolocationNode } = require('./geolocation-node.js');
 // // const { FileApiDriverLocal } = require('./file-api-driver-local.js');
 // // const { setLocale, defaultLocale, closestSupportedLocale } = require('./locale');
@@ -64,20 +64,19 @@ const shim = require('./shim').default;
 // 	});
 // };
 
-export function shimInit(electronBridge) {
-    shim.electronBridge_ = electronBridge
+export function shimInit (electronBridge) {
+  shim.electronBridge_ = electronBridge
 
-    shim.fsDriver = () => {
-		if (!shim.fsDriver_) shim.fsDriver_ = new FsDriverNode();
-		return shim.fsDriver_;
-	};
+  shim.fsDriver = () => {
+    if (!shim.fsDriver_) shim.fsDriver_ = new FsDriverNode()
+    return shim.fsDriver_
+  }
 }
-module.exports = { shimInit };
+module.exports = { shimInit }
 
-
-	// const sharp = options.sharp;
-	// const keytar = (shim.isWindows() || shim.isMac()) && !shim.isPortable() ? options.keytar : null;
-	// const appVersion = options.appVersion;
+// const sharp = options.sharp;
+// const keytar = (shim.isWindows() || shim.isMac()) && !shim.isPortable() ? options.keytar : null;
+// const appVersion = options.appVersion;
 
 // 	shim.setNodeSqlite(options.nodeSqlite);
 

@@ -1,6 +1,5 @@
-import * as fs from 'fs-extra'
+// import * as fs from 'fs-extra'
 import { resolve as nodeResolve } from 'path'
-import timeUtils from '../utils/timeUtils'
 import FsDriverBase, { Stat } from './FsDriverBase'
 
 export default class FsDriverNode extends FsDriverBase {
@@ -13,12 +12,12 @@ export default class FsDriverNode extends FsDriverBase {
   }
 
   public appendFileSync (path: string, string: string) {
-    return fs.appendFileSync(path, string)
+    // return fs.appendFileSync(path, string)
   }
 
   public async appendFile (path: string, string: string, encoding: string = 'base64') {
     try {
-      return await fs.appendFile(path, string, { encoding: encoding })
+      // return await fs.appendFile(path, string, { encoding: encoding })
     } catch (error) {
       throw this.fsErrorToJsError_(error, path)
     }
@@ -27,8 +26,8 @@ export default class FsDriverNode extends FsDriverBase {
   public async writeBinaryFile (path: string, content: any) {
     try {
       // let buffer = new Buffer(content);
-      const buffer = Buffer.from(content)
-      return await fs.writeFile(path, buffer)
+      // const buffer = Buffer.from(content)
+      // return await fs.writeFile(path, buffer)
     } catch (error) {
       throw this.fsErrorToJsError_(error, path)
     }
@@ -37,9 +36,9 @@ export default class FsDriverNode extends FsDriverBase {
   public async writeFile (path: string, string: string, encoding: string = 'base64') {
     try {
       if (encoding === 'buffer') {
-        return await fs.writeFile(path, string)
+        // return await fs.writeFile(path, string)
       } else {
-        return await fs.writeFile(path, string, { encoding: encoding })
+        // return await fs.writeFile(path, string, { encoding: encoding })
       }
     } catch (error) {
       throw this.fsErrorToJsError_(error, path)
@@ -48,77 +47,78 @@ export default class FsDriverNode extends FsDriverBase {
 
   // same as rm -rf
   public async remove (path: string) {
-    try {
-      const r = await fs.remove(path)
-      return r
-    } catch (error) {
-      throw this.fsErrorToJsError_(error, path)
-    }
+    // try {
+    //   // const r = await fs.remove(path)
+    //   return r
+    // } catch (error) {
+    //   throw this.fsErrorToJsError_(error, path)
+    // }
   }
 
   public async move (source: string, dest: string) {
-    let lastError = null
+    const lastError = null
 
-    for (let i = 0; i < 5; i++) {
-      try {
-        const output = await fs.move(source, dest, { overwrite: true })
-        return output
-      } catch (error) {
-        lastError = error
-        // Normally cannot happen with the `overwrite` flag but sometime it still does.
-        // In this case, retry.
-        if (error.code == 'EEXIST') {
-          await timeUtils.sleep(1)
-          continue
-        }
-        throw this.fsErrorToJsError_(error)
-      }
-    }
+    // for (let i = 0; i < 5; i++) {
+    //   try {
+    //     // const output = await fs.move(source, dest, { overwrite: true })
+    //     return output
+    //   } catch (error) {
+    //     lastError = error
+    //     // Normally cannot happen with the `overwrite` flag but sometime it still does.
+    //     // In this case, retry.
+    //     if (error.code == 'EEXIST') {
+    //       await timeUtils.sleep(1)
+    //       continue
+    //     }
+    //     throw this.fsErrorToJsError_(error)
+    //   }
+    // }
 
     throw lastError
   }
 
-  public exists (path: string) {
-    return fs.pathExists(path)
-  }
+  // public exists (path: string) {
+  //   return new Promise(true)
+  //   // return fs.pathExists(path)
+  // }
 
   public async mkdir (path: string) {
     // Note that mkdirp() does not throw an error if the directory
     // could not be created. This would make the synchroniser to
     // incorrectly try to sync with a non-existing dir:
     // https://github.com/laurent22/stoic/issues/2117
-    const r = await fs.mkdirp(path)
-    if (!(await this.exists(path))) throw new Error(`Could not create directory: ${path}`)
-    return r
+    // // const r = await fs.mkdirp(path)
+    // if (!(await this.exists(path))) throw new Error(`Could not create directory: ${path}`)
+    // return r
   }
 
-  public async stat (path: string) {
-    try {
-      const stat = await fs.stat(path)
-      return {
-        birthtime: stat.birthtime,
-        mtime: stat.mtime,
-        isDirectory: () => stat.isDirectory(),
-        path: path,
-        size: stat.size
-      }
-    } catch (error) {
-      if (error.code == 'ENOENT') return null
-      throw error
-    }
-  }
+  // public async stat (path: string) {
+  //   // try {
+  //   //   // const stat = await fs.stat(path)
+  //   //   return {
+  //   //     birthtime: stat.birthtime,
+  //   //     mtime: stat.mtime,
+  //   //     isDirectory: () => stat.isDirectory(),
+  //   //     path: path,
+  //   //     size: stat.size
+  //   //   }
+  //   // } catch (error) {
+  //   //   if (error.code == 'ENOENT') return null
+  //   //   throw error
+  //   // }
+  // }
 
   public async setTimestamp (path: string, timestampDate: any) {
-    return fs.utimes(path, timestampDate, timestampDate)
+    // return fs.utimes(path, timestampDate, timestampDate)
   }
 
   public async readDirStats (path: string, options: any = null) {
     if (!options) options = {}
     if (!('recursive' in options)) options.recursive = false
 
-    let items = []
+    const items = []
     try {
-      items = await fs.readdir(path)
+      // items = await fs.readdir(path)
     } catch (error) {
       throw this.fsErrorToJsError_(error)
     }
@@ -138,7 +138,7 @@ export default class FsDriverNode extends FsDriverBase {
 
   public async open (path: string, mode: any) {
     try {
-      return await fs.open(path, mode)
+      // return await fs.open(path, mode)
     } catch (error) {
       throw this.fsErrorToJsError_(error, path)
     }
@@ -146,7 +146,7 @@ export default class FsDriverNode extends FsDriverBase {
 
   public async close (handle: any) {
     try {
-      return await fs.close(handle)
+      // return await fs.close(handle)
     } catch (error) {
       throw this.fsErrorToJsError_(error, '')
     }
@@ -154,8 +154,8 @@ export default class FsDriverNode extends FsDriverBase {
 
   public async readFile (path: string, encoding: string = 'utf8') {
     try {
-      if (encoding === 'Buffer') return await fs.readFile(path) // Returns the raw buffer
-      return await fs.readFile(path, encoding)
+      // if (encoding === 'Buffer') return await fs.readFile(path) // Returns the raw buffer
+      // return await fs.readFile(path, encoding)
     } catch (error) {
       throw this.fsErrorToJsError_(error, path)
     }
@@ -164,7 +164,7 @@ export default class FsDriverNode extends FsDriverBase {
   // Always overwrite destination
   public async copy (source: string, dest: string) {
     try {
-      return await fs.copy(source, dest, { overwrite: true })
+      // return await fs.copy(source, dest, { overwrite: true })
     } catch (error) {
       throw this.fsErrorToJsError_(error, source)
     }
@@ -172,23 +172,23 @@ export default class FsDriverNode extends FsDriverBase {
 
   public async unlink (path: string) {
     try {
-      await fs.unlink(path)
+      // await fs.unlink(path)
     } catch (error) {
       if (error.code === 'ENOENT') return // Don't throw if the file does not exist
       throw error
     }
   }
 
-  public async readFileChunk (handle: any, length: number, encoding: string = 'base64') {
-    // let buffer = new Buffer(length);
-    let buffer = Buffer.alloc(length)
-    const result = await fs.read(handle, buffer, 0, length, null)
-    if (!result.bytesRead) return null
-    buffer = buffer.slice(0, result.bytesRead)
-    if (encoding === 'base64') return buffer.toString('base64')
-    if (encoding === 'ascii') return buffer.toString('ascii')
-    throw new Error(`Unsupported encoding: ${encoding}`)
-  }
+  // public async readFileChunk (handle: any, length: number, encoding: string = 'base64') {
+  //   // let buffer = new Buffer(length);
+  //   // let buffer = Buffer.alloc(length)
+  //   // const result = await fs.read(handle, buffer, 0, length, null)
+  //   // if (!result.bytesRead) return null
+  //   // buffer = buffer.slice(0, result.bytesRead)
+  //   // if (encoding === 'base64') return buffer.toString('base64')
+  //   // if (encoding === 'ascii') return buffer.toString('ascii')
+  //   throw new Error(`Unsupported encoding: ${encoding}`)
+  // }
 
   public resolve (path: string) {
     return require('path').resolve(path)
@@ -208,11 +208,11 @@ export default class FsDriverNode extends FsDriverBase {
   // 	return md5File(path);
   // }
 
-  public async tarExtract (options: any) {
-    await require('tar').extract(options)
-  }
+  // public async tarExtract (options: any) {
+  //   await require('tar').extract(options)
+  // }
 
-  public async tarCreate (options: any, filePaths: string[]) {
-    await require('tar').create(options, filePaths)
-  }
+  // public async tarCreate (options: any, filePaths: string[]) {
+  //   await require('tar').create(options, filePaths)
+  // }
 }

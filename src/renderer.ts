@@ -1,13 +1,14 @@
-// // This is the initialization for the Electron RENDERER process
-// TODO: Import react
-
 import app from './app'
 
-const bridge = require('@electron/remote').require('./bridge').default
+// const bridge = require('@electron/remote').require('./bridge').default
 
-console.info(`Environment: ${bridge().env()}`)
+// console.info(`Environment: ${bridge().env()}`)
 
 // TOOD: Init shim here if needed
+
+// export interface IElectronAPI {
+//   onAppClose: (fn: Function) => Promise<void>,
+// }
 
 // Disable drag and drop of links inside application (which would
 // open it as if the whole app was a browser)
@@ -22,13 +23,13 @@ document.addEventListener('auxclick', event => event.preventDefault())
 // which would open a new browser window.
 document.addEventListener('click', (event) => event.preventDefault())
 
-app().start(bridge().processArgv()).then((result) => {
+app().start([]).then((result) => {
   require('./gui/Root')
 }).catch((error) => {
-  const env = bridge().env()
+  // const env = bridge().env()
   if (error.code === 'flagError') {
     // TODO: Add error code and message handling
-    bridge().showErrorMessageBox(error.message)
+    // bridge().showErrorMessageBox(error.message)
   } else {
     // If something goes wrong at this stage we don't have a console or a log file
     // so display the error in a message box.
@@ -37,12 +38,12 @@ app().start(bridge().processArgv()).then((result) => {
     if (error.lineNumber) msg.push(error.lineNumber)
     if (error.stack) msg.push(error.stack)
 
-    if (env === 'dev') {
-      console.error(error)
-    } else {
-      bridge().showErrorMessageBox(msg.join('\n\n'))
-    }
+    // if (env === 'dev') {
+    //   console.error(error)
+    // } else {
+    //   // bridge().showErrorMessageBox(msg.join('\n\n'))
+    // }
   }
   // In dev, we leave the app open as debug statements in the console can be useful
-  if (env !== 'dev') bridge().electronApp().exit(1)
+  // if (env !== 'dev') bridge().electronApp().exit(1)
 })

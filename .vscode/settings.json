@@ -1,9 +1,7 @@
 {
     "typescript.format.enable": false,
-    "typescript.referencesCodeLens.enabled": true,
+    "typescript.referencesCodeLens.enabled": false,
     "editor.codeActionsOnSave": {
-        "source.fixAll": true,
-        "source.organizeImports": true
-    },
-    
+        "source.fixAll": true
+    }
 }
