@@ -70,14 +70,23 @@ export default class ElectronAppWrapper {
       )
     }
 
+    async enableHotReload () {
+    // To enable hot reloading for easier front end development
+      const electronReload = require('electron-reload')
+      electronReload(path.join(__dirname, '..'), {})
+    }
+
     electronApp () {
       return this.electronApp_
     }
 
     async start () {
-    // Since we are doing other async things before creating the window, we might miss
-    // the "ready" event. So we use the function below to make sure that the app is ready.
+      await this.enableHotReload()
+
+      // Since we are doing other async things before creating the window, we might miss
+      // the "ready" event. So we use the function below to make sure that the app is ready.
       await this.waitForElectronAppReady()
+
       await this.installDeveloperExtensions()
 
       if (this.isAlreadyRunning()) return

@@ -5,6 +5,7 @@ import app from '../app'
 import { setAppState, State } from '../lib/store'
 
 const bridge = require('@electron/remote').require('./bridge').default
+const ipcRenderer = require('electron').ipcRenderer
 
 // interface Props {
 //   themeId: number;
@@ -32,6 +33,20 @@ function RootComponent () {
       initializeApp()
     }
   }, [])
+
+  React.useEffect(() => {
+    async function onAppClose () {
+      const canClose = true
+      // Do some clean up
+      ipcRenderer.send('appCloseReply', {
+        canClose: canClose
+      })
+    }
+    ipcRenderer.on('appClose', onAppClose)
+    return () => {
+      ipcRenderer.off('appClose', onAppClose)
+    }
+  })
 
   const handleClick = (e) => {
     console.log('hello')
