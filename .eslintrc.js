@@ -2,11 +2,13 @@ module.exports = {
   env: {
     browser: true,
     es2021: true,
-    node: true
+    node: true,
+    'jest/globals': true
   },
   extends: [
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
+    'plugin:jest/recommended',
     'standard'
   ],
   parser: '@typescript-eslint/parser',
@@ -19,6 +21,7 @@ module.exports = {
   },
   plugins: [
     'react',
+    'jest',
     '@typescript-eslint'
   ],
   rules: {

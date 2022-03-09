@@ -30,7 +30,7 @@ export class Bridge {
 	}
 
 	env = () => {
-	  return this.electronWrapper_.env()
+	  return this.electronWrapper_.env
 	}
 
 	processArgv = () => {

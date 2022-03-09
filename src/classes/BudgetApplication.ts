@@ -161,7 +161,7 @@ class BudgetApplication {
     }
 
     private renderCategories_ () {
-      this.logger().log('Category Groups:')
+      this.logger().info('Category Groups:')
       const groups = CategoryGroup.getAll()
       for (const group of groups) {
         const categories = Category.getByParentId(group.id)
@@ -180,43 +180,43 @@ class BudgetApplication {
           totalAvailableThisMonth += category.availableThisMonth
         }
 
-        this.logger().log(`${sprintf('%-29s', group.name)} ${_rupee(totalAssignedThisMonth)} | ${_rupee(totalActivityThisMonth)} | ${_rupee(totalAvailableThisMonth)}`)
+        this.logger().info(`${sprintf('%-29s', group.name)} ${_rupee(totalAssignedThisMonth)} | ${_rupee(totalActivityThisMonth)} | ${_rupee(totalAvailableThisMonth)}`)
         for (const category of categories) {
-          this.logger().log(`    ${sprintf('%-25s', category.name)} ${_rupee(category.assignedThisMonth)} | ${_rupee(category.activityThisMonth)} | ${_rupee(category.availableThisMonth)}  `)
+          this.logger().info(`    ${sprintf('%-25s', category.name)} ${_rupee(category.assignedThisMonth)} | ${_rupee(category.activityThisMonth)} | ${_rupee(category.availableThisMonth)}  `)
           this.renderTargets_(category.id)
         }
       }
     }
 
     private renderTransactions_ () {
-      this.logger().log('Transactions:')
+      this.logger().info('Transactions:')
       const transactions = Transaction.getAll()
 
       for (const transaction of transactions) {
-        this.logger().log(`${dateFromUnixMs(transaction.createdDay)} | ${Account.getNameFromId(transaction.accountId)}  | ${transaction.payee} | ${Category.getNameFromId(transaction.categoryId)} | ${transaction.memo} | ${transaction.outflow} | ${transaction.inflow} | ${transaction.cleared}`)
+        this.logger().info(`${dateFromUnixMs(transaction.createdDay)} | ${Account.getNameFromId(transaction.accountId)}  | ${transaction.payee} | ${Category.getNameFromId(transaction.categoryId)} | ${transaction.memo} | ${transaction.outflow} | ${transaction.inflow} | ${transaction.cleared}`)
       }
     }
 
     private renderAccounts_ () {
-      this.logger().log('Accounts: ')
+      this.logger().info('Accounts: ')
       const accounts = Account.getAll()
       for (const account of accounts) {
         // Add account init amount as a transaction
-        this.logger().log(`${sprintf('%-20s', account.name)} ${_rupee(Account.getBalance(account.id))}`)
+        this.logger().info(`${sprintf('%-20s', account.name)} ${_rupee(Account.getBalance(account.id))}`)
       }
     }
 
     private renderTargets_ (categoryId) {
       const assignedThisMonth = this.assignedThisMonth(categoryId)
       const target = Target.getByCategoryId(categoryId)
-      if (target && (target.createdMonth <= this.getSelectedMonth())) { this.logger().log(`             --- Every ${target.every} ${target.type} ${_rupee(target.amount)} ( You need ${_rupee((target.amount / target.every) - (assignedThisMonth + Category.getAllActivity(categoryId)))} this ${target.type})`) }
+      if (target && (target.createdMonth <= this.getSelectedMonth())) { this.logger().info(`             --- Every ${target.every} ${target.type} ${_rupee(target.amount)} ( You need ${_rupee((target.amount / target.every) - (assignedThisMonth + Category.getAllActivity(categoryId)))} this ${target.type})`) }
     }
 
     render () {
-      this.logger().log('\n--- BUDGET APP ---')
-      this.logger().log(`Month: ${this.printSelectedMonth()}`)
-      this.logger().log(`Year: ${this.printSelectedYear()}`)
-      this.logger().log(`Ready to assign :    ${this.readyToAssign()}`)
+      this.logger().info('\n--- BUDGET APP ---')
+      this.logger().info(`Month: ${this.printSelectedMonth()}`)
+      this.logger().info(`Year: ${this.printSelectedYear()}`)
+      this.logger().info(`Ready to assign :    ${this.readyToAssign()}`)
 
       this.renderAccounts_()
       this.renderCategories_()
