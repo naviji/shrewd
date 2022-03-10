@@ -19,7 +19,7 @@ class Application extends BaseApplication {
     argv = await super.start(argv)
     const env = envFromArgs(argv)
 
-    Setting.setConstant('appId', `net.vinayan.stoic-${env}-desktop`)
+    Setting.setConstant('appId', `net.naviji.stoic-${env}-desktop`)
     Setting.setConstant('appType', 'desktop')
     Setting.setConstant('appName', `stoic-${env}-desktop`)
 

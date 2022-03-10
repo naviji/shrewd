@@ -1,7 +1,5 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit'
 
-
-
 // export const categoriesSlice = createSlice({
 //     name: 'categories',
 //     initialState: {
@@ -92,12 +90,10 @@ import { configureStore, createSlice } from '@reduxjs/toolkit'
 //     }
 // })
 
-
-
 export const appStateSlice = createSlice({
   name: 'appState',
   initialState: {
-    status: "starting"
+    status: 'starting'
   },
   reducers: {
     setAppState (state, action) {
@@ -105,8 +101,6 @@ export const appStateSlice = createSlice({
     }
   }
 })
-
-
 
 // async function generalMiddleware(store: any, next: any, action: any) {
 //     console.log("Calling root middlerware with ", action)
@@ -137,6 +131,6 @@ export default configureStore({
     // view : viewSlice.reducer,
     // settings: settingsSlice.reducer,
     appState: appStateSlice.reducer
-  },
+  }
 //   middleware: [generalMiddleware]
 })

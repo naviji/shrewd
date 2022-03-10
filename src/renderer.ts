@@ -14,6 +14,21 @@ document.addEventListener('auxclick', event => event.preventDefault())
 // which would open a new browser window.
 document.addEventListener('click', (event) => event.preventDefault())
 
+startAppAndDisplayUI()
+
+async function startAppAndDisplayUI () {
+  const env = await bridge().env()
+  try {
+    console.info(`Environment: ${env}`)
+    await app().start(process.argv)
+    require('./gui/Root')
+  } catch (error) {
+    await displayError(error)
+    // In dev, we leave the app open as debug statements in the console can be useful
+    if (env !== 'dev') bridge().exit(1)
+  }
+}
+
 async function displayError (error) {
   const env = await bridge().env()
   if (error.code === 'flagError') {
@@ -34,18 +49,3 @@ async function displayError (error) {
     }
   }
 }
-
-async function initRenderer () {
-  const env = await bridge().env()
-  try {
-    console.info(`Environment: ${env}`)
-    await app().start(bridge().processArgv())
-    require('./gui/Root')
-  } catch (error) {
-    await displayError(error)
-    // In dev, we leave the app open as debug statements in the console can be useful
-    if (env !== 'dev') bridge().exit(1)
-  }
-}
-
-initRenderer()

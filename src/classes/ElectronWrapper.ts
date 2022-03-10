@@ -246,7 +246,7 @@ export default class ElectronApp {
         }
       })
 
-      ipcMain.on('appCloseReply', (_event, value) => {
+      ipcMain.on('bridge:appCloseReply', (_event, value) => {
         this.rendererProcessQuitReply_ = value
         this.electronApp_.quit()
       })

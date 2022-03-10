@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react'
 import ReactDOM from 'react-dom'
-
 import { Provider, useDispatch, useSelector } from 'react-redux'
 import app from '../app'
+import ErrorBoundary from './ErrorBoundary'
 import { setAppState, State } from '../lib/store'
-const ipcRenderer = require('electron').ipcRenderer
 
 // interface Props {
 //   themeId: number;
@@ -48,7 +47,9 @@ function RootComponent () {
 
 ReactDOM.render(
   <Provider store={app().store()}>
-    <RootComponent />,
+      <ErrorBoundary>
+        <RootComponent />,
+      </ErrorBoundary>
   </Provider>,
   document.getElementById('react-root')
 )

@@ -1,24 +1,20 @@
 const ipcRenderer = require('electron').ipcRenderer
 export class Bridge {
   constructor () {
-    // Wrap app with bridge
-    ipcRenderer.on('appClose', this.onAppClose)
+    // Initialize listeners for events from main process
+    ipcRenderer.on('appClose', this.appCloseReply)
   }
 
-  onAppClose () {
+  appCloseReply () {
     const canClose = true
-    // Do some clean up
-    ipcRenderer.send('appCloseReply', {
+    // Do some clean up that could optionally say canClose is false
+    ipcRenderer.send('bridge:appCloseReply', {
       canClose: canClose
     })
   }
 
   async env (): Promise<string> {
     return await ipcRenderer.invoke('bridge:env')
-  }
-
-  processArgv () {
-    return process.argv
   }
 
   showMainWindow () {
@@ -37,9 +33,9 @@ export class Bridge {
     return await ipcRenderer.invoke('bridge:showMessageBox_', options)
   }
 
-    exit = (code = 0) => {
-      ipcRenderer.send('bridge:exit', code)
-    }
+  exit (code = 0) {
+    ipcRenderer.send('bridge:exit', code)
+  }
 }
 
 let bridge_: Bridge = null
@@ -50,23 +46,3 @@ function bridge () {
 }
 
 export default bridge
-
-// let bridge_: Bridge = null
-
-// export function initBridge (wrapper: ElectronAppWrapper) {
-//   if (bridge_) throw new Error('Bridge already initialized')
-//   bridge_ = new Bridge(wrapper)
-//   return bridge_
-// }
-
-// export default function bridge () : Bridge {
-//   if (!bridge_) throw new Error('Bridge not initialized')
-//   return bridge_
-// }
-
-// module.exports = {
-// 	initBridge,
-// 	bridge
-// }
-
-// module.exports = Bridge
