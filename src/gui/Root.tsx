@@ -3,8 +3,6 @@ import * as ReactDOM from 'react-dom'
 import { Provider, useDispatch, useSelector } from 'react-redux'
 import app from '../app'
 import { setAppState, State } from '../lib/store'
-
-const bridge = require('@electron/remote').require('./bridge').default
 const ipcRenderer = require('electron').ipcRenderer
 
 // interface Props {
@@ -46,6 +44,14 @@ function RootComponent () {
     return () => {
       ipcRenderer.off('appClose', onAppClose)
     }
+  })
+
+  React.useEffect(() => {
+    async function env () {
+      const envValue = await ipcRenderer.invoke('bridge:env')
+      console.log(`envValue = ${envValue}`)
+    }
+    env()
   })
 
   const handleClick = (e) => {

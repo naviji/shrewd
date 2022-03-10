@@ -1,4 +1,4 @@
-import ElectronAppWrapper from './classes/ElectronWrapper'
+const ipcRenderer = require('electron').ipcRenderer
 
 //* The bridge is used by the renderer process to get information that only
 // the main process will know or to perform actions that only the main process can do
@@ -6,159 +6,119 @@ import ElectronAppWrapper from './classes/ElectronWrapper'
 // Bridge exists as a remote object for renderer to coordinate with main
 export class Bridge {
   // private static instance_: Bridge = null
-	private electronWrapper_: ElectronAppWrapper = null;
-	// private lastSelectedPaths_: LastSelectedPaths;
+  // private electronWrapper_: ElectronAppWrapper = null;
+  // private lastSelectedPaths_: LastSelectedPaths;
 
-	constructor (electronWrapper: ElectronAppWrapper) {
-	  this.electronWrapper_ = electronWrapper
-	  // this.lastSelectedPaths_ = {
-	  // 	file: null,
-	  // 	directory: null,
-	  // };
-	}
+  // constructor (electronWrapper: ElectronAppWrapper) {
+  //   this.electronWrapper_ = electronWrapper
+  //   // this.lastSelectedPaths_ = {
+  //   // 	file: null,
+  //   // 	directory: null,
+  //   // };
+  // }
 
-	setElectronApp (electronWrapper: ElectronAppWrapper) {
-	  this.electronWrapper_ = electronWrapper
-	}
+  // setElectronApp (electronWrapper: ElectronAppWrapper) {
+  //   this.electronWrapper_ = electronWrapper
+  // }
 
-	electronApp () {
-	  return this.electronWrapper_
-	}
+  // electronApp () {
+  //   return this.electronWrapper_
+  // }
 
-	electronIsDev = () => {
-	  return !this.electronApp().electronApp().isPackaged
-	}
+  // electronIsDev = () => {
+  //   return !this.electronApp().electronApp().isPackaged
+  // }
 
-	env = () => {
-	  return this.electronWrapper_.env
-	}
+    static env = async (): Promise<string> => {
+      return await ipcRenderer.invoke('bridge:env')
+    }
 
-	processArgv = () => {
-	  return process.argv
-	}
+    static processArgv = () => {
+      return process.argv
+    }
 
-	// Applies to electron-context-menu@3:
-	//
-	// For now we have to disable spell checking in non-editor text
-	// areas (such as the note title) because the context menu lives in
-	// the main process, and the spell checker service is in the
-	// renderer process. To get the word suggestions, we need to call
-	// the spellchecker service but that can only be done in an async
-	// way, and the menu is built synchronously.
-	//
-	// Moving the spellchecker to the main process would be hard because
-	// it depends on models and various other classes which are all in
-	// the renderer process.
-	//
-	// Perhaps the easiest would be to patch electron-context-menu to
-	// support the renderer process again. Or possibly revert to an old
-	// version of electron-context-menu.
-	// public setupContextMenu(_spellCheckerMenuItemsHandler: Function) {
-	// 	require('electron-context-menu')({
-	// 		allWindows: [this.window()],
+    static showMainWindow = () => {
+      ipcRenderer.send('bridge:showMainWindow')
+    }
 
-	// 		electronApp: this.electronApp(),
+    static async showErrorMessageBox (message: string) {
+      return await this.showMessageBox_({
+        type: 'error',
+        message: message,
+        buttons: ['OK']
+      })
+    }
 
-	// 		shouldShowMenu: (_event: any, params: any) => {
-	// 			// params.inputFieldType === 'none' when right-clicking the text
-	// 			// editor. This is a bit of a hack to detect it because in this
-	// 			// case we don't want to use the built-in context menu but a
-	// 			// custom one.
-	// 			return params.isEditable && params.inputFieldType !== 'none';
-	// 		},
+    // Don't use this directly - call one of the showXxxxxxxMessageBox() instead
+    static async showMessageBox_ (options: any): Promise<number> {
+      return await ipcRenderer.invoke('bridge:showMessageBox_', options)
+    }
 
-	// 		// menu: (actions: any, props: any) => {
-	// 		// 	const items = spellCheckerMenuItemsHandler(props.misspelledWord, props.dictionarySuggestions);
-	// 		// 	const spellCheckerMenuItems = items.map((item: any) => new MenuItem(item)); //SpellCheckerService.instance().contextMenuItems(props.misspelledWord, props.dictionarySuggestions).map((item: any) => new MenuItem(item));
+    static exit = (code = 0) => {
+      ipcRenderer.send('bridge:exit', code)
+    }
 
-	// 		// 	const output = [
-	// 		// 		actions.cut(),
-	// 		// 		actions.copy(),
-	// 		// 		actions.paste(),
-	// 		// 		...spellCheckerMenuItems,
-	// 		// 	];
+  // showItemInFolder(fullPath: string) {
+  // 	return require('electron').shell.showItemInFolder(toSystemSlashes(fullPath));
+  // }
 
-	// 		// 	return output;
-	// 		// },
-	// 	});
-	// }
+  // newBrowserWindow(options: any) {
+  // 	return new BrowserWindow(options);
+  // }
 
-	// showItemInFolder(fullPath: string) {
-	// 	return require('electron').shell.showItemInFolder(toSystemSlashes(fullPath));
-	// }
+  // windowContentSize() {
+  // 	if (!this.window()) return { width: 0, height: 0 };
+  // 	const s = this.window().getContentSize();
+  // 	return { width: s[0], height: s[1] };
+  // }
 
-	// newBrowserWindow(options: any) {
-	// 	return new BrowserWindow(options);
-	// }
+  // windowSize() {
+  // 	if (!this.window()) return { width: 0, height: 0 };
+  // 	const s = this.window().getSize();
+  // 	return { width: s[0], height: s[1] };
+  // }
 
-	// windowContentSize() {
-	// 	if (!this.window()) return { width: 0, height: 0 };
-	// 	const s = this.window().getContentSize();
-	// 	return { width: s[0], height: s[1] };
-	// }
+  // windowSetSize(width: number, height: number) {
+  // 	if (!this.window()) return;
+  // 	return this.window().setSize(width, height);
+  // }
 
-	// windowSize() {
-	// 	if (!this.window()) return { width: 0, height: 0 };
-	// 	const s = this.window().getSize();
-	// 	return { width: s[0], height: s[1] };
-	// }
+  // openDevTools() {
+  // 	return this.window().webContents.openDevTools();
+  // }
 
-	// windowSetSize(width: number, height: number) {
-	// 	if (!this.window()) return;
-	// 	return this.window().setSize(width, height);
-	// }
+  // closeDevTools() {
+  // 	return this.window().webContents.closeDevTools();
+  // }
 
-	// openDevTools() {
-	// 	return this.window().webContents.openDevTools();
-	// }
+  // showSaveDialog(options: any) {
+  // 	const { dialog } = require('electron');
+  // 	if (!options) options = {};
+  // 	if (!('defaultPath' in options) && this.lastSelectedPaths_.file) options.defaultPath = this.lastSelectedPaths_.file;
+  // 	const filePath = dialog.showSaveDialogSync(this.window(), options);
+  // 	if (filePath) {
+  // 		this.lastSelectedPaths_.file = filePath;
+  // 	}
+  // 	return filePath;
+  // }
 
-	// closeDevTools() {
-	// 	return this.window().webContents.closeDevTools();
-	// }
+  // showOpenDialog(options: any = null) {
+  // 	const { dialog } = require('electron');
+  // 	if (!options) options = {};
+  // 	let fileType = 'file';
+  // 	if (options.properties && options.properties.includes('openDirectory')) fileType = 'directory';
+  // 	if (!('defaultPath' in options) && this.lastSelectedPaths_[fileType]) options.defaultPath = this.lastSelectedPaths_[fileType];
+  // 	if (!('createDirectory' in options)) options.createDirectory = true;
+  // 	const filePaths = dialog.showOpenDialogSync(this.window(), options);
+  // 	if (filePaths && filePaths.length) {
+  // 		this.lastSelectedPaths_[fileType] = dirname(filePaths[0]);
+  // 	}
+  // 	return filePaths;
+  // }
 
-	// showSaveDialog(options: any) {
-	// 	const { dialog } = require('electron');
-	// 	if (!options) options = {};
-	// 	if (!('defaultPath' in options) && this.lastSelectedPaths_.file) options.defaultPath = this.lastSelectedPaths_.file;
-	// 	const filePath = dialog.showSaveDialogSync(this.window(), options);
-	// 	if (filePath) {
-	// 		this.lastSelectedPaths_.file = filePath;
-	// 	}
-	// 	return filePath;
-	// }
-
-	// showOpenDialog(options: any = null) {
-	// 	const { dialog } = require('electron');
-	// 	if (!options) options = {};
-	// 	let fileType = 'file';
-	// 	if (options.properties && options.properties.includes('openDirectory')) fileType = 'directory';
-	// 	if (!('defaultPath' in options) && this.lastSelectedPaths_[fileType]) options.defaultPath = this.lastSelectedPaths_[fileType];
-	// 	if (!('createDirectory' in options)) options.createDirectory = true;
-	// 	const filePaths = dialog.showOpenDialogSync(this.window(), options);
-	// 	if (filePaths && filePaths.length) {
-	// 		this.lastSelectedPaths_[fileType] = dirname(filePaths[0]);
-	// 	}
-	// 	return filePaths;
-	// }
-
-	showErrorMessageBox (message: string) {
-	  return this.showMessageBox_(this.window(), {
-	    type: 'error',
-	    message: message,
-	    buttons: ['OK']
-	  })
-	}
-
-	// Don't use this directly - call one of the showXxxxxxxMessageBox() instead
-	showMessageBox_ (window: any, options: any): number {
-	  const { dialog } = require('electron')
-	  if (!window) window = this.window()
-	  return dialog.showMessageBoxSync(window, options)
-	}
-
-	window () {
-	  return this.electronWrapper_.window()
-	}
+  // window () {
+  //   return this.electronWrapper_.window()
+  // }
 
   // showConfirmMessageBox(message: string, options: any = null) {
   // 	options = {
@@ -259,18 +219,20 @@ export class Bridge {
   // }
 }
 
-let bridge_: Bridge = null
+export default Bridge
 
-export function initBridge (wrapper: ElectronAppWrapper) {
-  if (bridge_) throw new Error('Bridge already initialized')
-  bridge_ = new Bridge(wrapper)
-  return bridge_
-}
+// let bridge_: Bridge = null
 
-export default function bridge () : Bridge {
-  if (!bridge_) throw new Error('Bridge not initialized')
-  return bridge_
-}
+// export function initBridge (wrapper: ElectronAppWrapper) {
+//   if (bridge_) throw new Error('Bridge already initialized')
+//   bridge_ = new Bridge(wrapper)
+//   return bridge_
+// }
+
+// export default function bridge () : Bridge {
+//   if (!bridge_) throw new Error('Bridge not initialized')
+//   return bridge_
+// }
 
 // module.exports = {
 // 	initBridge,

@@ -1,5 +1,5 @@
 // import installExtension, { REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer'
-import { app as electronApp, BrowserWindow, screen, ipcMain } from 'electron'
+import { app as electronApp, BrowserWindow, screen, ipcMain, dialog } from 'electron'
 
 const url = require('url')
 const path = require('path')
@@ -265,6 +265,19 @@ export default class ElectronAppWrapper {
       ipcMain.on('appCloseReply', (_event, value) => {
         this.rendererProcessQuitReply_ = value
         this.electronApp_.quit()
+      })
+
+      ipcMain.on('bridge:showMainWindow', () => {
+        mainWindow.show()
+      })
+      ipcMain.on('bridge:exit', (_event, code) => {
+        this.electronApp().exit(code)
+      })
+
+      ipcMain.handle('bridge:env', () => this.env)
+
+      ipcMain.handle('bridge:showMessageBox_', (_event, value) => {
+        return dialog.showMessageBoxSync(this.window(), value)
       })
 
       // ipcMain.on('asynchronous-message', (_event: any, message: string, args: any) => {

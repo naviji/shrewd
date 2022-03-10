@@ -1,6 +1,5 @@
 
 import { createStore, Store } from '@reduxjs/toolkit'
-import bridge from '../bridge'
 import BaseSyncTarget from '../lib/BaseSyncTarget'
 import Database from '../lib/Database'
 import FileApiDriverLocal from '../lib/FileApiDriverLocal'
