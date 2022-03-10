@@ -13,30 +13,41 @@ interface RendererProcessQuitReply {
 
 let mainWindow
 
-export default class ElectronAppWrapper {
+export default class ElectronApp {
     private electronApp_: any;
     private args_: string[];
     private tray_: any = null;
     private willQuitApp_: boolean = false;
     private rendererProcessQuitReply_: RendererProcessQuitReply = null;
 
-    // private logger_: Logger = null;
-
-    // private env_: string;
-    // private isDebugMode_: boolean;
-    // private profilePath_: string;
-
-    // https://github.com/electron/electron/issues/9920#issuecomment-575839738
-    // private win_: any = null;
-
-    // private tray_: any = null;
-    // private buildDir_: string = null;
-
-    // private pluginWindows_: PluginWindows = {};
-
     constructor (args) {
       this.electronApp_ = electronApp
       this.args_ = args
+    }
+
+    async start () {
+      // Since we are doing other async things before creating the window, we might miss
+      // the "ready" event. So we use the function below to make sure that the app is ready.
+      await this.waitForElectronAppReady()
+
+      if (this.isAlreadyRunning()) return
+
+      await this.enableHotReload()
+      await this.installDeveloperExtensions()
+
+      this.createWindow()
+
+      this.electronApp().on('before-quit', () => {
+        this.willQuitApp_ = true
+      })
+
+      this.electronApp().on('window-all-closed', () => {
+        this.electronApp_.quit()
+      })
+
+      this.electronApp().on('activate', () => {
+        mainWindow.show()
+      })
     }
 
     get isDebugMode () {
@@ -78,32 +89,6 @@ export default class ElectronAppWrapper {
 
     electronApp () {
       return this.electronApp_
-    }
-
-    async start () {
-      await this.enableHotReload()
-
-      // Since we are doing other async things before creating the window, we might miss
-      // the "ready" event. So we use the function below to make sure that the app is ready.
-      await this.waitForElectronAppReady()
-
-      await this.installDeveloperExtensions()
-
-      if (this.isAlreadyRunning()) return
-
-      this.createWindow()
-
-      this.electronApp().on('before-quit', () => {
-        this.willQuitApp_ = true
-      })
-
-      this.electronApp().on('window-all-closed', () => {
-        this.electronApp_.quit()
-      })
-
-      this.electronApp().on('activate', () => {
-        mainWindow.show()
-      })
     }
 
     async waitForElectronAppReady () {
@@ -182,7 +167,6 @@ export default class ElectronAppWrapper {
       }
 
       mainWindow = new BrowserWindow(windowOptions)
-      require('@electron/remote/main').enable(mainWindow.webContents)
 
       if (!screen.getDisplayMatching(mainWindow.getBounds())) {
         const { width: windowWidth, height: windowHeight } = mainWindow.getBounds()

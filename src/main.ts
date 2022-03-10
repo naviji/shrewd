@@ -1,8 +1,6 @@
-import ElectronWrapper from './classes/ElectronWrapper'
+import ElectronApp from './classes/ElectronWrapper'
 
-require('@electron/remote/main').initialize()
-
-const app = new ElectronWrapper(process.argv)
+const app = new ElectronApp(process.argv)
 
 app.start().catch(error => {
   console.error('Electron app fatal error:', error)

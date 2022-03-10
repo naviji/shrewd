@@ -19,7 +19,6 @@
     "copy-files": "copyfiles -u 1 ./src/**/*.html src/**/*.css ./build"
   },
   "dependencies": {
-    "@electron/remote": "^2.0.1",
     "@reduxjs/toolkit": "^1.6.2",
     "@types/react-redux": "^7.1.23",
     "async-mutex": "^0.3.2",
