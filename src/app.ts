@@ -9,7 +9,7 @@ import store from './lib/store'
 import BaseModel from './models/BaseModel'
 import BaseSyncTarget from './lib/BaseSyncTarget'
 import Category from './models/Category'
-import Bridge from './bridge'
+import bridge from './bridge'
 const { shimInit } = require('./lib/ShimNode')
 
 class Application extends BaseApplication {
@@ -46,7 +46,7 @@ class Application extends BaseApplication {
       ids: Setting.get('collapsedCategoryGroupIds')
     })
 
-    Bridge.showMainWindow()
+    bridge().showMainWindow()
 
     return null
   }

@@ -1,5 +1,5 @@
 import app from './app'
-import Bridge from './bridge'
+import bridge from './bridge'
 
 // Disable drag and drop of links inside application (which would
 // open it as if the whole app was a browser)
@@ -14,26 +14,11 @@ document.addEventListener('auxclick', event => event.preventDefault())
 // which would open a new browser window.
 document.addEventListener('click', (event) => event.preventDefault())
 
-initRenderer()
-
-async function initRenderer () {
-  const env = await Bridge.env()
-  try {
-    console.info(`Environment: ${env}`)
-    await app().start(Bridge.processArgv())
-    require('./gui/Root')
-  } catch (error) {
-    await displayError(error)
-    // In dev, we leave the app open as debug statements in the console can be useful
-    if (env !== 'dev') Bridge.exit(1)
-  }
-}
-
 async function displayError (error) {
-  const env = await Bridge.env()
+  const env = await bridge().env()
   if (error.code === 'flagError') {
     // TODO: Add error code and message handling
-    await Bridge.showErrorMessageBox(error.message)
+    await bridge().showErrorMessageBox(error.message)
   } else {
     // If something goes wrong at this stage we don't have a console or a log file
     // so display the error in a message box.
@@ -45,7 +30,22 @@ async function displayError (error) {
     if (env === 'dev') {
       console.error(error)
     } else {
-      await Bridge.showErrorMessageBox(msg.join('\n\n'))
+      await bridge().showErrorMessageBox(msg.join('\n\n'))
     }
   }
 }
+
+async function initRenderer () {
+  const env = await bridge().env()
+  try {
+    console.info(`Environment: ${env}`)
+    await app().start(bridge().processArgv())
+    require('./gui/Root')
+  } catch (error) {
+    await displayError(error)
+    // In dev, we leave the app open as debug statements in the console can be useful
+    if (env !== 'dev') bridge().exit(1)
+  }
+}
+
+initRenderer()

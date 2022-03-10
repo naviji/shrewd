@@ -1,5 +1,6 @@
-import * as React from 'react'
-import * as ReactDOM from 'react-dom'
+import React, { useEffect } from 'react'
+import ReactDOM from 'react-dom'
+
 import { Provider, useDispatch, useSelector } from 'react-redux'
 import app from '../app'
 import { setAppState, State } from '../lib/store'
@@ -21,7 +22,7 @@ function RootComponent () {
   const status = useSelector((state: State) => state.appState.status)
   const dispatch = useDispatch()
 
-  React.useEffect(() => {
+  useEffect(() => {
     async function initializeApp () {
       dispatch(setAppState({ status: 'initializing' }))
       await initialize()
@@ -32,28 +33,6 @@ function RootComponent () {
     }
   }, [])
 
-  React.useEffect(() => {
-    async function onAppClose () {
-      const canClose = true
-      // Do some clean up
-      ipcRenderer.send('appCloseReply', {
-        canClose: canClose
-      })
-    }
-    ipcRenderer.on('appClose', onAppClose)
-    return () => {
-      ipcRenderer.off('appClose', onAppClose)
-    }
-  })
-
-  React.useEffect(() => {
-    async function env () {
-      const envValue = await ipcRenderer.invoke('bridge:env')
-      console.log(`envValue = ${envValue}`)
-    }
-    env()
-  })
-
   const handleClick = (e) => {
     console.log('hello')
   }
@@ -61,7 +40,7 @@ function RootComponent () {
   return (
     <div>
       <button onClick={handleClick}>Test</button>
-      <h1>testffdfdfdfdfdd33! {status}</h1>
+      <h1>test43! {status}</h1>
       <h2>Good to see you here.</h2>
     </div>
   )
