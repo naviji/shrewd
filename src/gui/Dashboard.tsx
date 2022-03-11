@@ -296,9 +296,18 @@ export function BudgetDisplay () {
       </Toolbar>
 
     </Box>
-    <Box sx={{ flexGrow: 1, display: 'flex', width: '100%', flexDirection: 'row' }}>
+    <Box sx={{ flexGrow: 1, display: 'flex', width: '100%' }}>
       <Box sx={{ flexGrow: 2, alignItems: 'stretch', minWidth: '500px' }}>
-            <Item sx={{ height: '100%' }}>Cateogries</Item>
+            <Item sx={{ height: '100%' }}>
+
+            {/* <Container maxWidth="lg" sx={{ }}> */}
+                <Paper sx={{ display: 'flex', height: '100%', overflow: 'scroll', minWidth: '600px', flexDirection: 'column' }}>
+                  <Orders />
+                  <p>test</p>
+                </Paper>
+          {/* </Container> */}
+
+            </Item>
       </Box>
       <Box sx={{ minWidth: '250px' }}>
             <Item sx={{ height: '100%' }}>Inspector</Item>

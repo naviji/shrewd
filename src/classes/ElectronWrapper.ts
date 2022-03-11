@@ -33,7 +33,7 @@ export default class ElectronApp {
       if (this.isAlreadyRunning()) return
 
       await this.enableHotReload()
-      await this.installDeveloperExtensions()
+      // await this.installDeveloperExtensions()
 
       this.createWindow()
 

@@ -42,7 +42,7 @@ function RootComponent () {
 const mdTheme = createTheme({
   palette: {
     primary: {
-      main: '#ffffff'
+      main: '#000000'
     },
     secondary: {
       main: '#014ede'
