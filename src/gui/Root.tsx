@@ -5,6 +5,12 @@ import app from '../app'
 import ErrorBoundary from './ErrorBoundary'
 import { setAppState, State } from '../lib/store'
 
+import Button from '@mui/material/Button'
+import Dashboard from './Dashboard'
+
+import Box from '@mui/material/Box'
+import { createTheme, ThemeProvider } from '@mui/material/styles'
+
 // interface Props {
 //   themeId: number;
 //   appState: string,
@@ -18,38 +24,42 @@ async function initialize () {
 }
 
 function RootComponent () {
-  const status = useSelector((state: State) => state.appState.status)
-  const dispatch = useDispatch()
+  // const status = useSelector((state: State) => state.appState.status)
+  // const dispatch = useDispatch()
 
   useEffect(() => {
     async function initializeApp () {
-      dispatch(setAppState({ status: 'initializing' }))
       await initialize()
-      dispatch(setAppState({ status: 'ready' }))
     }
-    if (status === 'starting') {
-      initializeApp()
-    }
+    initializeApp()
   }, [])
 
-  const handleClick = (e) => {
-    console.log('hello')
-  }
-
   return (
-    <div>
-      <button onClick={handleClick}>Test</button>
-      <h1>test43! {status}</h1>
-      <h2>Good to see you here.</h2>
-    </div>
+      <Dashboard />
   )
 }
 
+const mdTheme = createTheme({
+  palette: {
+    primary: {
+      main: '#ffffff'
+    },
+    secondary: {
+      main: '#014ede'
+    },
+    background: {
+      default: '#f1f1f1'
+    }
+  }
+})
+
 ReactDOM.render(
+  <ThemeProvider theme={mdTheme}>
   <Provider store={app().store()}>
       <ErrorBoundary>
-        <RootComponent />,
+        <RootComponent />
       </ErrorBoundary>
-  </Provider>,
+  </Provider>
+  </ThemeProvider>,
   document.getElementById('react-root')
 )

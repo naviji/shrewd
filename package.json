@@ -19,6 +19,11 @@
     "copy-files": "copyfiles -u 1 ./src/**/*.html src/**/*.css ./build"
   },
   "dependencies": {
+    "@emotion/react": "^11.8.2",
+    "@emotion/styled": "^11.8.1",
+    "@mui/icons-material": "^5.5.0",
+    "@mui/lab": "^5.0.0-alpha.72",
+    "@mui/material": "^5.5.0",
     "@reduxjs/toolkit": "^1.6.2",
     "@types/react-redux": "^7.1.23",
     "async-mutex": "^0.3.2",
@@ -32,6 +37,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.6",
+    "recharts": "^2.1.9",
     "sprintf-js": "^1.1.2",
     "timers-browserify": "^2.0.12",
     "url": "^0.11.0"
