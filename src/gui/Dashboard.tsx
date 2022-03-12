@@ -303,7 +303,6 @@ export function BudgetDisplay () {
             {/* <Container maxWidth="lg" sx={{ }}> */}
                 <Paper sx={{ display: 'flex', height: '100%', overflow: 'scroll', minWidth: '600px', flexDirection: 'column' }}>
                   <Orders />
-                  <p>test</p>
                 </Paper>
           {/* </Container> */}
 

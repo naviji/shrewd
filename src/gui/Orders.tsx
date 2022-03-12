@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, { useState, Component } from 'react'
 import Link from '@mui/material/Link'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -13,6 +13,9 @@ import { IconButton, Toolbar } from '@mui/material'
 import Checkbox from '@mui/material/Checkbox'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import { nanoid } from 'nanoid'
+
+// You can import the default tree with dnd context
+import SortableTree from 'react-sortable-tree'
 
 // Generate Order Data
 function createData (
@@ -171,27 +174,6 @@ const CategoryHeader = () => {
   )
 }
 
-const CategoryGroupRow = ({ data }) => {
-  return (
-    <TableRow sx={{ background: '#f0f0f0' }}>
-            <TableCell>
-            <Checkbox {...label} />
-            <IconButton color="inherit">
-            <ArrowDropDownIcon />
-            </ IconButton>
-            {data.name}
-            <IconButton color="inherit"> <AddCircleOutlineIcon fontSize='small' />
-              </ IconButton>
-
-              </TableCell>
-            <TableCell align="right">{data.budgeted}</TableCell>
-            <TableCell align="right">{data.spent}</TableCell>
-            <TableCell align="right">{data.balance}</TableCell>
-            {/* <TableCell align="right">Sale Amount</TableCell> */}
-          </TableRow>
-  )
-}
-
 const CategoryRow = ({ data }) => {
   return (
     <TableRow sx={{ }}>
@@ -211,24 +193,46 @@ const CategoryRow = ({ data }) => {
   )
 }
 
-export default function Orders () {
+const CategoryGroupRow = ({ data }) => {
   return (
     <React.Fragment>
-      <Table sx={{ minWidth: 650 }}>
-        <TableHead>
-          <CategoryHeader />
-        </TableHead>
-        <TableBody>
-          {data.map((row) => (
-            <>
-            <CategoryGroupRow key={row.id} data={row}/>
-            {row.categories.map((subRow) => (
-              <CategoryRow key={subRow.id} data={subRow}/>
-            ))}
-            </>
+    <TableRow sx={{ background: '#f0f0f0' }}>
+            <TableCell>
+            <Checkbox {...label} />
+            <IconButton color="inherit">
+            <ArrowDropDownIcon />
+            </ IconButton>
+            {data.name}
+            <IconButton color="inherit"> <AddCircleOutlineIcon fontSize='small' />
+              </ IconButton>
+
+              </TableCell>
+            <TableCell align="right">{data.budgeted}</TableCell>
+            <TableCell align="right">{data.spent}</TableCell>
+            <TableCell align="right">{data.balance}</TableCell>
+            {/* <TableCell align="right">Sale Amount</TableCell> */}
+          </TableRow>
+          {data.categories.map((row) => (
+                        <CategoryRow key={row.id} data={row}/>
           ))}
-        </TableBody>
-      </Table>
     </React.Fragment>
+
+  )
+}
+
+export default function Orders () {
+  return (
+  <React.Fragment>
+    <Table sx={{ minWidth: 650 }}>
+      <TableHead>
+        <CategoryHeader />
+      </TableHead>
+      <TableBody>
+        {data.map((row) => (
+          <CategoryGroupRow key={row.id} data={row}/>
+        ))}
+      </TableBody>
+    </Table>
+  </React.Fragment>
   )
 }

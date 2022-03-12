@@ -39,6 +39,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.6",
+    "react-sortable-tree": "^2.8.0",
     "recharts": "^2.1.9",
     "sprintf-js": "^1.1.2",
     "timers-browserify": "^2.0.12",
