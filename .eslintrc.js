@@ -5,12 +5,7 @@ module.exports = {
     node: true,
     'jest/globals': true
   },
-  extends: [
-    'plugin:react/recommended',
-    'plugin:react-hooks/recommended',
-    'plugin:jest/recommended',
-    'standard'
-  ],
+  extends: ['plugin:react/recommended', 'plugin:react-hooks/recommended', 'plugin:jest/recommended', 'standard', 'plugin:storybook/recommended'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: {
@@ -19,13 +14,12 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module'
   },
-  plugins: [
-    'react',
-    'jest',
-    '@typescript-eslint'
-  ],
+  plugins: ['react', 'jest', '@typescript-eslint'],
   rules: {
     'no-use-before-define': 'off',
-    '@typescript-eslint/no-use-before-define': ['error', { functions: false, typedefs: false }]
+    '@typescript-eslint/no-use-before-define': ['error', {
+      functions: false,
+      typedefs: false
+    }]
   }
 }
