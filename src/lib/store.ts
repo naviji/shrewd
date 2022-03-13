@@ -93,7 +93,13 @@ import { configureStore, createSlice } from '@reduxjs/toolkit'
 export const appStateSlice = createSlice({
   name: 'appState',
   initialState: {
-    status: 'starting'
+    status: 'starting',
+    categoryGroups: [
+      {
+        id: 1
+
+      }
+    ]
   },
   reducers: {
     setAppState (state, action) {
