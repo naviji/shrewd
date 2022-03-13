@@ -89,21 +89,66 @@ import { configureStore, createSlice } from '@reduxjs/toolkit'
 //       }
 //     }
 // })
+import { nanoid } from 'nanoid'
+
+const groupIds = [nanoid(), nanoid()]
+
+const data = [
+  {
+    id: nanoid(),
+    groupId: groupIds[0],
+    name: 'Audible',
+    budgeted: 123400,
+    spent: 112345600,
+    balance: 112345600
+  },
+  {
+    id: nanoid(),
+    groupId: groupIds[0],
+    name: 'Internet',
+    budgeted: 112345600,
+    spent: 112345600,
+    balance: 112345600
+  },
+  {
+    id: nanoid(),
+    groupId: groupIds[1],
+    name: 'Playstation',
+    budgeted: 112345600,
+    spent: 112345600,
+    balance: 112345600
+  },
+  {
+    id: nanoid(),
+    groupId: groupIds[1],
+    name: 'iphone',
+    budgeted: 112345600,
+    spent: 112345600,
+    balance: 112345600
+  }
+]
 
 export const appStateSlice = createSlice({
   name: 'appState',
   initialState: {
-    status: 'starting',
-    categoryGroups: [
-      {
-        id: 1
-
-      }
-    ]
+    status: 'starting'
   },
   reducers: {
     setAppState (state, action) {
       state.status = action.payload.status
+    }
+  }
+})
+
+export const cateogoriesSlice = createSlice({
+  name: 'categories',
+  initialState: data,
+  reducers: {
+    setBudgeted (categories, action) {
+      console.log('in set Budgeted', action)
+      const { categoryId, budgeted } = action.payload
+      const category = categories.find(x => x.id === categoryId)
+      category.budgeted = budgeted
     }
   }
 })
@@ -114,29 +159,16 @@ export const appStateSlice = createSlice({
 // }
 
 export const { setAppState } = appStateSlice.actions
+export const { setBudgeted } = cateogoriesSlice.actions
 
 export interface State {
-	categories: any[];
-	selectedCategoryIds: string[];
-
-  categoryGroups: any[];
-	selectedCategoryGroupId: string;
-  collapsedCategoryGroupIds: string[];
-
-  showSideMenu: boolean;
-	screens: any;
-  syncInProgress: boolean
-	settings: any;
-	appState: any;
+  status: String,
+  categories: any[]
 }
 
 export default configureStore({
   reducer: {
-    // categories: categoriesSlice.reducer,
-    // cateogryGroups: categoryGroupsSlice.reducer,
-    // view : viewSlice.reducer,
-    // settings: settingsSlice.reducer,
-    appState: appStateSlice.reducer
+    appState: appStateSlice.reducer,
+    categories: cateogoriesSlice.reducer
   }
-//   middleware: [generalMiddleware]
 })
