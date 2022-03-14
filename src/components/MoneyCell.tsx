@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, forwardRef, useRef } from 'react'
 import { useDispatch } from 'react-redux'
 
 import Box from '@mui/material/Box'
@@ -16,59 +16,53 @@ import { setBudgeted } from '../lib/store'
 interface MoneyCellProps {
     amount: number;
     editable: Boolean;
+    colored: Boolean;
     id: String
 }
 
-const MoneyInputCell = ({ id, amount, setClickedFalse }: any) => {
-  const [tempAmount, setTempAmount] = useState(format(amount).slice(1))
+const MoneyInputCell = forwardRef((props: any, ref: any) => {
+  const { id, setClickedFalse, tempAmount, setTempAmount } = props
   const dispatch = useDispatch()
-  const onClickAwayHandler = () => {
-    console.log('Triggered because of click away', tempAmount)
-    dispatch(setBudgeted({ categoryId: id, budgeted: unformat(tempAmount) }))
-    setClickedFalse()
-  }
+
   return (
-      <ClickAwayListener onClickAway={onClickAwayHandler}>
-        <Box component="form" noValidate autoComplete="off"
-                    sx={{ '& > :not(style)': { m: 0 }, display: 'inline-block' }}>
-                        {/* TODO: Find a way to remove padding of input element of this text field */}
-                    <TextField variant="standard" margin="none" value={tempAmount}
-                        sx={{
-                          '& > input': {
-                            margin: '0px',
-                            paddingTop: 0,
-                            paddingBottom: 0
-                          }
-                        }}
-                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                          setTempAmount(event.target.value)
-                        }}
-                        onKeyPress={(event: React.KeyboardEvent<HTMLInputElement>) => {
-                          console.log(`Pressed keyCode ${event.key}`)
-                          if (event.key === 'Enter') {
-                            setClickedFalse()
-                            event.preventDefault()
-                          }
-                        }}
-
-                        onBlur={(e) => {
-                          console.log('Triggered because this input lost focus', tempAmount)
-                          dispatch(setBudgeted({ categoryId: id, budgeted: unformat(tempAmount) }))
-                          setClickedFalse()
-                        }}
-                        InputProps={{
-                          disableUnderline: true,
-                          style: {
-                            margin: '0',
-                            padding: '0'
-                          }
-                        }}
-                    />
-                </Box>
-      </ClickAwayListener>
-
+    <Box component="form" noValidate autoComplete="off"
+        sx={{ '& > :not(style)': { m: 0 }, display: 'inline-block' }}>
+            {/* TODO: Find a way to remove padding of input element of this text field */}
+        <TextField variant="standard" margin="none" value={tempAmount}
+            sx={{
+              '& > input': {
+                margin: '0px',
+                paddingTop: 0,
+                paddingBottom: 0
+              }
+            }}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              setTempAmount(event.target.value)
+            }}
+            onKeyPress={(event: React.KeyboardEvent<HTMLInputElement>) => {
+              console.log(`Pressed keyCode ${event.key}`)
+              if (event.key === 'Enter') {
+                setClickedFalse()
+                event.preventDefault()
+              }
+            }}
+            inputRef={ref}
+            onBlur={(e) => {
+              console.log('Triggered because this input lost focus', tempAmount)
+              dispatch(setBudgeted({ categoryId: id, budgeted: unformat(tempAmount) }))
+              setClickedFalse()
+            }}
+            InputProps={{
+              disableUnderline: true,
+              style: {
+                margin: '0',
+                padding: '0'
+              }
+            }}
+        />
+    </Box>
   )
-}
+})
 
 const MoneyDisplayCell = ({ amount }: any) => {
   return (
@@ -82,9 +76,15 @@ const MoneyDisplayCell = ({ amount }: any) => {
         </Typography>
   )
 }
+MoneyInputCell.displayName = 'MoneyInputCell'
 
-const MoneyCell = ({ id, amount, editable }: MoneyCellProps) => {
+const MoneyCell = ({ id, amount, editable, colored }: MoneyCellProps) => {
   const [clicked, setClicked] = useState(false)
+  const [hoveredOver, sethoveredOver] = useState(false)
+  const [tempAmount, setTempAmount] = useState(format(amount).slice(1))
+  const dispatch = useDispatch()
+
+  const inputRef = useRef(null)
   const editableStyle = editable
     ? {
         '&:hover': {
@@ -100,11 +100,46 @@ const MoneyCell = ({ id, amount, editable }: MoneyCellProps) => {
         borderRadius: '8px'
       }
     : {}
+
+  const coloredStyle = colored
+    ? {
+        borderRadius: '16px',
+        background: '#CDEA9F'
+      }
+    : {}
+
+  let moneyCell = null
+  if (hoveredOver || clicked) {
+    moneyCell = <MoneyInputCell id={id} ref={inputRef} tempAmount={tempAmount} setTempAmount={(v) => setTempAmount(v)} setClickedFalse={() => setClicked(false)}/>
+  }
+
+  if (!clicked && !hoveredOver) {
+    moneyCell = <MoneyDisplayCell amount={amount} />
+  }
+
+  const onClickAwayHandler = () => {
+    console.log('Triggered because of click away', tempAmount)
+    dispatch(setBudgeted({ categoryId: id, budgeted: unformat(tempAmount) }))
+    setClicked(false)
+  }
+
   return (
 
         <React.Fragment>
           <CssBaseline />
-      <Box onClick={() => editable && setClicked(true)}
+          <ClickAwayListener onClickAway={onClickAwayHandler}>
+
+      <Box
+        onClick={() => {
+          console.log('On click detected')
+          if (editable) setClicked(true)
+          if (inputRef.current) {
+            console.log('inputRef current defined', inputRef.current)
+            inputRef.current.select()
+          }
+        }}
+        onMouseEnter={() => editable && sethoveredOver(true)}
+        onMouseLeave={() => editable && sethoveredOver(false)}
         sx={{
           display: 'inline-block',
           width: '120px',
@@ -115,12 +150,13 @@ const MoneyCell = ({ id, amount, editable }: MoneyCellProps) => {
           paddingRight: '8px',
           border: 'solid white',
           ...editableStyle,
-          ...clickedStyle
+          ...clickedStyle,
+          ...coloredStyle
         }}>
-            {
-                clicked ? <MoneyInputCell id={id} amount={amount} setClickedFalse={() => setClicked(false)}/> : <MoneyDisplayCell amount={amount} />
-            }
+            {moneyCell}
     </Box>
+    </ClickAwayListener>
+
     </React.Fragment>
   )
 }
