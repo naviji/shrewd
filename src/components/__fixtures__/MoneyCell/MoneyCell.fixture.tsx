@@ -1,25 +1,20 @@
 import React from 'react'
 import MoneyCell from '../../MoneyCell'
-import { State } from '../../../lib/store'
+import { useValue } from 'react-cosmos/fixture'
 
-import { useSelector } from 'react-redux'
-
-const MockedMoneyCell = ({ editable, colored, dataIdx }: any) => {
-  const data = useSelector((state: State) => state.categories.data)
-  console.log('data= ', data)
-  let moneyCell = null
-  if (data && data.length) {
-    moneyCell = <MoneyCell colored={colored} editable={editable} id={data[dataIdx].id} amount={data[dataIdx].budgeted}/>
-  }
-  return (
-        <>
-        {moneyCell}
-        </>
-  )
-}
+/* eslint react-hooks/rules-of-hooks: "off" */
 
 export default {
-  default: <MockedMoneyCell dataIdx={0} editable={false}/>,
-  editable: <MockedMoneyCell dataIdx={1} editable={true}/>,
-  colored: <MockedMoneyCell dataIdx={2} colored={true} editable={false}/>
+  default: () => {
+    const [amount, setAmount] = useValue('amount', { defaultValue: 10000 })
+    return <MoneyCell colored={false} editable={false} amount={amount} saveChangedAmount={setAmount}/>
+  },
+  editable: () => {
+    const [amount, setAmount] = useValue('amount', { defaultValue: 20000 })
+    return <MoneyCell colored={false} editable={true} amount={amount} saveChangedAmount={setAmount}/>
+  },
+  colored: () => {
+    const [amount, setAmount] = useValue('amount', { defaultValue: 30000 })
+    return <MoneyCell colored={true} editable={false} amount={amount} saveChangedAmount={setAmount}/>
+  }
 }
