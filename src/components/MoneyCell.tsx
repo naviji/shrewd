@@ -120,6 +120,7 @@ const MoneyCell = ({ id, amount, editable, colored }: MoneyCellProps) => {
   const onClickAwayHandler = () => {
     console.log('Triggered because of click away', tempAmount)
     dispatch(setBudgeted({ categoryId: id, budgeted: unformat(tempAmount) }))
+    setTempAmount(format(unformat(tempAmount)).slice(1))
     setClicked(false)
   }
 
