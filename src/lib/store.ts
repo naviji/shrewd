@@ -122,7 +122,9 @@ interface CategoriesDataState {
 
 export const cateogoriesSlice = createSlice({
   name: 'categories',
-  initialState: {},
+  initialState: {
+    data: []
+  },
   reducers: {
     setBudgeted (categories: CategoriesState, action) {
       console.log('in set Budgeted', action)
