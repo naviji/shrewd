@@ -63,20 +63,57 @@ const MoneyInputCell = forwardRef((props: any, ref: any) => {
     </Box>
   )
 })
+MoneyInputCell.displayName = 'MoneyInputCell'
 
-const MoneyDisplayCell = ({ amount }: any) => {
+const MoneyColoredDisplayCell = ({ amount }: any) => {
+  let backgroundColor = '#CDEA9F'
+  if (amount < 0) {
+    backgroundColor = '#FF7474'
+  }
+  const coloredStyle = {
+    borderRadius: '16px',
+    background: backgroundColor
+  }
+
   return (
-        <Typography align='right' variant='body1' noWrap sx={{
-          display: 'inline-block',
-          height: '100%',
-          width: '100%',
-          verticalAlign: 'middle'
-        }}>
-              {format(amount)}
-        </Typography>
+    <Box sx={{ ...coloredStyle }}>
+      <Typography align='right' variant='body1' noWrap sx={{
+        display: 'inline-block',
+        height: '100%',
+        width: '100%',
+        verticalAlign: 'middle'
+      }}>
+            {format(amount)}
+      </Typography>
+    </Box>
+
   )
 }
-MoneyInputCell.displayName = 'MoneyInputCell'
+
+const MoneyUneditableDisplayCell = ({ amount }: any) => {
+  return (
+    <Typography align='right' variant='body1' noWrap sx={{
+      display: 'inline-block',
+      height: '100%',
+      width: '100%',
+      verticalAlign: 'middle'
+    }}>
+          {format(amount)}
+    </Typography>
+  )
+}
+
+const MoneyDisplayCell = ({ amount, colored }: any) => {
+  let displayCell = null
+
+  displayCell = colored ? <MoneyColoredDisplayCell amount={amount} /> : <MoneyUneditableDisplayCell amount={amount} />
+
+  return (
+    <Box sx={{ }}>
+      { displayCell }
+    </Box>
+  )
+}
 
 const MoneyCell = ({ id, amount, editable, colored }: MoneyCellProps) => {
   const [clicked, setClicked] = useState(false)
@@ -101,20 +138,11 @@ const MoneyCell = ({ id, amount, editable, colored }: MoneyCellProps) => {
       }
     : {}
 
-  const coloredStyle = colored
-    ? {
-        borderRadius: '16px',
-        background: '#CDEA9F'
-      }
-    : {}
-
   let moneyCell = null
   if (hoveredOver || clicked) {
     moneyCell = <MoneyInputCell id={id} ref={inputRef} tempAmount={tempAmount} setTempAmount={(v) => setTempAmount(v)} setClickedFalse={() => setClicked(false)}/>
-  }
-
-  if (!clicked && !hoveredOver) {
-    moneyCell = <MoneyDisplayCell amount={amount} />
+  } else {
+    moneyCell = <MoneyDisplayCell amount={amount} colored={colored} />
   }
 
   const onClickAwayHandler = () => {
@@ -151,8 +179,7 @@ const MoneyCell = ({ id, amount, editable, colored }: MoneyCellProps) => {
           paddingRight: '8px',
           border: 'solid white',
           ...editableStyle,
-          ...clickedStyle,
-          ...coloredStyle
+          ...clickedStyle
         }}>
             {moneyCell}
     </Box>

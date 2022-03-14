@@ -1,4 +1,5 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit'
+import { CategoryEntity } from '../types/database/types'
 
 // export const categoriesSlice = createSlice({
 //     name: 'categories',
@@ -89,44 +90,10 @@ import { configureStore, createSlice } from '@reduxjs/toolkit'
 //       }
 //     }
 // })
-import { nanoid } from 'nanoid'
 
-const groupIds = [nanoid(), nanoid()]
-
-const data = [
-  {
-    id: nanoid(),
-    groupId: groupIds[0],
-    name: 'Audible',
-    budgeted: 123400,
-    spent: 112345600,
-    balance: 112345600
-  },
-  {
-    id: nanoid(),
-    groupId: groupIds[0],
-    name: 'Internet',
-    budgeted: 112345600,
-    spent: 112345600,
-    balance: 112345600
-  },
-  {
-    id: nanoid(),
-    groupId: groupIds[1],
-    name: 'Playstation',
-    budgeted: 112345600,
-    spent: 112345600,
-    balance: 112345600
-  },
-  {
-    id: nanoid(),
-    groupId: groupIds[1],
-    name: 'iphone',
-    budgeted: 112345600,
-    spent: 112345600,
-    balance: 112345600
-  }
-]
+interface AppState {
+  status:string
+}
 
 export const appStateSlice = createSlice({
   name: 'appState',
@@ -134,21 +101,43 @@ export const appStateSlice = createSlice({
     status: 'starting'
   },
   reducers: {
-    setAppState (state, action) {
+    setAppState (state : AppState, action) {
       state.status = action.payload.status
     }
   }
 })
 
+interface CategoriesState {
+  data: CategoriesDataState[]
+}
+
+interface CategoriesDataState {
+  id: string,
+  groupId: string,
+  name: string,
+  budgeted: number,
+  spent: number,
+  balance: number
+}
+
 export const cateogoriesSlice = createSlice({
   name: 'categories',
-  initialState: data,
+  initialState: {},
   reducers: {
-    setBudgeted (categories, action) {
+    setBudgeted (categories: CategoriesState, action) {
       console.log('in set Budgeted', action)
       const { categoryId, budgeted } = action.payload
-      const category = categories.find(x => x.id === categoryId)
-      category.budgeted = budgeted
+      const category = categories.data.find(x => x.id === categoryId)
+      if (!category) {
+        console.log('Cannot find category', categories.data)
+      } else {
+        category.budgeted = budgeted
+      }
+    },
+    setCategories (categories: CategoriesState, action) {
+      console.log('in set categories', action)
+      const { categories: newCategories } = action.payload
+      categories.data = newCategories
     }
   }
 })
@@ -159,11 +148,11 @@ export const cateogoriesSlice = createSlice({
 // }
 
 export const { setAppState } = appStateSlice.actions
-export const { setBudgeted } = cateogoriesSlice.actions
+export const { setBudgeted, setCategories } = cateogoriesSlice.actions
 
 export interface State {
-  status: String,
-  categories: any[]
+  appState: AppState,
+  categories: CategoriesState
 }
 
 export default configureStore({
