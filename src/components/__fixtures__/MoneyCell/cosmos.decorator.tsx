@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import store, { State, setCategories } from '../lib/store'
+import store, { setCategories } from '../../../lib/store'
 
 import { Provider, useDispatch } from 'react-redux'
 
@@ -28,7 +28,7 @@ const initData = {
     ...defaultCategoryData,
     id: nanoid(),
     groupId: nanoid(),
-    budgeted: 323400
+    budgeted: -323400
   }
 }
 

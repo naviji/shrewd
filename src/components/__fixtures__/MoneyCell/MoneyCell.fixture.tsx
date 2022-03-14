@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react'
-import MoneyCell from './MoneyCell'
-import store, { State, setCategories } from '../lib/store'
+import React from 'react'
+import MoneyCell from '../../MoneyCell'
+import { State } from '../../../lib/store'
 
-import { Provider, useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 
 const MockedMoneyCell = ({ editable, colored, dataIdx }: any) => {
   const data = useSelector((state: State) => state.categories.data)

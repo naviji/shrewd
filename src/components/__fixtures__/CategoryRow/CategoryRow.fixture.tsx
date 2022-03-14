@@ -1,5 +1,5 @@
 import React from 'react'
-import CategoryRow from './CategoryRow'
+import CategoryRow from '../../CategoryRow'
 
 const dataProps = {
   name: 'True Expenses',
