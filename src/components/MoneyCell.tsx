@@ -45,11 +45,7 @@ const MoneyInputCell = forwardRef((props: any, ref: any) => {
               setClickedFalse()
             }}
             InputProps={{
-              disableUnderline: true,
-              style: {
-                margin: '0',
-                padding: '0'
-              }
+              disableUnderline: true
             }}
         />
     </Box>

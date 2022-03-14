@@ -13,8 +13,12 @@ export default {
     const [amount, setAmount] = useValue('amount', { defaultValue: 20000 })
     return <MoneyCell colored={false} editable={true} amount={amount} saveChangedAmount={setAmount}/>
   },
-  colored: () => {
+  coloredPositive: () => {
     const [amount, setAmount] = useValue('amount', { defaultValue: 30000 })
+    return <MoneyCell colored={true} editable={false} amount={amount} saveChangedAmount={setAmount}/>
+  },
+  coloredNegative: () => {
+    const [amount, setAmount] = useValue('amount', { defaultValue: -30000 })
     return <MoneyCell colored={true} editable={false} amount={amount} saveChangedAmount={setAmount}/>
   }
 }
