@@ -6,6 +6,7 @@ import Box from '@mui/material/Box'
 import MoneyCell from './MoneyCell'
 import CssBaseline from '@mui/material/CssBaseline'
 import ClickAwayListener from '@mui/material/ClickAwayListener'
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 
 /*
   Text align and padding of input need to be done using global css styles.
@@ -143,6 +144,14 @@ const CategoryNameDisplay = ({ name, saveCategoryName } : any) => {
   )
 }
 
+const AddCategoryButton = () => {
+  return (
+    <IconButton color="inherit">
+      < AddCircleOutlineIcon/>
+    </IconButton>
+  )
+}
+
 const CategoryRow = ({ name, budgeted, spent, balance, saveBudgetedAmount, saveCategoryName, isGroup }: CategoryRowProps) => {
   const bgColor = isGroup ? '#F0F0F0' : '#FFFFFF'
   return (
@@ -164,6 +173,7 @@ const CategoryRow = ({ name, budgeted, spent, balance, saveBudgetedAmount, saveC
             <ArrowDropDownIcon />
           </ IconButton>
           <CategoryNameDisplay name={name} saveCategoryName={saveCategoryName}/>
+          { isGroup ? <AddCategoryButton /> : null }
         </Box>
       <MoneyCell editable={true} colored={false} amount={budgeted} saveChangedAmount={saveBudgetedAmount}/>
       <MoneyCell editable={false} colored={false} amount={spent} saveChangedAmount={() => null}/>
