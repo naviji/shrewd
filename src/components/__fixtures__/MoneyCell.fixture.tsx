@@ -1,5 +1,5 @@
 import React from 'react'
-import MoneyCell from '../../MoneyCell'
+import MoneyCell from '../MoneyCell'
 import { useValue } from 'react-cosmos/fixture'
 
 /* eslint react-hooks/rules-of-hooks: "off" */

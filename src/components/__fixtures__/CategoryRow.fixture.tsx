@@ -1,5 +1,5 @@
 import React from 'react'
-import CategoryRow from '../../CategoryRow'
+import CategoryRow from '../CategoryRow'
 import { useValue } from 'react-cosmos/fixture'
 
 /* eslint react-hooks/rules-of-hooks: "off" */
