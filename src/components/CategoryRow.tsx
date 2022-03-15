@@ -5,14 +5,25 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import Box from '@mui/material/Box'
 import MoneyCell from './MoneyCell'
 
+/*
+
+Text align and padding of input need to be done using global css styles.
+https://mui.com/api/input/
+https://mui.com/guides/interoperability/#global-css
+https://mui.com/customization/theme-components/#global-style-overrides
+*/
+
 interface CategoryRowProps {
   name: String,
   budgeted: number,
   spent: number,
   balance: number,
-  saveBudgetedAmount: Function
+  saveBudgetedAmount: Function,
+  isGroup: Boolean
 }
-const CategoryRow = ({ name, budgeted, spent, balance, saveBudgetedAmount }: CategoryRowProps) => {
+
+const CategoryRow = ({ name, budgeted, spent, balance, saveBudgetedAmount, isGroup }: CategoryRowProps) => {
+  const bgColor = isGroup ? '#F0F0F0' : '#FFFFFF'
   return (
     <Box sx={{
       display: 'flex',
@@ -21,11 +32,12 @@ const CategoryRow = ({ name, budgeted, spent, balance, saveBudgetedAmount }: Cat
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      border: '1px solid rgba(186, 186, 186, 0.54)'
+      border: '1px solid rgba(186, 186, 186, 0.54)',
+      background: bgColor
     }}>
         <Box sx={{ flexGrow: 5, minWidth: '350px' }}>
           <Checkbox />
-          <IconButton sx={{ visibility: 'visible' }} color="inherit">
+          <IconButton sx={{ visibility: isGroup ? 'visible' : 'hidden' }} color="inherit">
             <ArrowDropDownIcon />
           </ IconButton>
           <Box sx={{ display: 'inline-block', verticalAlign: 'middle' }}>

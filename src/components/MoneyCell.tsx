@@ -5,7 +5,7 @@ import ClickAwayListener from '@mui/material/ClickAwayListener'
 
 import { format, unformat } from '../utils/moneyUtils'
 
-import { Typography } from '@mui/material'
+import { Button, Typography } from '@mui/material'
 
 import CssBaseline from '@mui/material/CssBaseline'
 
@@ -44,6 +44,7 @@ const MoneyInputCell = forwardRef((props: any, ref: any) => {
               saveAmount(unformat(tempAmount))
               setClickedFalse()
             }}
+
             InputProps={{
               disableUnderline: true
             }}
@@ -64,17 +65,20 @@ const MoneyColoredDisplayCell = ({ amount }: any) => {
   }
 
   return (
-    <Box sx={{ ...coloredStyle }}>
-      <Typography align='right' variant='body1' noWrap sx={{
-        display: 'inline-block',
-        height: '100%',
-        width: '100%',
-        verticalAlign: 'middle'
-      }}>
-            {format(amount)}
-      </Typography>
-    </Box>
+      <Box sx={{ ...coloredStyle }}>
 
+            <Button sx={{ width: '100%', color: 'black', borderRadius: '16px' }}>
+            <Typography align='right' variant='body1' noWrap sx={{
+              display: 'inline-block',
+              height: '100%',
+              width: '100%',
+              verticalAlign: 'middle'
+            }}>
+              {format(amount)}
+              </Typography>
+            </Button>
+
+      </Box>
   )
 }
 
@@ -125,13 +129,12 @@ const MoneyCell = ({ amount, editable, colored, saveChangedAmount }: MoneyCellPr
 
   let style = {
     display: 'inline-block',
-    width: '120px',
+    width: '150px',
     height: '100%',
     verticalAlign: 'middle',
     textAlign: 'right',
     paddingLeft: '8px',
-    paddingRight: '8px',
-    border: 'solid white'
+    paddingRight: '8px'
   }
   if (editable) style = Object.assign(style, editableStyle) // move to editable component?
   if (clicked) style = Object.assign(style, clickedStyle)
@@ -166,17 +169,16 @@ const MoneyCell = ({ amount, editable, colored, saveChangedAmount }: MoneyCellPr
   <React.Fragment>
     <CssBaseline />
     <ClickAwayListener onClickAway={onClickAwayHandler}>
-
-    <Box
-      onClick={onClickHandler}
-      onMouseEnter={() => editable && sethoveredOver(true)}
-      onMouseLeave={() => editable && sethoveredOver(false)}
-      sx={{
-        ...style
-      }}>
-          {moneyCell}
-    </Box>
-  </ClickAwayListener>
+      <Box
+        onClick={onClickHandler}
+        onMouseEnter={() => editable && sethoveredOver(true)}
+        onMouseLeave={() => editable && sethoveredOver(false)}
+        sx={{
+          ...style
+        }}>
+            {moneyCell}
+      </Box>
+    </ClickAwayListener>
   </React.Fragment>
   )
 }
