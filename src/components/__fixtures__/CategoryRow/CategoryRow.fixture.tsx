@@ -1,41 +1,24 @@
 import React from 'react'
 import CategoryRow from '../../CategoryRow'
+import { useValue } from 'react-cosmos/fixture'
 
-const dataProps = {
-  name: 'True Expenses',
-  budgeted: '1,123,456.00',
-  spent: '1,123,456.00',
-  balance: '1,123,456.00'
-}
+/* eslint react-hooks/rules-of-hooks: "off" */
 
-const longNameProps = {
-  ...dataProps,
-  name: 'Abcdefghijklmnopqrstuvwxyz1234678'
-}
-
-const largeAmountProps = {
-  ...dataProps,
-  budgeted: '12,123,456.00',
-  spent: '12,123,456.00',
-  balance: '12,123,456.00'
-}
-
-const hugeAmountProps = {
-  ...dataProps,
-  budgeted: '123,123,456.00',
-  spent: '123,123,456.00',
-  balance: '123,123,456.00'
-}
-
-const hugeAmountWithLongNameProps = {
-  ...hugeAmountProps,
-  name: 'Abcdefghijklmnopqrstuvwxyz1234678'
-}
+// longName: <CategoryRow data={longNameProps}/>,
+// largeAmounts: <CategoryRow data={largeAmountProps}/>,
+// hugeAmountProps: <CategoryRow data={hugeAmountProps}/>,
+// hugeAmountWithLongNameProps: <CategoryRow data={hugeAmountWithLongNameProps}/>
 
 export default {
-  default: <CategoryRow data={dataProps}/>,
-  longName: <CategoryRow data={longNameProps}/>,
-  largeAmounts: <CategoryRow data={largeAmountProps}/>,
-  hugeAmountProps: <CategoryRow data={hugeAmountProps}/>,
-  hugeAmountWithLongNameProps: <CategoryRow data={hugeAmountWithLongNameProps}/>
+  default: () => {
+    // name, budgeted, spent, balance, saveBudgetedAmount
+    const [budgeted, setBudgeted] = useValue('budgeted', { defaultValue: 12345600 })
+    return (<CategoryRow
+      name={'True expenses'}
+      spent={12345600}
+      balance={12345600}
+      budgeted={budgeted}
+      saveBudgetedAmount={(v) => setBudgeted(v)}/>
+    )
+  }
 }
