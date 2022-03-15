@@ -53,8 +53,6 @@ const CategoryNameEditable = forwardRef((props: any, ref) => {
         '& > :not(style)': { m: 0 },
         display: 'inline-block',
         cursor: 'text',
-        border: 'solid #4495d7',
-        borderRadius: '8px',
         width: '300px'
       }}>
         <TextField variant="standard" margin="none" value={tempName}
@@ -64,7 +62,8 @@ const CategoryNameEditable = forwardRef((props: any, ref) => {
                 paddingTop: 0,
                 paddingBottom: 0
               },
-              background: '#FFFFFF'
+              background: '#FFFFFF',
+              borderRadius: '8px'
             }}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setTempName(event.target.value)
@@ -109,6 +108,22 @@ const CategoryNameDisplay = ({ name, saveCategoryName } : any) => {
     // }
   }
 
+  let style = {
+    display: 'inline-block',
+    verticalAlign: 'middle',
+    '&:hover': {
+      cursor: 'text',
+      textDecoration: 'underline'
+    }
+  }
+
+  const editableStyle = {
+    border: 'solid #4495d7',
+    borderRadius: '8px'
+  }
+
+  if (clicked) style = { ...style, ...editableStyle }
+
   return (
     <React.Fragment>
     <ClickAwayListener onClickAway={onClickAwayHandler}>
@@ -116,7 +131,7 @@ const CategoryNameDisplay = ({ name, saveCategoryName } : any) => {
       onClick={onClickHandler}
       onMouseEnter={() => setHoveredOver(true)}
       onMouseLeave={() => setHoveredOver(false)}
-      sx={{ display: 'inline-block', verticalAlign: 'middle', '&:hover': { cursor: 'text', textDecoration: 'underline' } }}>
+      sx={{ ...style }}>
         {
           (clicked)
             ? <CategoryNameEditable name={name} setClickedFalse={() => setClicked(false)} saveCategoryName={saveCategoryName} />
