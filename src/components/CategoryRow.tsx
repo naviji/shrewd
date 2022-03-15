@@ -1,4 +1,4 @@
-import React, { useState, useRef, forwardRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import Checkbox from '@mui/material/Checkbox'
 import { IconButton, Typography, ButtonBase, TextField } from '@mui/material'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
@@ -35,8 +35,7 @@ const CategoryNameUneditable = ({ name }: any) => {
   )
 }
 
-const CategoryNameEditable = forwardRef((props: any, ref) => {
-  const { name, setClickedFalse, saveCategoryName } = props
+const CategoryNameEditable = ({ name, setClickedFalse, saveCategoryName }: any) => {
   const [tempName, setTempName] = useState(name)
   const inputRef = useRef(null)
 
@@ -72,6 +71,7 @@ const CategoryNameEditable = forwardRef((props: any, ref) => {
             onKeyPress={(event: React.KeyboardEvent<HTMLInputElement>) => {
               if (event.key === 'Enter') {
                 setClickedFalse()
+                saveCategoryName(tempName)
                 event.preventDefault()
               }
             }}
@@ -87,13 +87,10 @@ const CategoryNameEditable = forwardRef((props: any, ref) => {
         />
     </Box>
   )
-})
-CategoryNameEditable.displayName = 'CategoryNameEditable'
+}
 
 const CategoryNameDisplay = ({ name, saveCategoryName } : any) => {
   const [clicked, setClicked] = useState(false)
-  const [hoveredOver, setHoveredOver] = useState(false)
-  const inputRef = useRef(null)
 
   const onClickHandler = () => {
     setClicked(true)
@@ -130,8 +127,6 @@ const CategoryNameDisplay = ({ name, saveCategoryName } : any) => {
     <ClickAwayListener onClickAway={onClickAwayHandler}>
     <Box
       onClick={onClickHandler}
-      onMouseEnter={() => setHoveredOver(true)}
-      onMouseLeave={() => setHoveredOver(false)}
       sx={{ ...style }}>
         {
           (clicked)
