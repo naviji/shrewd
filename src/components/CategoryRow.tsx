@@ -46,9 +46,26 @@ const CategoryNameUneditable = ({ name }: any) => {
   )
 }
 
-const CategoryNameEditable = ({ name, setClickedFalse, saveCategoryName }: any) => {
+const CategoryNameEditable = ({ name, clicked, setClickedFalse, saveCategoryName }: any) => {
   const [tempName, setTempName] = useState(name)
   const inputRef = useRef(null)
+
+  let style = {
+    '& > :not(style)': { m: 0 },
+    display: 'inline-block',
+    // cursor: 'text',
+    width: '300px'
+  }
+
+  const editableStyle = {
+    border: 'solid #4495d7',
+    borderRadius: '8px',
+    '& .MuiInput-input': {
+      padding: '0px'
+    }
+  }
+
+  if (clicked) style = { ...style, ...editableStyle }
 
   useEffect(() => {
     if (inputRef) {
@@ -60,12 +77,7 @@ const CategoryNameEditable = ({ name, setClickedFalse, saveCategoryName }: any) 
     <Box
       component="form" noValidate
       autoComplete="off"
-      sx={{
-        '& > :not(style)': { m: 0 },
-        display: 'inline-block',
-        cursor: 'text',
-        width: '300px'
-      }}>
+      sx={{ ...style }}>
         <TextField variant="standard" margin="none" value={tempName}
             sx={{
               '& > input': {
@@ -73,7 +85,6 @@ const CategoryNameEditable = ({ name, setClickedFalse, saveCategoryName }: any) 
                 paddingTop: 0,
                 paddingBottom: 0
               },
-              background: '#FFFFFF',
               borderRadius: '8px'
             }}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
@@ -117,22 +128,15 @@ const CategoryNameDisplay = ({ name, saveCategoryName } : any) => {
     // }
   }
 
-  let style = {
+  const style = {
     width: '80%',
     display: 'inline-block',
     verticalAlign: 'middle',
     '&:hover': {
-      cursor: 'text',
+      // cursor: 'text',
       textDecoration: 'underline'
     }
   }
-
-  const editableStyle = {
-    border: 'solid #4495d7',
-    borderRadius: '8px'
-  }
-
-  if (clicked) style = { ...style, ...editableStyle }
 
   return (
     <React.Fragment>
@@ -142,7 +146,7 @@ const CategoryNameDisplay = ({ name, saveCategoryName } : any) => {
       sx={{ ...style }}>
         {
           (clicked)
-            ? <CategoryNameEditable name={name} setClickedFalse={() => setClicked(false)} saveCategoryName={saveCategoryName} />
+            ? <CategoryNameEditable name={name} clicked={clicked} setClickedFalse={() => setClicked(false)} saveCategoryName={saveCategoryName} />
             : <CategoryNameUneditable name={name} />
         }
       </Box>

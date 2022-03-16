@@ -28,6 +28,11 @@ const MoneyInputCell = forwardRef((props: any, ref: any) => {
                 margin: '0px',
                 paddingTop: 0,
                 paddingBottom: 0
+              },
+              '& .MuiInput-input': {
+                paddingTop: 0,
+                paddingBottom: 0,
+                textAlign: 'right'
               }
             }}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
