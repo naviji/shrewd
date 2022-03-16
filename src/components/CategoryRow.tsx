@@ -26,6 +26,14 @@ interface CategoryRowProps {
   isGroup: Boolean
 }
 
+const AddCategoryButton = () => {
+  return (
+    <IconButton color="inherit">
+      < AddCircleOutlineIcon/>
+    </IconButton>
+  )
+}
+
 const CategoryNameUneditable = ({ name, onClickHandler }: any) => {
   return (
     <Box
@@ -66,6 +74,9 @@ const CategoryNameEditable = ({ name, clicked, setClickedFalse, saveCategoryName
 
   const editableStyle = {
     border: 'solid #4495d7',
+    padding: '0px',
+    marginTop: '5px',
+    marginBottom: '5px',
     borderRadius: '8px',
     '& .MuiInput-input': {
       padding: '0px'
@@ -118,7 +129,7 @@ const CategoryNameEditable = ({ name, clicked, setClickedFalse, saveCategoryName
   )
 }
 
-const CategoryNameDisplay = ({ name, saveCategoryName } : any) => {
+const CategoryNameDisplay = ({ name, saveCategoryName, isGroup } : any) => {
   const [clicked, setClicked] = useState(false)
 
   const onClickHandler = () => {
@@ -147,25 +158,20 @@ const CategoryNameDisplay = ({ name, saveCategoryName } : any) => {
     <ClickAwayListener onClickAway={onClickAwayHandler}>
     <Box
       sx={{ ...style }}>
-        {
-          (clicked)
-            ? <CategoryNameEditable name={name} clicked={clicked} setClickedFalse={() => setClicked(false)} saveCategoryName={saveCategoryName} />
-            : <CategoryNameUneditable onClickHandler={onClickHandler} name={name} />
-        }
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          {
+            (clicked)
+              ? <CategoryNameEditable name={name} clicked={clicked} setClickedFalse={() => setClicked(false)} saveCategoryName={saveCategoryName} />
+              : <CategoryNameUneditable onClickHandler={onClickHandler} name={name} />
+          }
+          { (isGroup && !clicked) ? <AddCategoryButton /> : null }
+        </Box>
         <Box sx={{ width: '100%' }}>
           <ProgresBar value={60} />
         </Box>
       </Box>
   </ClickAwayListener>
   </React.Fragment>
-  )
-}
-
-const AddCategoryButton = () => {
-  return (
-    <IconButton color="inherit">
-      < AddCircleOutlineIcon/>
-    </IconButton>
   )
 }
 
@@ -189,8 +195,7 @@ const CategoryRow = ({ name, budgeted, spent, balance, saveBudgetedAmount, saveC
           <IconButton sx={{ visibility: isGroup ? 'visible' : 'hidden' }} color="inherit">
             <ArrowDropDownIcon />
           </ IconButton>
-          <CategoryNameDisplay name={name} saveCategoryName={saveCategoryName}/>
-          { isGroup ? <AddCategoryButton /> : null }
+          <CategoryNameDisplay name={name} isGroup={isGroup} saveCategoryName={saveCategoryName}/>
         </Box>
         <MoneyCell editable={true} colored={false} amount={budgeted} saveChangedAmount={saveBudgetedAmount}/>
         <MoneyCell editable={false} colored={false} amount={spent} saveChangedAmount={() => null}/>

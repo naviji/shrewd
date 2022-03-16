@@ -5,7 +5,7 @@ import ClickAwayListener from '@mui/material/ClickAwayListener'
 
 import { format, unformat } from '../utils/moneyUtils'
 
-import { Button, Typography } from '@mui/material'
+import { ButtonBase, Typography } from '@mui/material'
 
 import CssBaseline from '@mui/material/CssBaseline'
 
@@ -70,28 +70,40 @@ const MoneyColoredDisplayCell = ({ amount }: any) => {
   }
 
   return (
-      <Box sx={{ ...coloredStyle }}>
-        <Box sx={{
-          borderRadius: '16px',
-          '& .MuiButton-text': {
-            width: 'fit-content',
-            paddingTop: '0px',
-            paddingBottom: '0px',
-            background: backgroundColor
-          }
-        }}>
-            <Button sx={{ width: '100%', color: 'black', borderRadius: '16px' }}>
+  // <Box sx={{ ...coloredStyle }}>
+  //   <Box sx={{
+  // borderRadius: '16px',
+  // '& .MuiButton-text': {
+  //   width: 'fit-content',
+  //   paddingTop: '0px',
+  //   paddingBottom: '0px',
+  //   background: backgroundColor
+  // }
+  //   }}>
+  //       <Button sx={{ width: '100%', color: 'black', borderRadius: '16px' }}>
+          <ButtonBase sx={{ width: 'fill-available', borderRadius: '16px' }} >
             <Typography align='right' variant='body1' noWrap sx={{
               display: 'inline-block',
               height: '100%',
               width: '100%',
-              verticalAlign: 'middle'
+              verticalAlign: 'middle',
+              borderRadius: '16px',
+              padding: '4px',
+              background: backgroundColor,
+              '& .MuiButton-text': {
+                width: 'fit-content',
+                paddingTop: '0px',
+                paddingBottom: '0px',
+                background: backgroundColor
+              }
             }}>
               {format(amount)}
-              </Typography>
-            </Button>
-        </Box>
-      </Box>
+            </Typography>
+          </ButtonBase>
+
+  //       </Button>
+  //   </Box>
+  // </Box>
   )
 }
 
