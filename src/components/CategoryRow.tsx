@@ -78,6 +78,7 @@ const CategoryNameEditable = ({ name, clicked, setClickedFalse, saveCategoryName
     marginTop: '5px',
     marginBottom: '5px',
     borderRadius: '8px',
+    background: '#FFFFFF',
     '& .MuiInput-input': {
       padding: '2px'
     }

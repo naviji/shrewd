@@ -16,12 +16,14 @@ interface MoneyCellProps {
     saveChangedAmount: Function;
 }
 
-/* TODO: Find a way to remove padding of input element of this text field */
 const MoneyInputCell = forwardRef((props: any, ref: any) => {
   const { setClickedFalse, tempAmount, setTempAmount, saveAmount } = props
   return (
     <Box component="form" noValidate autoComplete="off"
-        sx={{ '& > :not(style)': { m: 0 }, display: 'inline-block' }}>
+        sx={{
+          '& > :not(style)': { m: 0 },
+          display: 'inline-block'
+        }}>
         <TextField variant="standard" margin="none" value={tempAmount}
             sx={{
               '& > input': {

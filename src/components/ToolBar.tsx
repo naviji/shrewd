@@ -50,11 +50,11 @@ const ToolBar = () => {
                       paddingRight: '8px',
                       // marginTop: '8px',
                       // marginBottom: '8px',
-                      borderRadius: '8px',
+                      borderRadius: '16px',
                       marginRight: '20px'
                     }}>
 
-                    <InfoIcon />
+                    {/* <InfoIcon /> */}
 
                     <Typography
                         align='right'
@@ -77,7 +77,7 @@ const ToolBar = () => {
                       border: '2px solid black',
                       borderRadius: '100px'
                     }}>
-                    <ArrowLeftIcon fontSize="large" />
+                    <ArrowLeftIcon fontSize="medium" />
                 </ButtonBase>
 
                 <Typography align='right' variant="h6"
@@ -99,7 +99,7 @@ const ToolBar = () => {
                       border: '2px solid black',
                       borderRadius: '100px'
                     }}>
-                    <ArrowRightIcon fontSize="large" />
+                    <ArrowRightIcon fontSize="medium" />
                 </ButtonBase>
             </Box>
 

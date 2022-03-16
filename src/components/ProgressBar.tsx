@@ -6,7 +6,7 @@ const ProgresBar = ({ value }: any) => {
 
             <LinearProgress
                 sx={{
-                  height: 10,
+                  height: '8px',
                   borderRadius: 5,
                   backgroundColor: '#EAE9F0',
                   border: '1px solid rgb(186, 186, 186, 0.5)',
