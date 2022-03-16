@@ -26,23 +26,30 @@ interface CategoryRowProps {
   isGroup: Boolean
 }
 
-const CategoryNameUneditable = ({ name }: any) => {
+const CategoryNameUneditable = ({ name, onClickHandler }: any) => {
   return (
-    <Box sx={{ flexDirection: 'column', alignItems: 'flex-start', width: '100%', display: 'flex' }}>
-      <Box sx={{ width: '100%' }}>
+    <Box
+      sx={{
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        display: 'flex',
+        width: 'fit-content',
+        padding: '3px',
+        '&:hover': {
+        // cursor: 'text',
+          textDecoration: 'underline'
+        }
+      }}
+      onClick={onClickHandler}
+      >
+      <Box sx={{}}>
         <ButtonBase>
           <Typography align='left' sx={{ display: 'inline-block', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', maxWidth: '250px', verticalAlign: 'middle' }} variant='body1'>
             {name}
           </Typography>
         </ButtonBase>
       </Box>
-
-      <Box sx={{ width: '100%' }}>
-        <ProgresBar value={60} />
-      </Box>
-
     </Box>
-
   )
 }
 
@@ -131,24 +138,23 @@ const CategoryNameDisplay = ({ name, saveCategoryName } : any) => {
   const style = {
     width: '80%',
     display: 'inline-block',
-    verticalAlign: 'middle',
-    '&:hover': {
-      // cursor: 'text',
-      textDecoration: 'underline'
-    }
+    verticalAlign: 'middle'
+    // border: '1px solid red'
   }
 
   return (
     <React.Fragment>
     <ClickAwayListener onClickAway={onClickAwayHandler}>
     <Box
-      onClick={onClickHandler}
       sx={{ ...style }}>
         {
           (clicked)
             ? <CategoryNameEditable name={name} clicked={clicked} setClickedFalse={() => setClicked(false)} saveCategoryName={saveCategoryName} />
-            : <CategoryNameUneditable name={name} />
+            : <CategoryNameUneditable onClickHandler={onClickHandler} name={name} />
         }
+        <Box sx={{ width: '100%' }}>
+          <ProgresBar value={60} />
+        </Box>
       </Box>
   </ClickAwayListener>
   </React.Fragment>
@@ -186,10 +192,10 @@ const CategoryRow = ({ name, budgeted, spent, balance, saveBudgetedAmount, saveC
           <CategoryNameDisplay name={name} saveCategoryName={saveCategoryName}/>
           { isGroup ? <AddCategoryButton /> : null }
         </Box>
-      <MoneyCell editable={true} colored={false} amount={budgeted} saveChangedAmount={saveBudgetedAmount}/>
-      <MoneyCell editable={false} colored={false} amount={spent} saveChangedAmount={() => null}/>
-      <MoneyCell editable={false} colored={true} amount={balance} saveChangedAmount={() => null} />
-    </Box>
+        <MoneyCell editable={true} colored={false} amount={budgeted} saveChangedAmount={saveBudgetedAmount}/>
+        <MoneyCell editable={false} colored={false} amount={spent} saveChangedAmount={() => null}/>
+        <MoneyCell editable={false} colored={true} amount={balance} saveChangedAmount={() => null} />
+        </Box>
     </React.Fragment>
   )
 }

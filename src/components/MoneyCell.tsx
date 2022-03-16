@@ -65,13 +65,21 @@ const MoneyColoredDisplayCell = ({ amount }: any) => {
     backgroundColor = '#FF7474'
   }
   const coloredStyle = {
-    borderRadius: '16px',
-    background: backgroundColor
+    width: '100%'
+
   }
 
   return (
       <Box sx={{ ...coloredStyle }}>
-
+        <Box sx={{
+          borderRadius: '16px',
+          '& .MuiButton-text': {
+            width: 'fit-content',
+            paddingTop: '0px',
+            paddingBottom: '0px',
+            background: backgroundColor
+          }
+        }}>
             <Button sx={{ width: '100%', color: 'black', borderRadius: '16px' }}>
             <Typography align='right' variant='body1' noWrap sx={{
               display: 'inline-block',
@@ -82,7 +90,7 @@ const MoneyColoredDisplayCell = ({ amount }: any) => {
               {format(amount)}
               </Typography>
             </Button>
-
+        </Box>
       </Box>
   )
 }
