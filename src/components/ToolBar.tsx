@@ -53,9 +53,8 @@ const ToolBar = () => {
                       borderRadius: '8px',
                       marginRight: '20px'
                     }}>
-                    <IconButton color="inherit">
+
                     <InfoIcon />
-                    </IconButton>
 
                     <Typography
                         align='right'

@@ -26,9 +26,9 @@ interface CategoryRowProps {
   isGroup: Boolean
 }
 
-const AddCategoryButton = () => {
+const AddCategoryButton = ({ isGroup }: any) => {
   return (
-    <IconButton color="inherit">
+    <IconButton color="inherit" sx={{ visibility: isGroup ? 'visible' : 'hidden' }}>
       < AddCircleOutlineIcon/>
     </IconButton>
   )
@@ -79,7 +79,7 @@ const CategoryNameEditable = ({ name, clicked, setClickedFalse, saveCategoryName
     marginBottom: '5px',
     borderRadius: '8px',
     '& .MuiInput-input': {
-      padding: '0px'
+      padding: '2px'
     }
   }
 
@@ -164,9 +164,9 @@ const CategoryNameDisplay = ({ name, saveCategoryName, isGroup } : any) => {
               ? <CategoryNameEditable name={name} clicked={clicked} setClickedFalse={() => setClicked(false)} saveCategoryName={saveCategoryName} />
               : <CategoryNameUneditable onClickHandler={onClickHandler} name={name} />
           }
-          { (isGroup && !clicked) ? <AddCategoryButton /> : null }
+          { (!clicked) ? <AddCategoryButton isGroup={isGroup} /> : null }
         </Box>
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{ paddingBottom: '8px', width: '100%' }}>
           <ProgresBar value={60} />
         </Box>
       </Box>
