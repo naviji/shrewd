@@ -7,6 +7,7 @@ import MoneyCell from './MoneyCell'
 import CssBaseline from '@mui/material/CssBaseline'
 import ClickAwayListener from '@mui/material/ClickAwayListener'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
+import ProgresBar from './ProgressBar'
 
 /*
   Text align and padding of input need to be done using global css styles.
@@ -27,11 +28,18 @@ interface CategoryRowProps {
 
 const CategoryNameUneditable = ({ name }: any) => {
   return (
-    <ButtonBase>
-      <Typography align='left' sx={{ display: 'inline-block', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', maxWidth: '250px', verticalAlign: 'middle' }} variant='body1'>
-        {name}
-      </Typography>
-    </ButtonBase>
+    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+      <ButtonBase>
+        <Typography align='left' sx={{ display: 'inline-block', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', maxWidth: '250px', verticalAlign: 'middle' }} variant='body1'>
+          {name}
+        </Typography>
+      </ButtonBase>
+      <Box sx={{ width: '100%' }}>
+        <ProgresBar value={60} />
+      </Box>
+
+    </Box>
+
   )
 }
 
@@ -107,6 +115,7 @@ const CategoryNameDisplay = ({ name, saveCategoryName } : any) => {
   }
 
   let style = {
+    width: '80%',
     display: 'inline-block',
     verticalAlign: 'middle',
     '&:hover': {
