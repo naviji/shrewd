@@ -44,12 +44,12 @@ const ToolBar = () => {
                 <ButtonBase
                     sx={{
                       background: '#CDEA9F',
-                      paddingTop: '4px',
-                      paddingBottom: '4px',
+                      // paddingTop: '4px',
+                      // paddingBottom: '4px',
                       paddingLeft: '8px',
                       paddingRight: '8px',
-                      marginTop: '8px',
-                      marginBottom: '8px',
+                      // marginTop: '8px',
+                      // marginBottom: '8px',
                       borderRadius: '8px',
                       marginRight: '20px'
                     }}>
@@ -109,6 +109,13 @@ const ToolBar = () => {
                   marginRight: '8px'
                 }}>
                 <TextField
+                  sx={{
+                    '& .MuiOutlinedInput-input': {
+                      paddingTop: '4px',
+                      paddingBottom: '4px',
+                      textAlign: 'left'
+                    }
+                  }}
                     placeholder='Filter Categories'
                     InputProps={{
                       startAdornment: (
