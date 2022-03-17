@@ -83,7 +83,7 @@ const MoneyColoredDisplayCell = ({ amount }: any) => {
   // }
   //   }}>
   //       <Button sx={{ width: '100%', color: 'black', borderRadius: '16px' }}>
-          <ButtonBase sx={{ width: 'fill-available', borderRadius: '16px' }} >
+          <ButtonBase sx={{ width: '100%', borderRadius: '16px' }} >
             <Typography align='right' variant='body1' noWrap sx={{
               display: 'inline-block',
               height: '100%',
