@@ -138,7 +138,8 @@ const editableStyle = {
   '&:hover': {
     cursor: 'text',
     border: 'solid #4495d7',
-    borderRadius: '8px'
+    borderRadius: '8px',
+    background: '#ffffff'
   }
 }
 
