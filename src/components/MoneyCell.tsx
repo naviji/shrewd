@@ -66,46 +66,30 @@ const MoneyColoredDisplayCell = ({ amount }: any) => {
   if (amount < 0) {
     backgroundColor = '#FF7474'
   }
-  const coloredStyle = {
-    width: '100%'
-
-  }
 
   return (
-  // <Box sx={{ ...coloredStyle }}>
-  //   <Box sx={{
-  // borderRadius: '16px',
-  // '& .MuiButton-text': {
-  //   width: 'fit-content',
-  //   paddingTop: '0px',
-  //   paddingBottom: '0px',
-  //   background: backgroundColor
-  // }
-  //   }}>
-  //       <Button sx={{ width: '100%', color: 'black', borderRadius: '16px' }}>
-          <ButtonBase sx={{ width: '100%', borderRadius: '16px' }} >
-            <Typography align='right' variant='body1' noWrap sx={{
-              display: 'inline-block',
-              height: '100%',
-              width: '100%',
-              verticalAlign: 'middle',
-              borderRadius: '16px',
-              padding: '4px',
-              background: backgroundColor,
-              '& .MuiButton-text': {
-                width: 'fit-content',
-                paddingTop: '0px',
-                paddingBottom: '0px',
-                background: backgroundColor
-              }
-            }}>
-              {format(amount)}
-            </Typography>
-          </ButtonBase>
+    <Box sx={{ width: '100%' }} >
+      <ButtonBase sx={{ width: 'fit-content', borderRadius: '16px' }} >
+        <Typography align='right' variant='body1' noWrap sx={{
+          display: 'inline-block',
+          height: '100%',
+          width: '100%',
+          verticalAlign: 'middle',
+          borderRadius: '16px',
+          padding: '4px',
+          background: backgroundColor,
+          '& .MuiButton-text': {
+            width: 'fit-content',
+            paddingTop: '0px',
+            paddingBottom: '0px',
+            background: backgroundColor
+          }
+        }}>
+          {format(amount)}
+        </Typography>
+      </ButtonBase>
+    </Box>
 
-  //       </Button>
-  //   </Box>
-  // </Box>
   )
 }
 
