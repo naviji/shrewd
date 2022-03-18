@@ -38,7 +38,8 @@ const ListItem = ({ name, amount, isHeader }: any) => {
         onMouseLeave={() => setHover(false)}
         sx={{
           display: 'flex',
-          padding: '8px',
+          paddingLeft: '8px',
+          paddingRight: '8px',
           marginTop: '4px',
           marginBottom: '4px',
           justifyContent: 'space-between',
@@ -81,7 +82,8 @@ const AccordionDetails = ({ children }: any) => {
         <MuiAccordionDetails
           sx={{
             padding: '8x',
-            borderTop: '1px solid rgba(0, 0, 0, .125)'
+            borderTop: '1px solid rgba(0, 0, 0, .125)',
+            marginLeft: '16px'
           }}
         >
           {children}
@@ -124,9 +126,6 @@ export default function SidebarAccounts () {
       }
     }
 
-  // let backgroundColor = '#CDEA9F'
-  // if (amount < 0) {
-  //   backgroundColor = '#FF7474'
   return (
     <Box sx={{
       maxWidth: '300px',

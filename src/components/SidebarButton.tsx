@@ -7,15 +7,15 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 const SidebarButton = ({ name }: any) => {
   const [hover, setHover] = useState(false)
   return (
-        <ButtonBase
+      <ButtonBase
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
         sx={{
           display: 'flex',
-          maxWidth: '200px',
+          minWidth: '200px',
+          marginTop: '8px',
           width: '100%',
           height: '40px',
-          border: 'solid pink',
           borderRadius: '10px',
           padding: '8px',
           background: hover ? '#ffffff' : '#000000',
@@ -51,7 +51,7 @@ const SidebarButton = ({ name }: any) => {
           color: hover ? 'black' : 'white',
           visibility: 'hidden'
         }} />
-        </ButtonBase>
+    </ButtonBase>
   )
 }
 
