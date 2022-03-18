@@ -7,9 +7,6 @@ import RedoIcon from '@mui/icons-material/Redo'
 import HistoryIcon from '@mui/icons-material/History'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import SearchIcon from '@mui/icons-material/Search'
-
-import InfoIcon from '@mui/icons-material/Info'
-
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft'
 import ArrowRightIcon from '@mui/icons-material/ArrowRight'
 

@@ -5,6 +5,8 @@ import MuiAccordionSummary from '@mui/material/AccordionSummary'
 import MuiAccordionDetails from '@mui/material/AccordionDetails'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
+import { ButtonBase } from '@mui/material'
+import { unformat } from '../utils/moneyUtils'
 
 const AccordionSummary = ({ children }: any) => {
   return (
@@ -29,41 +31,48 @@ const AccordionSummary = ({ children }: any) => {
 }
 
 const ListItem = ({ name, amount, isHeader }: any) => {
+  const [hover, setHover] = useState(false)
   return (
-        <Box sx={{
+    <ButtonBase
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+        sx={{
           display: 'flex',
           padding: '8px',
-
           marginTop: '4px',
           marginBottom: '4px',
           justifyContent: 'space-between',
           width: '100%',
-          background: 'red',
+          background: hover && !isHeader ? 'darkblue' : 'black',
           borderRadius: '8px',
           '& .MuiTypography-body1': {
-            color: 'pink',
-            background: 'red'
+            background: hover && !isHeader ? 'darkblue' : 'black'
           }
-        }}>
-            <Box sx={{ flex: 0 }}>
-                <Typography align='left' variant='body1' noWrap
-                sx={{
-                  color: 'white'
-                }}>
-                    {name}
-                </Typography>
-            </Box>
-
-            <Box sx={{ flex: 0 }}>
-                <Typography align='right' variant='body1' noWrap
-                sx={{
-                  color: '#CDEA9F'
-                }}>
-                    {amount}
-                </Typography>
-            </Box>
-
+        }}
+    >
+        <Box sx={{ flex: 0 }}>
+            <Typography
+                align='left'
+                variant='body1'
+                noWrap
+                sx={{ color: 'white' }}
+            >
+                {name}
+            </Typography>
         </Box>
+
+        <Box sx={{ flex: 0 }}>
+            <Typography
+                align='right'
+                variant='body1'
+                noWrap
+                sx={{ color: unformat(amount) >= 0 ? '#CDEA9F' : '#FF7474' }}
+            >
+                {amount}
+            </Typography>
+        </Box>
+
+    </ButtonBase>
   )
 }
 
@@ -72,7 +81,6 @@ const AccordionDetails = ({ children }: any) => {
         <MuiAccordionDetails
           sx={{
             padding: '8x',
-            marginRight: '16px',
             borderTop: '1px solid rgba(0, 0, 0, .125)'
           }}
         >
@@ -105,7 +113,6 @@ const Accordion = ({ panel, expanded, handleChange, children }: any) => {
 
 export default function SidebarAccounts () {
   const [expanded, setExpanded] = React.useState<Array<string>>(['panel1', 'panel2'])
-  const [hover, setHover] = useState(false)
 
   const handleChange =
     (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
@@ -139,8 +146,6 @@ export default function SidebarAccounts () {
         background: '#000000'
       }
     }}
-    onMouseEnter={() => setHover(true)}
-    onMouseLeave={() => setHover(false)}
     >
       <Accordion panel="panel1" expanded={expanded} handleChange={handleChange}>
         <AccordionSummary>
