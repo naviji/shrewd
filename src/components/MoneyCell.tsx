@@ -68,21 +68,23 @@ const MoneyColoredDisplayCell = ({ amount }: any) => {
   }
 
   return (
-    <Box sx={{ width: '100%' }} >
-      <ButtonBase sx={{ width: 'fit-content', borderRadius: '16px' }} >
+    <Box sx={{ display: 'inline-block', width: '100%', alignItems: 'right' }} >
+      <ButtonBase sx={{
+        width: 'fit-content',
+        borderRadius: '16px',
+        verticalAlign: 'middle',
+        padding: '4px',
+        background: backgroundColor
+      }} >
         <Typography align='right' variant='body1' noWrap sx={{
           display: 'inline-block',
           height: '100%',
-          width: '100%',
-          verticalAlign: 'middle',
-          borderRadius: '16px',
-          padding: '4px',
+          maxWidth: '120px ',
           background: backgroundColor,
           '& .MuiButton-text': {
             width: 'fit-content',
             paddingTop: '0px',
-            paddingBottom: '0px',
-            background: backgroundColor
+            paddingBottom: '0px'
           }
         }}>
           {format(amount)}
