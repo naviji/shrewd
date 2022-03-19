@@ -172,9 +172,13 @@ const CategoryNameDisplay = ({ name, saveCategoryName, isGroup } : any) => {
           }
           { (!clicked) ? <AddCategoryButton isGroup={isGroup} /> : null }
         </Box>
-        <Box sx={{ paddingBottom: '8px', width: '100%' }}>
+
+        {!isGroup
+          ? <Box sx={{ paddingBottom: '8px', width: '100%' }}>
           <ProgresBar value={60} />
         </Box>
+          : null}
+
       </Box>
   </ClickAwayListener>
   </React.Fragment>
