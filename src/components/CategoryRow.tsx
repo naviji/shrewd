@@ -23,7 +23,8 @@ interface CategoryRowProps {
   balance: number,
   saveBudgetedAmount: Function,
   saveCategoryName: Function,
-  isGroup: Boolean
+  isGroup: Boolean,
+  handleChange: Function
 }
 
 const AddCategoryButton = ({ isGroup }: any) => {
@@ -176,7 +177,7 @@ const CategoryNameDisplay = ({ name, saveCategoryName, isGroup } : any) => {
   )
 }
 
-const CategoryRow = ({ name, budgeted, spent, balance, saveBudgetedAmount, saveCategoryName, isGroup }: CategoryRowProps) => {
+const CategoryRow = ({ name, budgeted, spent, balance, saveBudgetedAmount, saveCategoryName, isGroup, handleChange }: CategoryRowProps) => {
   const bgColor = isGroup ? '#F0F0F0' : '#FFFFFF'
   return (
     <React.Fragment>
@@ -193,7 +194,7 @@ const CategoryRow = ({ name, budgeted, spent, balance, saveBudgetedAmount, saveC
     }}>
         <Box sx={{ display: 'inline-flex', flexGrow: 5, minWidth: '350px' }}>
           <Checkbox />
-          <IconButton sx={{ visibility: isGroup ? 'visible' : 'hidden' }} color="inherit">
+          <IconButton onClick={() => handleChange()} sx={{ visibility: isGroup ? 'visible' : 'hidden' }} color="inherit">
             <ArrowDropDownIcon />
           </ IconButton>
           <CategoryNameDisplay name={name} isGroup={isGroup} saveCategoryName={saveCategoryName}/>

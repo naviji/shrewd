@@ -4,26 +4,53 @@ import MuiAccordion from '@mui/material/Accordion'
 import MuiAccordionSummary from '@mui/material/AccordionSummary'
 import MuiAccordionDetails from '@mui/material/AccordionDetails'
 import Typography from '@mui/material/Typography'
+import { IconButton, ButtonBase, Toolbar } from '@mui/material'
 import Box from '@mui/material/Box'
-import { ButtonBase } from '@mui/material'
 import CategoryRow from './CategoryRow'
 import { unformat } from '../utils/moneyUtils'
 import CssBaseline from '@mui/material/CssBaseline'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
+import ArrowRightIcon from '@mui/icons-material/ArrowRight'
+import Checkbox from '@mui/material/Checkbox'
 
 // expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: '0.9rem', color: 'white' }} />}
 
+const ExpandIconWithCheckbox = () => {
+  const isGroup = true
+  return (
+        <IconButton sx={{ visibility: isGroup ? 'visible' : 'hidden' }} color="inherit">
+        <ArrowRightIcon sx={{ color: 'black' }} onClick={() => { console.log('Going to toggle accordion') } } />
+        </ IconButton>
+  )
+}
+
 const AccordionSummary = ({ children }: any) => {
   return (
-        <Box
+      <React.Fragment>
+          <Box sx={{
+            display: 'flex',
+            padding: '0px'
+          }}>
+          <Checkbox />
+    <MuiAccordionSummary
+        expandIcon={<ExpandIconWithCheckbox />}
             sx={{
               flexDirection: 'row-reverse',
               '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
                 transform: 'rotate(90deg)'
+              },
+              '& .MuiButtonBase-root-MuiAccordionSummary-root': {
+                // padding: '0px'
               }
             }}
         >
-        {children}
-        </Box>
+            {children}
+    </MuiAccordionSummary>
+          </Box>
+
+      </React.Fragment>
+
   )
 }
 
@@ -62,8 +89,7 @@ const BudgetCategories = ({ categoryGroup, categories, setBudgetedById, setCateg
   return (
     <React.Fragment>
     <CssBaseline />
-            <Accordion panel={categoryGroup.id} expanded={expanded} handleChange={handleChange}>
-                <AccordionSummary>
+
                 <CategoryRow
                     key={categoryGroup.id}
                     name={categoryGroup.name}
@@ -72,11 +98,11 @@ const BudgetCategories = ({ categoryGroup, categories, setBudgetedById, setCateg
                     budgeted={categoryGroup.budgeted}
                     saveBudgetedAmount={v => setBudgetedById(categoryGroup.id, v)}
                     saveCategoryName={v => setCategoryNameById(categoryGroup.id, v)}
-                    isGroup={true} />
-                </AccordionSummary>
-                <AccordionDetails>
+                    isGroup={true}
+                    handleChange={handleChange} />
                 {
-                    categories.map(x => <CategoryRow
+                    expanded
+                      ? categories.map(x => <CategoryRow
                         key={x.id}
                         name={x.name}
                         spent={x.spent}
@@ -84,10 +110,11 @@ const BudgetCategories = ({ categoryGroup, categories, setBudgetedById, setCateg
                         budgeted={x.budgeted}
                         saveBudgetedAmount={v => setBudgetedById(categoryGroup.id, v)}
                         saveCategoryName={v => setCategoryNameById(categoryGroup.id, v) }
-                        isGroup={false} />)
+                        isGroup={false}
+                        handleChange={() => null}
+                        />)
+                      : null
                 }
-                </AccordionDetails>
-            </Accordion>
     </React.Fragment>
   )
 }

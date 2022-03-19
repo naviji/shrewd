@@ -37,15 +37,14 @@ export default {
 
     const [expanded, setExpanded] = useValue('expanded', { defaultValue: [categoryGroup.id] })
 
-    const handleChange =
-      (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
-        const idx = expanded.indexOf(panel)
-        if (idx !== -1) {
-          setExpanded(expanded.filter(x => x !== panel))
-        } else {
-          setExpanded(expanded.concat(panel))
-        }
+    const handleChange = (panel: string) => {
+      const idx = expanded.indexOf(panel)
+      if (idx !== -1) {
+        setExpanded(expanded.filter(x => x !== panel))
+      } else {
+        setExpanded(expanded.concat(panel))
       }
+    }
 
     const setBudgetedById = (id, v) => {
       const clonedCategories = categories.slice()
@@ -70,8 +69,11 @@ export default {
                 categories={categories}
                 setBudgetedById={setBudgetedById}
                 setCategoryNameById={setCategoryNameById}
-                expanded={expanded}
-                handleChange={handleChange}
+                expanded={expanded.indexOf(categoryGroup.id) !== -1}
+                handleChange={() => {
+                  console.log('test')
+                  handleChange(categoryGroup.id)
+                }}
                 />
   }
 }
