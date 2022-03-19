@@ -3,14 +3,10 @@ import { nanoid } from 'nanoid'
 import BudgetCategories from './BudgetCategories'
 
 const BudgetViewer = ({ categories, categoryGroups, setBudgetedById, setCategoryNameById }: any) => {
-  console.log('categories', categories)
-  console.log('categoryGroups', categoryGroups)
   const groupIds = categoryGroups.map(x => x.id)
   const [expanded, setExpanded] = useState(groupIds)
 
   const handleChange = (groupId: string) => {
-    console.log('here in handleChange with groupId', groupId)
-    console.log('expanded = ', expanded)
     const idx = expanded.indexOf(groupId)
     if (idx !== -1) {
       setExpanded(expanded.filter(x => x !== groupId))
@@ -32,7 +28,6 @@ const BudgetViewer = ({ categories, categoryGroups, setBudgetedById, setCategory
         categoryGroups.map((categoryGroup: any) => {
           const { name, id } = categoryGroup
           const categoriesOfGroup = categories.filter(x => x.groupId === id)
-          console.log('categoriesOfGroup = ', categoriesOfGroup)
           const categoryGroupToRender = {
             id: id,
             groupId: id,
