@@ -2,15 +2,15 @@ import React, { useState } from 'react'
 import { nanoid } from 'nanoid'
 import BudgetCategories from './BudgetCategories'
 
-function uniq (a) {
-  return Array.from(new Set(a))
-}
-
-const BudgetViewer = ({ categories, setBudgetedById, setCategoryNameById }: any) => {
-  const groupIds = uniq(categories.map(x => x.groupId))
+const BudgetViewer = ({ categories, categoryGroups, setBudgetedById, setCategoryNameById }: any) => {
+  console.log('categories', categories)
+  console.log('categoryGroups', categoryGroups)
+  const groupIds = categoryGroups.map(x => x.id)
   const [expanded, setExpanded] = useState(groupIds)
 
   const handleChange = (groupId: string) => {
+    console.log('here in handleChange with groupId', groupId)
+    console.log('expanded = ', expanded)
     const idx = expanded.indexOf(groupId)
     if (idx !== -1) {
       setExpanded(expanded.filter(x => x !== groupId))
@@ -29,25 +29,27 @@ const BudgetViewer = ({ categories, setBudgetedById, setCategoryNameById }: any)
   return (
     <>
     {
-        groupIds.map((groupId: string) => {
-          const categoriesOfGroup = categories.filter(x => x.groupId === groupId)
-          const categoryGroup = {
-            id: groupId,
-            groupId: groupId,
-            name: 'Test group name',
+        categoryGroups.map((categoryGroup: any) => {
+          const { name, id } = categoryGroup
+          const categoriesOfGroup = categories.filter(x => x.groupId === id)
+          console.log('categoriesOfGroup = ', categoriesOfGroup)
+          const categoryGroupToRender = {
+            id: id,
+            groupId: id,
+            name: name,
             spent: categoriesOfGroup.reduce((prev, curr) => prev + curr.spent, 0),
             balance: categoriesOfGroup.reduce((prev, curr) => prev + curr.balance, 0),
             budgeted: categoriesOfGroup.reduce((prev, curr) => prev + curr.budgeted, 0)
           }
           return <BudgetCategories
-            key={categoryGroup.id}
-            categoryGroup={categoryGroup}
+            key={categoryGroupToRender.id}
+            categoryGroup={categoryGroupToRender}
             categories={categoriesOfGroup}
             setBudgetedById={(a, b) => null}
             setCategoryNameById={(a, b) => null}
-            expanded={expanded.indexOf(categoryGroup.id) !== -1}
+            expanded={expanded.indexOf(categoryGroupToRender.id) !== -1}
             handleChange={() => {
-              handleChange(categoryGroup.id)
+              handleChange(categoryGroupToRender.id)
             }}
           />
         })

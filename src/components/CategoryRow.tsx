@@ -199,14 +199,13 @@ const CategoryRow = ({ name, budgeted, spent, balance, saveBudgetedAmount, saveC
         <Box sx={{
           display: 'inline-flex',
           flexGrow: 5,
-          minWidth: '350px',
-          '& .MuiSvgIcon-root': {
-            transform: expanded ? 'rotate(90deg)' : 'rotate(0deg)'
-          }
+          minWidth: '350px'
         }}>
           <Checkbox />
           <IconButton onClick={() => handleChange()} sx={{ visibility: isGroup ? 'visible' : 'hidden' }} color="inherit">
-            <ArrowRight />
+            <ArrowRight sx={{
+              transform: expanded ? 'rotate(90deg)' : 'rotate(0deg)'
+            }}/>
           </ IconButton>
           <CategoryNameDisplay name={name} isGroup={isGroup} saveCategoryName={saveCategoryName}/>
         </Box>
