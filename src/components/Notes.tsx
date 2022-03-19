@@ -99,14 +99,14 @@ const Notes = () => {
   return (
     <Accordion>
         <AccordionSummary>
-            <InspectorHeader name="Notes" icon={<OfflineBoltIcon sx={{ color: '#E7A100' }}/>}/>
+            <InspectorHeader name="Notes" icon={null}/>
         </AccordionSummary>
         <AccordionDetails>
           <TextField
             multiline
             fullWidth
             minRows={8}
-            value='test'
+            value='Enter your note here...'
             variant="standard"
             InputProps={{ disableUnderline: true }}
             sx={{
