@@ -99,7 +99,8 @@ const BudgetCategories = ({ categoryGroup, categories, setBudgetedById, setCateg
                     saveBudgetedAmount={v => setBudgetedById(categoryGroup.id, v)}
                     saveCategoryName={v => setCategoryNameById(categoryGroup.id, v)}
                     isGroup={true}
-                    handleChange={handleChange} />
+                    handleChange={handleChange}
+                    expanded={expanded} />
                 {
                     expanded
                       ? categories.map(x => <CategoryRow
@@ -112,6 +113,7 @@ const BudgetCategories = ({ categoryGroup, categories, setBudgetedById, setCateg
                         saveCategoryName={v => setCategoryNameById(categoryGroup.id, v) }
                         isGroup={false}
                         handleChange={() => null}
+                        expanded={expanded}
                         />)
                       : null
                 }

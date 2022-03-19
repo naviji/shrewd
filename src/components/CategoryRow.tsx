@@ -9,6 +9,9 @@ import ClickAwayListener from '@mui/material/ClickAwayListener'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import ProgresBar from './ProgressBar'
 
+import ArrowRightIcon from '@mui/icons-material/ArrowRight'
+import ArrowRight from '@mui/icons-material/ArrowRight'
+
 /*
   Text align and padding of input need to be done using global css styles.
   https://mui.com/api/input/
@@ -24,7 +27,8 @@ interface CategoryRowProps {
   saveBudgetedAmount: Function,
   saveCategoryName: Function,
   isGroup: Boolean,
-  handleChange: Function
+  handleChange: Function,
+  expanded: Boolean
 }
 
 const AddCategoryButton = ({ isGroup }: any) => {
@@ -177,7 +181,7 @@ const CategoryNameDisplay = ({ name, saveCategoryName, isGroup } : any) => {
   )
 }
 
-const CategoryRow = ({ name, budgeted, spent, balance, saveBudgetedAmount, saveCategoryName, isGroup, handleChange }: CategoryRowProps) => {
+const CategoryRow = ({ name, budgeted, spent, balance, saveBudgetedAmount, saveCategoryName, isGroup, handleChange, expanded }: CategoryRowProps) => {
   const bgColor = isGroup ? '#F0F0F0' : '#FFFFFF'
   return (
     <React.Fragment>
@@ -192,10 +196,17 @@ const CategoryRow = ({ name, budgeted, spent, balance, saveBudgetedAmount, saveC
       border: '1px solid rgba(186, 186, 186, 0.54)',
       background: bgColor
     }}>
-        <Box sx={{ display: 'inline-flex', flexGrow: 5, minWidth: '350px' }}>
+        <Box sx={{
+          display: 'inline-flex',
+          flexGrow: 5,
+          minWidth: '350px',
+          '& .MuiSvgIcon-root': {
+            transform: expanded ? 'rotate(90deg)' : 'rotate(0deg)'
+          }
+        }}>
           <Checkbox />
           <IconButton onClick={() => handleChange()} sx={{ visibility: isGroup ? 'visible' : 'hidden' }} color="inherit">
-            <ArrowDropDownIcon />
+            <ArrowRight />
           </ IconButton>
           <CategoryNameDisplay name={name} isGroup={isGroup} saveCategoryName={saveCategoryName}/>
         </Box>

@@ -38,6 +38,7 @@ export default {
     const [expanded, setExpanded] = useValue('expanded', { defaultValue: [categoryGroup.id] })
 
     const handleChange = (panel: string) => {
+      console.log('test3')
       const idx = expanded.indexOf(panel)
       if (idx !== -1) {
         setExpanded(expanded.filter(x => x !== panel))
