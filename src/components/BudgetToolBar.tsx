@@ -10,7 +10,7 @@ import SearchIcon from '@mui/icons-material/Search'
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft'
 import ArrowRightIcon from '@mui/icons-material/ArrowRight'
 
-const ToolBar = () => {
+const BudgetToolBar = () => {
   return (
     <React.Fragment>
       <CssBaseline />
@@ -128,4 +128,4 @@ const ToolBar = () => {
   )
 }
 
-export default ToolBar
+export default BudgetToolBar

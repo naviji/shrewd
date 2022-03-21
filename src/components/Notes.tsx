@@ -123,7 +123,6 @@ const Notes = () => {
             }}
           />
         </AccordionDetails>
-
     </Accordion>
   )
 }
