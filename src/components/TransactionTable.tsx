@@ -1,4 +1,4 @@
-import React, { useState, useMemo, forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
+import React, { memo, useState, useCallback, useMemo, forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import DatePicker from 'react-datepicker'
 import dayjs from 'dayjs'
@@ -21,7 +21,6 @@ const CustomDateInput = forwardRef(({ value, onClick }: any, ref) => {
   const inputRef = useRef(null)
   useEffect(() => {
     if (inputRef.current) {
-      console.log('inputRef is defined', inputRef.current)
       inputRef.current.focus()
       inputRef.current.click()
     }
@@ -68,7 +67,55 @@ const DateEditor = forwardRef((props: any, ref) => {
 
 DateEditor.displayName = 'DateEditor'
 
-const App = () => {
+const RowCheckBox = memo((props) => {
+  // checked={params.value === 'checked'} onChange={onChangeHandler}
+
+  const onChangeHandler = (e) => {
+    console.log('Changed', e)
+  }
+  return (
+    <>
+      <input type='checkbox' onChange={onChangeHandler}/>
+      </>
+  )
+})
+RowCheckBox.displayName = 'RowCheckBox'
+
+const HeaderCheckBox = memo((props) => {
+  const onChangeHandler = (e) => {
+    console.log('Changed header', e)
+  }
+  // const [sortState, setSortState] = useState();
+
+  //   const onClick = useCallback(() => {
+  //     console.log('clicked')
+  //     // props.progressSort();
+  //   })
+
+  // useEffect(() => {
+  //     const listener = () => {
+  //         if (props.column.isSortAscending()) {
+  //             setSortState('ASC');
+  //         } else if (props.column.isSortDescending()) {
+  //             setSortState('DESC');
+  //         } else {
+  //             setSortState(undefined);
+  //         }
+  //     };
+
+  //     props.column.addEventListener('sortChanged', listener);
+
+  //     return () => props.column.removeEventListener('sortChanged', listener);;
+  // }, []);
+
+  return (
+    <input type='checkbox' onChange={onChangeHandler} />
+  )
+})
+
+HeaderCheckBox.displayName = 'HeaderCheckBox'
+
+const TransactionTable = () => {
   const [rowData] = useState([
     { date: '01/01/2022', payee: 'Movies', category: 'Entertainment', memo: 'test', outflow: '$1,123,456.00', inflow: '$1,123,456.00', cleared: 'c' },
     { date: '02/01/2022', payee: 'Home Depot', category: 'Income', memo: '', outflow: '$1,123,456.00', inflow: '$1,123,456.00', cleared: 'c' },
@@ -85,6 +132,15 @@ const App = () => {
 
   const [columnDefs] = useState([
     {
+
+      headerName: 'Selected',
+      field: 'selected',
+      editable: true,
+      cellRenderer: RowCheckBox,
+      headerComponent: HeaderCheckBox
+
+    },
+    {
       field: 'date',
       editable: true,
       cellEditor: DateEditor,
@@ -96,13 +152,21 @@ const App = () => {
     { field: 'outflow' },
     { field: 'inflow' },
     { field: 'cleared' }
+
   ])
 
   // never changes, so we can use useMemo
   const defaultColDef = useMemo(() => ({
     resizable: true,
     sortable: true,
-    editable: true
+    editable: true,
+    suppressMovable: true
+  }), [])
+
+  const autoGroupColumnDef = useMemo(() => ({
+    cellRendererParams: {
+      checkbox: true
+    }
   }), [])
 
   return (
@@ -117,4 +181,4 @@ const App = () => {
   )
 }
 
-export default App
+export default TransactionTable
