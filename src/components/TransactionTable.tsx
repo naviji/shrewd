@@ -8,8 +8,12 @@ import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
 import 'react-datepicker/dist/react-datepicker.css'
 
 import { unixMsFromDate } from '../utils/timeUtils'
-import { TextField } from '@mui/material'
+import { TextField, IconButton, Typography, Paper } from '@mui/material'
 import { Box } from '@mui/system'
+
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'
+
 const customParseFormat = require('dayjs/plugin/customParseFormat')
 dayjs.extend(customParseFormat)
 
@@ -64,8 +68,87 @@ const DateEditor = forwardRef((props: any, ref) => {
         customInput={<CustomDateInput />} />
   )
 })
-
 DateEditor.displayName = 'DateEditor'
+
+const PayeeSelector = forwardRef((props: any, ref) => {
+  const [payees, setPayees] = useState([
+    'Achan',
+    'Amma',
+    'Gas',
+    'Market',
+    'Shop'
+  ])
+
+  useEffect(() => {
+    console.log('props', props)
+    console.log('ref', ref)
+  })
+
+  useImperativeHandle(ref, () => {
+    return {
+      getValue () {
+        return 'Achan'
+      }
+    }
+  })
+
+  return (
+      <Box sx={{ height: `${props.node.rowHeight}px` }}>
+        <Box sx={{ width: `${props.column.actualWidth}px`, height: '100%' }}>
+            <Typography sx={{ borderRadius: '4px', boxSizing: 'border-box', paddingTop: '8px', height: '100%', paddingLeft: '8px', paddingRight: '8px', border: '2px solid #1976d2' }}> Current payee </Typography>
+        </Box>
+
+        <Box sx={{
+          width: `${props.column.actualWidth}px`,
+          height: '0px',
+          background: 'red'
+        }}
+        >
+            <Box sx={{
+              position: 'absolute',
+              inset: '0px auto auto 0px',
+              transform: 'translate3d(0px, 39px, 0px)',
+              paddingTop: '10px',
+              height: '242px',
+              widht: '242px'
+            }}>
+
+            </Box>
+      </Box>
+    </Box>
+
+  //         marginTop: '50px'
+  //       }}>
+  // <Box sx={{
+  //   display: 'inline-block',
+  //   position: 'relative',
+  //   border: '1px solid black',
+  //   '& :after': {
+  //     position: 'absolute',
+  //     width: '50px',
+  //     height: '50px',
+  //     bottom: '100%',
+  //     left: '50%',
+  //     marginLeft: '-25px',
+  //     content: '""',
+  //     transform: 'rotate(45deg)',
+  //     marginBottom: '-50px'
+  //   }
+  // }}>
+  //                 <Box sx={{
+  //                   padding: 8
+  //                 }}>
+  //                     {
+  //                         payees.map((x, idx) => <Typography key={idx}> {x} </Typography>)
+  //                     }
+  //                 </Box>
+
+  //             </Box>
+  //       </Paper>
+
+  )
+})
+PayeeSelector.displayName = 'PayeeSelector'
 
 const RowCheckBox = memo((props) => {
   // checked={params.value === 'checked'} onChange={onChangeHandler}
@@ -80,6 +163,41 @@ const RowCheckBox = memo((props) => {
   )
 })
 RowCheckBox.displayName = 'RowCheckBox'
+
+const RowCleared = memo((props) => {
+  // checked={params.value === 'checked'} onChange={onChangeHandler}
+
+  //   const onChangeHandler = (e) => {
+  //     console.log('Changed', e)
+  //   }
+  return (
+      <>
+        <IconButton color="inherit">
+              <CheckCircleIcon fontSize="small"/>
+        </ IconButton>
+
+        {/* <CheckCircleOutlineIcon /> */}
+      </>
+  )
+})
+RowCleared.displayName = 'RowCleared'
+
+const HeaderCleared = memo((props) => {
+  // checked={params.value === 'checked'} onChange={onChangeHandler}
+
+  //   const onChangeHandler = (e) => {
+  //     console.log('Changed', e)
+  //   }
+  return (
+        <>
+          <IconButton color="inherit">
+                <CheckCircleOutlineIcon fontSize="small" />
+          </ IconButton>
+
+        </>
+  )
+})
+HeaderCleared.displayName = 'HeaderCleared'
 
 const HeaderCheckBox = memo((props) => {
   const onChangeHandler = (e) => {
@@ -116,6 +234,8 @@ const HeaderCheckBox = memo((props) => {
 HeaderCheckBox.displayName = 'HeaderCheckBox'
 
 const TransactionTable = () => {
+  const gridRef = useRef()
+
   const [rowData] = useState([
     { date: '01/01/2022', payee: 'Movies', category: 'Entertainment', memo: 'test', outflow: '$1,123,456.00', inflow: '$1,123,456.00', cleared: 'c' },
     { date: '02/01/2022', payee: 'Home Depot', category: 'Income', memo: '', outflow: '$1,123,456.00', inflow: '$1,123,456.00', cleared: 'c' },
@@ -132,12 +252,11 @@ const TransactionTable = () => {
 
   const [columnDefs] = useState([
     {
-
-      headerName: 'Selected',
       field: 'selected',
       editable: true,
       cellRenderer: RowCheckBox,
-      headerComponent: HeaderCheckBox
+      headerComponent: HeaderCheckBox,
+      width: 24
 
     },
     {
@@ -146,12 +265,23 @@ const TransactionTable = () => {
       cellEditor: DateEditor,
       cellEditorPopup: true
     },
-    { field: 'payee' },
+    {
+      field: 'payee',
+      editable: true,
+      cellEditor: PayeeSelector,
+      cellEditorPopup: true
+    },
     { field: 'category' },
     { field: 'memo' },
     { field: 'outflow' },
     { field: 'inflow' },
-    { field: 'cleared' }
+    {
+      field: 'cleared',
+      editable: false,
+      cellRenderer: RowCleared,
+      headerComponent: HeaderCleared,
+      maxWidth: 100
+    }
 
   ])
 
@@ -163,19 +293,21 @@ const TransactionTable = () => {
     suppressMovable: true
   }), [])
 
-  const autoGroupColumnDef = useMemo(() => ({
-    cellRendererParams: {
-      checkbox: true
-    }
-  }), [])
+  const onGridReady = e => {
+    e.api.sizeColumnsToFit()
+    e.columnApi.resetColumnState()
+  }
 
   return (
        <div className="ag-theme-alpine" style={{ height: '600px', width: '1000px' }}>
            <AgGridReact
+               ref={gridRef}
                rowData={rowData}
                columnDefs={columnDefs}
                 defaultColDef={defaultColDef}
-                rowSelection="multiple">
+                rowSelection="multiple"
+                onGridReady={onGridReady}>
+
            </AgGridReact>
        </div>
   )
