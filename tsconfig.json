@@ -6,7 +6,11 @@
       "target": "es5",
       "allowSyntheticDefaultImports": true,
       "esModuleInterop" : true,
-      "sourceMap": true
+      "sourceMap": true,
+      "strict": true,
+      "lib": [
+        "ES2021.String"
+      ]
     },
     "include": ["./src/**/*"]
   }

@@ -11,16 +11,16 @@ interface RendererProcessQuitReply {
       canClose: boolean;
 }
 
-let mainWindow
+let mainWindow: BrowserWindow | null
 
 export default class ElectronApp {
-    private electronApp_: any;
+    private electronApp_: Electron.App;
     private args_: string[];
     private tray_: any = null;
     private willQuitApp_: boolean = false;
-    private rendererProcessQuitReply_: RendererProcessQuitReply = null;
+    private rendererProcessQuitReply_: RendererProcessQuitReply | null = null;
 
-    constructor (args) {
+    constructor (args: string[]) {
       this.electronApp_ = electronApp
       this.args_ = args
     }
@@ -46,7 +46,7 @@ export default class ElectronApp {
       })
 
       this.electronApp().on('activate', () => {
-        mainWindow.show()
+        this.window().show()
       })
     }
 
@@ -76,8 +76,8 @@ export default class ElectronApp {
       const extensions = [REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS]
       await Promise.all(
         extensions.map((extension) => installExtension(extension, { loadExtensionOptions: { allowFileAccess: true } })
-          .then((name) => console.log('Added Extension: ' + name))
-          .catch((err) => console.log('An error occurred: ', err)))
+          .then((name: string) => console.log('Added Extension: ' + name))
+          .catch((err: any) => console.log('An error occurred: ', err)))
       )
     }
 
@@ -187,7 +187,7 @@ export default class ElectronApp {
       if (this.env === 'dev' || this.isDebugMode) {
         setTimeout(() => {
           try {
-            mainWindow.webContents.openDevTools()
+            this.window().webContents.openDevTools()
           } catch (error) {
             // This will throw an exception "Object has been destroyed" if the app is closed
             // in less that the timeout interval. It can be ignored.
@@ -218,7 +218,7 @@ export default class ElectronApp {
         } else {
           if (this.trayShown() && !this.willQuitApp_) {
             event.preventDefault()
-            mainWindow.hide()
+            this.window().hide()
           } else {
             isGoingToExit = true
           }
@@ -230,7 +230,7 @@ export default class ElectronApp {
             // so that it can tell us if we can really close the app or not.
             // Search for "appClose" event for closing logic on renderer side.
             event.preventDefault()
-            mainWindow.webContents.send('appClose')
+            this.window().webContents.send('appClose')
           } else {
             // If the renderer process has responded, check if we can close or not
             if (this.rendererProcessQuitReply_.canClose) {
@@ -252,7 +252,7 @@ export default class ElectronApp {
       })
 
       ipcMain.on('bridge:showMainWindow', () => {
-        mainWindow.show()
+        mainWindow && mainWindow.show()
       })
       ipcMain.on('bridge:exit', (_event, code) => {
         this.electronApp().exit(code)
@@ -286,8 +286,9 @@ export default class ElectronApp {
       }
     }
 
-    window () {
-      return mainWindow
+    window () : BrowserWindow {
+      if (mainWindow) return mainWindow
+      throw Error('Window not defined')
     }
 
     // This method is used in macOS only to hide the whole app (and not just the main window)

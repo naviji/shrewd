@@ -7,11 +7,11 @@ import { setupDatabase } from './testUtils'
 
 describe('Target should calculate amount needed', function () {
   const today = timeUtils.unixMsFromDate('01/01/2021')
-  let account, categoryGroup, category
+  let categoryGroup: { id: string}, category: { id: string }
 
   beforeEach(async () => {
     await setupDatabase(1)
-    account = Account.add({ name: 'Savings', amount: 1000, type: Account.TYPE_SAVINGS, createdDay: today })
+    Account.add({ name: 'Savings', amount: 1000, type: Account.TYPE_SAVINGS, createdDay: today })
     categoryGroup = CategoryGroup.add({ name: 'Wishlist' })
     category = await Category.add({ name: 'House', parentId: categoryGroup.id })
   })

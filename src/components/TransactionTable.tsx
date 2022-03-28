@@ -14,6 +14,8 @@ import { Box } from '@mui/system'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 
+import DataGrid from 'react-data-grid'
+
 const customParseFormat = require('dayjs/plugin/customParseFormat')
 dayjs.extend(customParseFormat)
 
@@ -234,82 +236,110 @@ const HeaderCheckBox = memo((props) => {
 HeaderCheckBox.displayName = 'HeaderCheckBox'
 
 const TransactionTable = () => {
-  const gridRef = useRef()
-
   const [rowData] = useState([
-    { date: '01/01/2022', payee: 'Movies', category: 'Entertainment', memo: 'test', outflow: '$1,123,456.00', inflow: '$1,123,456.00', cleared: 'c' },
-    { date: '02/01/2022', payee: 'Home Depot', category: 'Income', memo: '', outflow: '$1,123,456.00', inflow: '$1,123,456.00', cleared: 'c' },
-    { date: '04/01/2022', payee: 'Extra Warranty', category: 'Medical', memo: 'test', outflow: '$1,123,456.00', inflow: '$1,123,456.00', cleared: 'c' },
-    { date: '10/01/2022', payee: 'Online store', category: 'Gift', memo: '', outflow: '$1,123,456.00', inflow: '$1,123,456.00', cleared: 'c' },
-    { date: '21/01/2022', payee: 'Movies', category: 'Entertainment', memo: 'test', outflow: '$1,123,456.00', inflow: '$1,123,456.00', cleared: 'c' },
-    { date: '01/02/2022', payee: 'Movies', category: 'Entertainment', memo: 'test', outflow: '$1,123,456.00', inflow: '$1,123,456.00', cleared: 'n' },
-    { date: '01/02/2022', payee: 'Movies', category: 'Entertainment', memo: 'test', outflow: '$1,123,456.00', inflow: '$1,123,456.00', cleared: 'n' },
-    { date: '02/02/2022', payee: 'Movies', category: 'Entertainment', memo: 'test', outflow: '$1,123,456.00', inflow: '$1,123,456.00', cleared: 'c' },
-    { date: '10/02/2022', payee: 'Movies', category: 'Entertainment', memo: 'test', outflow: '$1,123,456.00', inflow: '$1,123,456.00', cleared: 'n' },
-    { date: '30/02/2022', payee: 'Movies', category: 'Entertainment', memo: 'test', outflow: '$1,123,456.00', inflow: '$1,123,456.00', cleared: 'c' },
-    { date: '01/03/2022', payee: 'Movies', category: 'Entertainment', memo: 'test', outflow: '$1,123,456.00', inflow: '$1,123,456.00', cleared: 'c' }
+    { id: 1, date: '01/01/2022', payee: 'Movies', category: 'Entertainment', memo: 'test', outflow: '$1,123,456.00', inflow: '$1,123,456.00', cleared: 'c' },
+    { id: 2, date: '02/01/2022', payee: 'Home Depot', category: 'Income', memo: '', outflow: '$1,123,456.00', inflow: '$1,123,456.00', cleared: 'c' },
+    { id: 3, date: '04/01/2022', payee: 'Extra Warranty', category: 'Medical', memo: 'test', outflow: '$1,123,456.00', inflow: '$1,123,456.00', cleared: 'c' },
+    { id: 4, date: '10/01/2022', payee: 'Online store', category: 'Gift', memo: '', outflow: '$1,123,456.00', inflow: '$1,123,456.00', cleared: 'c' },
+    { id: 5, date: '21/01/2022', payee: 'Movies', category: 'Entertainment', memo: 'test', outflow: '$1,123,456.00', inflow: '$1,123,456.00', cleared: 'c' },
+    { id: 6, date: '01/02/2022', payee: 'Movies', category: 'Entertainment', memo: 'test', outflow: '$1,123,456.00', inflow: '$1,123,456.00', cleared: 'n' },
+    { id: 7, date: '01/02/2022', payee: 'Movies', category: 'Entertainment', memo: 'test', outflow: '$1,123,456.00', inflow: '$1,123,456.00', cleared: 'n' },
+    { id: 8, date: '02/02/2022', payee: 'Movies', category: 'Entertainment', memo: 'test', outflow: '$1,123,456.00', inflow: '$1,123,456.00', cleared: 'c' },
+    { id: 9, date: '10/02/2022', payee: 'Movies', category: 'Entertainment', memo: 'test', outflow: '$1,123,456.00', inflow: '$1,123,456.00', cleared: 'n' },
+    { id: 10, date: '30/02/2022', payee: 'Movies', category: 'Entertainment', memo: 'test', outflow: '$1,123,456.00', inflow: '$1,123,456.00', cleared: 'c' },
+    { id: 11, date: '01/03/2022', payee: 'Movies', category: 'Entertainment', memo: 'test', outflow: '$1,123,456.00', inflow: '$1,123,456.00', cleared: 'c' }
   ])
 
   const [columnDefs] = useState([
     {
-      field: 'selected',
-      editable: true,
-      cellRenderer: RowCheckBox,
-      headerComponent: HeaderCheckBox,
-      width: 24
+      key: 'selected',
+      name: 'selected'
+      //   field: 'selected',
+      //   editable: true,
+      //   cellRenderer: RowCheckBox,
+      //   headerComponent: HeaderCheckBox,
+      //   width: 24
 
     },
     {
-      field: 'date',
-      editable: true,
-      cellEditor: DateEditor,
-      cellEditorPopup: true
+      key: 'date',
+      name: 'Date'
+    //   field: 'date',
+    //   editable: true,
+    //   cellEditor: DateEditor,
+    //   cellEditorPopup: true
     },
     {
-      field: 'payee',
-      editable: true,
-      cellEditor: PayeeSelector,
-      cellEditorPopup: true
+      key: 'payee',
+      name: 'Payee'
+    //   field: 'payee',
+    //   editable: true,
+    //   cellEditor: PayeeSelector,
+    //   cellEditorPopup: true
     },
-    { field: 'category' },
-    { field: 'memo' },
-    { field: 'outflow' },
-    { field: 'inflow' },
     {
-      field: 'cleared',
-      editable: false,
-      cellRenderer: RowCleared,
-      headerComponent: HeaderCleared,
-      maxWidth: 100
+      key: 'category',
+      name: 'Category'
+    },
+    {
+      key: 'memo',
+      name: 'Memo'
+    },
+    {
+      key: 'outflow',
+      name: 'Outflow'
+    },
+    {
+      key: 'inflow',
+      name: 'Inflow'
+    },
+    {
+      key: 'cleared',
+      name: 'Cleared'
     }
+    // {
+    //   field: 'cleared',
+    //   editable: false,
+    //   cellRenderer: RowCleared,
+    //   headerComponent: HeaderCleared,
+    //   maxWidth: 100
+    // }
 
   ])
 
-  // never changes, so we can use useMemo
-  const defaultColDef = useMemo(() => ({
-    resizable: true,
-    sortable: true,
-    editable: true,
-    suppressMovable: true
-  }), [])
+  interface Row {
+    date: string;
+    payee: string;
+    category: string;
+    memo: string;
+    outflow: string;
+    inflow: string;
+    cleared: string;
 
-  const onGridReady = e => {
-    e.api.sizeColumnsToFit()
-    e.columnApi.resetColumnState()
+    id: number
   }
 
-  return (
-       <div className="ag-theme-alpine" style={{ height: '600px', width: '1000px' }}>
-           <AgGridReact
-               ref={gridRef}
-               rowData={rowData}
-               columnDefs={columnDefs}
-                defaultColDef={defaultColDef}
-                rowSelection="multiple"
-                onGridReady={onGridReady}>
+  function rowKeyGetter (row: Row): number {
+    return row.id
+  }
 
-           </AgGridReact>
-       </div>
+  //   // never changes, so we can use useMemo
+  //   const defaultColDef = useMemo(() => ({
+  //     resizable: true,
+  //     sortable: true,
+  //     editable: true,
+  //     suppressMovable: true
+  //   }), [])
+
+  //   const onGridReady = e => {
+  //     e.api.sizeColumnsToFit()
+  //     e.columnApi.resetColumnState()
+  //   }
+
+  return (
+       <Box sx={{ height: '600px', width: '1000px' }}>
+           <DataGrid columns={columnDefs} rows={rowData} rowKeyGetter={rowKeyGetter} />
+       </Box>
   )
 }
 

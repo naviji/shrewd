@@ -1,6 +1,6 @@
 import accounting from 'accounting'
-export const format = (money) => accounting.formatMoney(money / 100)
-export const unformat = (x) => {
+export const format = (money: number) => accounting.formatMoney(money / 100)
+export const unformat = (x: string) => {
   let sign = 1
   if (x.length === 0) return 0
   if (x[0] === '-') {

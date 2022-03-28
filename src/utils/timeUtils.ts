@@ -11,14 +11,14 @@ const NanoTimer = require('nanotimer')
 
 const timers_ = {}
 
-export const unixMsFromDate = (dateString) => {
+export const unixMsFromDate = (dateString: string) => {
   if (!dateString) {
     throw new Error('Provide dateString')
   }
   return dayjs(dateString, 'DD/MM/YYYY').valueOf()
 }
 
-const unixMsFromMonth = (dateString) => {
+const unixMsFromMonth = (dateString: string) => {
   // eg: Jan 2020 or MM/DD/YYYY format;
   // Using the Date constructor is discouraged; Should change to using dayjs exclusively
   // TODO: Remove and use unixMsFromDate with MM/DD/YYYY format instead
@@ -29,7 +29,7 @@ const unixMsFromMonth = (dateString) => {
   return dayjs(new Date(dateString)).valueOf()
 }
 
-export const dateFromUnixMs = (value) => {
+export const dateFromUnixMs = (value : string | number) => {
   const unixMs = Number(value)
   return dayjs(unixMs).format('DD/MM/YYYY')
 }
@@ -42,19 +42,19 @@ export const monthInUnixMs = () => {
   return dayjs().startOf('month').valueOf()
 }
 
-export const endOfMonth = (value) => {
+export const endOfMonth = (value: number) => {
   return dayjs(value).endOf('month')
 }
 
-export const startOfMonth = (value) => {
+export const startOfMonth = (value: number) => {
   return dayjs(value).startOf('month')
 }
 
-export const subtractMonth = (value) => {
+export const subtractMonth = (value: number) => {
   return dayjs(value).subtract(1, 'month').valueOf()
 }
 
-export const addMonth = (value) => {
+export const addMonth = (value: number) => {
   return dayjs(value).add(1, 'month').valueOf()
 }
 
@@ -64,9 +64,7 @@ export const printDateOfToday = () => {
 
 export const msleep = (ms: number) => {
   return new Promise((resolve: Function) => {
-    setTimeout(() => {
-      resolve()
-    }, ms)
+    setTimeout(() => { resolve() }, ms)
   })
 }
 
