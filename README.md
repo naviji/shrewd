@@ -1,5 +1,7 @@
 Buddy
 
+Commands:
+
 
 TO DO:
 - [x] Add File API

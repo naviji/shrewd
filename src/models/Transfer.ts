@@ -1,36 +1,35 @@
-import BaseItem from "./BaseItem"
-import Calendar from "../lib/Calendar"
-import Setting from "./Setting"
-import timeUtils from "../utils/timeUtils"
+import BaseItem from './BaseItem'
+import Calendar from '../lib/Calendar'
+import Setting from './Setting'
+import timeUtils from '../utils/timeUtils'
 
 class Transfer extends BaseItem {
-    static tableName = () => "Transfer"
+    static tableName = () => 'Transfer'
 
-    static fieldNames() {
-        return ["id", "from", "to", "amount", "updatedAt", "createdAt", "createdMonth", "accountId"]
+    static fieldNames () {
+      return ['id', 'from', 'to', 'amount', 'updatedAt', 'createdAt', 'createdMonth', 'accountId']
     }
 
-    static fieldTypes() {
-        return {
-            "amount": Number,
-            "createdMonth": Number
-        }
+    static fieldTypes () {
+      return {
+        amount: Number,
+        createdMonth: Number
+      }
     }
 
     static save = (o) => {
-        const { id, accountId,  createdMonth} = o
+      const { id, accountId, createdMonth } = o
 
-        if (!id && !accountId) {
-            o.accountId = ''
-        }
+      if (!id && !accountId) {
+        o.accountId = ''
+      }
 
-        if (!id && !createdMonth) {
-            o.createdMonth = timeUtils.monthInUnixMs()
-        }
+      if (!id && !createdMonth) {
+        o.createdMonth = timeUtils.monthInUnixMs()
+      }
 
-        return super.save(o);
+      return super.save(o)
     }
-
 }
 
 export default Transfer

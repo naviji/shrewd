@@ -14,7 +14,7 @@ interface RendererProcessQuitReply {
 let mainWindow: BrowserWindow | null
 
 export default class ElectronApp {
-    private electronApp_: Electron.App;
+    private electronApp_;
     private args_: string[];
     private tray_: any = null;
     private willQuitApp_: boolean = false;

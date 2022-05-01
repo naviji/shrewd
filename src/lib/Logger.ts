@@ -41,7 +41,6 @@ export interface LoggerWrapper {
 
 class Logger {
     private static fsDriver: null | FsDriverNode
-    private static globalLogger: Logger = null;
 
     private targets_: Target[] = [];
     private level_: LogLevel = LogLevel.Info;
@@ -65,7 +64,7 @@ class Logger {
       return this.targets_
     }
 
-    public addTarget (type: TargetType, options: TargetOptions = null) {
+    public addTarget (type: TargetType, options: TargetOptions | null = null) {
       const target = { type: type, ...options }
       this.targets_.push(target)
     }
@@ -110,8 +109,8 @@ class Logger {
       for (let i = 0; i < this.targets_.length; i++) {
         const target = this.targets_[i]
         const targetPrefix = prefix || target.prefix
-
-        if (this.targetLevel(target) < level) continue
+        const targetLevel = this.targetLevel(target)
+        if (targetLevel && targetLevel < level) continue
 
         if (target.type === 'console') {
           let fn = 'log'
@@ -144,19 +143,19 @@ class Logger {
     }
 
     error (...object: any[]) {
-      return this.log(LogLevel.Error, null, ...object)
+      return this.log(LogLevel.Error, '', ...object)
     }
 
     warn (...object: any[]) {
-      return this.log(LogLevel.Warn, null, ...object)
+      return this.log(LogLevel.Warn, '', ...object)
     }
 
     info (...object: any[]) {
-      return this.log(LogLevel.Info, null, ...object)
+      return this.log(LogLevel.Info, '', ...object)
     }
 
     debug (...object: any[]) {
-      return this.log(LogLevel.Debug, null, ...object)
+      return this.log(LogLevel.Debug, '', ...object)
     }
 
     // private static levelStringToId (s: string) {

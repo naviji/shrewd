@@ -3,29 +3,36 @@ import Database from '../lib/Database'
 import Logger, { LogLevel } from '../lib/Logger'
 import CommandService from '../services/CommandService'
 import Account from '../models/Account'
-import Transfer from '../models/Transfer'
 import Transaction from '../models/Transaction'
 import CategoryGroup from '../models/CategoryGroup'
 import Category from '../models/Category'
 import BaseModel from '../models/BaseModel'
 import Calendar from '../lib/Calendar'
-import timeUtils, { dateFromUnixMs } from '../utils/timeUtils'
+import { dateFromUnixMs } from '../utils/timeUtils'
 import Target from '../models/Target'
 import Setting from '../models/Setting'
 import ImportService from '../services/ImportService'
+import { CommandParams } from '../types/Command'
+
 const sprintf = require('sprintf-js').sprintf
 
 // const appLogger = new Logger()
 
-function _rupee (amount) {
+function _rupee (amount: number) {
   return sprintf('%10.2f', amount / 100)
-  return `Rs. ${amount / 100}`
 }
+
+interface AppOptions {
+  debugMode: boolean,
+  saveChanges: boolean,
+  loadData: boolean
+}
+
 class BudgetApplication {
     private calendar_ : Calendar = Calendar.instance()
-    private logger_
+    private logger_: Logger | null = null
 
-    start (options) {
+    start (options: AppOptions) {
       this.setLogger(new Logger(options.debugMode ? LogLevel.Debug : LogLevel.Info))
       this.setupDatabase(options)
       this.registerCommands()
@@ -56,52 +63,58 @@ class BudgetApplication {
       return this.calendar_
     }
 
-    private setupDatabase (options) {
+    private setupDatabase (options: AppOptions) {
       BaseModel.setDb(new Database(this.logger(), options))
     }
 
     private logger () {
-      return this.logger_
+      if (this.logger_) return this.logger_
+      return new Logger()
     }
 
-    private setLogger (logger) {
+    private setLogger (logger: Logger) {
       this.logger_ = logger
     }
 
-    addAccount (o) {
+    addAccount (o: CommandParams.AddAccount) {
       return CommandService.instance().execute('AddAccount', o)
     }
 
-    addCategoryGroup (o) {
+    addCategoryGroup (o: CommandParams.AddCategoryGroup) {
       return CommandService.instance().execute('AddCategoryGroup', o)
     }
 
-    addCategory (o) {
+    addCategory (o: CommandParams.AddCategory) {
       return CommandService.instance().execute('AddCategory', o)
     }
 
-    removeCategory (o) {
+    removeCategory (o: CommandParams.RemoveCategory) {
       return CommandService.instance().execute('RemoveCategory', o)
     }
 
-    removeCategoryGroup (o) {
+    removeCategoryGroup (o: CommandParams.RemoveCategoryGroup) {
       return CommandService.instance().execute('RemoveCategoryGroup', o)
     }
 
-    assignMoney (o) {
+    assignMoney (o: CommandParams.AssingMoney) {
       const { to, amount } = o
-      this.moveMoney({ from: Setting.get('readyToAssignId'), to, amount, createdMonth: Calendar.instance().startOfMonth() })
+      this.moveMoney({
+        from: Setting.get('readyToAssignId'),
+        to,
+        amount,
+        createdMonth: Calendar.instance().startOfMonth()
+      })
     }
 
-    addTransaction (o) {
+    addTransaction (o: CommandParams.AddTransaction) {
       return CommandService.instance().execute('AddTransaction', o)
     }
 
-    removeTransaction (o) {
+    removeTransaction (o: {id: string}) {
       return CommandService.instance().execute('RemoveTransaction', o)
     }
 
-    moveMoney (o) {
+    moveMoney (o: CommandParams.MoveMoney) {
       return CommandService.instance().execute('AddTransfer', o)
     }
 
@@ -109,11 +122,11 @@ class BudgetApplication {
       CommandService.instance().registerAll()
     }
 
-    addTarget (o) {
+    addTarget (o: CommandParams.AddTarget) {
       return CommandService.instance().execute('AddTarget', o)
     }
 
-    convertToOffBudgetAccount (accountId) {
+    convertToOffBudgetAccount (accountId: string) {
       CommandService.instance().execute('ConvertAccount', { accountId })
     }
 
@@ -127,11 +140,11 @@ class BudgetApplication {
       return this
     }
 
-    importFromRegister (path) {
+    importFromRegister (path: string) {
       ImportService.instance().importFromRegister(path)
     }
 
-    importFromBudget (path) {
+    importFromBudget (path: string) {
       ImportService.instance().importFromBudget(path)
     }
 
@@ -139,23 +152,17 @@ class BudgetApplication {
       return _rupee(Category.getAllAssigned(Setting.get('readyToAssignId')))
     }
 
-    private assignedThisMonth (categoryId) {
+    private assignedThisMonth (categoryId: string) {
       const month = this.getSelectedMonth()
       return Category.getAssignedOfMonth(categoryId, month)
     }
 
-    private firstTransferToReadyToAssign () {
-      const transferDates = Transfer.getAll().filter(x => x.to === Setting.get('readyToAssignId')).map(x => x.createdMonth)
-      transferDates.sort((a, b) => a - b)
-      return transferDates.length ? transferDates[0] : -Infinity
-    }
-
-    public availableThisMonth (categoryId) {
+    public availableThisMonth (categoryId: string) {
       const month = this.getSelectedMonth()
       return Category.getAvailableOfMonth(categoryId, month)
     }
 
-    private activityThisMonth (categoryId) {
+    private activityThisMonth (categoryId: string) {
       const month = this.getSelectedMonth()
       return Category.getActivityOfMonth(categoryId, month)
     }
@@ -206,7 +213,7 @@ class BudgetApplication {
       }
     }
 
-    private renderTargets_ (categoryId) {
+    private renderTargets_ (categoryId: string) {
       const assignedThisMonth = this.assignedThisMonth(categoryId)
       const target = Target.getByCategoryId(categoryId)
       if (target && (target.createdMonth <= this.getSelectedMonth())) { this.logger().info(`             --- Every ${target.every} ${target.type} ${_rupee(target.amount)} ( You need ${_rupee((target.amount / target.every) - (assignedThisMonth + Category.getAllActivity(categoryId)))} this ${target.type})`) }

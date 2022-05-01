@@ -17,6 +17,8 @@ module.exports = {
   plugins: ['react', 'jest', '@typescript-eslint'],
   rules: {
     'no-use-before-define': 'off',
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': 'error',
     '@typescript-eslint/no-use-before-define': ['error', {
       functions: false,
       typedefs: false

@@ -2,9 +2,10 @@ import * as fs from 'fs-extra'
 import { resolve as nodeResolve } from 'path'
 import timeUtils from '../utils/timeUtils'
 import FsDriverBase, { Stat } from './FsDriverBase'
+import StoicError from './StoicError'
 
 export default class FsDriverNode extends FsDriverBase {
-  private fsErrorToJsError_ (error: any, path: string = null) {
+  private fsErrorToJsError_ (error: any, path: string | null = null) {
     let msg = error.toString()
     if (path !== null) msg += `. Path: ${path}`
     const output: any = new Error(msg)
@@ -67,7 +68,7 @@ export default class FsDriverNode extends FsDriverBase {
         lastError = error
         // Normally cannot happen with the `overwrite` flag but sometime it still does.
         // In this case, retry.
-        if (error.code === 'EEXIST') {
+        if (error instanceof StoicError && error.code === 'EEXIST') {
           await timeUtils.sleep(1)
           continue
         }
@@ -92,7 +93,7 @@ export default class FsDriverNode extends FsDriverBase {
     return r
   }
 
-  public async stat (path: string) {
+  public async stat (path: string) : Promise<Stat|null> {
     try {
       const stat = await fs.stat(path)
       return {
@@ -103,7 +104,7 @@ export default class FsDriverNode extends FsDriverBase {
         size: stat.size
       }
     } catch (error) {
-      if (error.code === 'ENOENT') return null
+      if (error instanceof StoicError && error.code === 'ENOENT') return null
       throw error
     }
   }
@@ -174,25 +175,26 @@ export default class FsDriverNode extends FsDriverBase {
     try {
       await fs.unlink(path)
     } catch (error) {
-      if (error.code === 'ENOENT') return // Don't throw if the file does not exist
+      // Don't throw if the file does not exist
+      if (error instanceof StoicError && error.code === 'ENONENT') return
       throw error
     }
   }
 
-  public async readFileChunk (handle: any, length: number, encoding: string = 'base64') {
-    // let buffer = new Buffer(length);
-    let buffer = Buffer.alloc(length)
-    const result = await fs.read(handle, buffer, 0, length, null)
-    if (!result.bytesRead) return null
-    buffer = buffer.slice(0, result.bytesRead)
-    if (encoding === 'base64') return buffer.toString('base64')
-    if (encoding === 'ascii') return buffer.toString('ascii')
-    throw new Error(`Unsupported encoding: ${encoding}`)
-  }
+  // public async readFileChunk (handle: any, length: number, encoding: string = 'base64') {
+  //   // let buffer = new Buffer(length);
+  //   let buffer = Buffer.alloc(length)
+  //   const result = await fs.read(handle, buffer, 0, length, null)
+  //   if (!result.bytesRead) return null
+  //   buffer = buffer.slice(0, result.bytesRead)
+  //   if (encoding === 'base64') return buffer.toString('base64')
+  //   if (encoding === 'ascii') return buffer.toString('ascii')
+  //   throw new Error(`Unsupported encoding: ${encoding}`)
+  // }
 
-  public resolve (path: string) {
-    return require('path').resolve(path)
-  }
+  // public resolve (path: string) {
+  //   return require('path').resolve(path)
+  // }
 
   // Resolves the provided relative path to an absolute path within baseDir. The function
   // also checks that the absolute path is within baseDir, to avoid security issues.
@@ -203,10 +205,6 @@ export default class FsDriverNode extends FsDriverBase {
     if (resolvedPath.indexOf(resolvedBaseDir) !== 0) throw new Error(`Resolved path for relative path "${relativePath}" is not within base directory "${baseDir}" (Was resolved to ${resolvedPath})`)
     return resolvedPath
   }
-
-  // public async md5File(path: string): Promise<string> {
-  // 	return md5File(path);
-  // }
 
   public async tarExtract (options: any) {
     await require('tar').extract(options)

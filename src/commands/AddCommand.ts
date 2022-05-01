@@ -1,33 +1,31 @@
-import BaseModel from "../models/BaseModel"
 
 class AddCommand {
+    private oldArgs: any
+    private created: any
 
-    private oldArgs
-    private created
-
-    constructor() {
-        this.oldArgs = null
-        this.created = null
+    constructor () {
+      this.oldArgs = null
+      this.created = null
     }
 
-    model () : any { // to fix any
-        throw new Error("Needs to be overriden")
-    }
-    
-    execute (o) {
-        this.oldArgs = o
-        this.created = Object.assign({}, this.model().save(o))
-        return this.created;
+    model () : any {
+      throw new Error('Needs to be overriden')
     }
 
-    undo() {
-        this.model().deleteById(this.created.id)
-        this.created = null
+    execute (o: any) {
+      this.oldArgs = o
+      this.created = Object.assign({}, this.model().save(o))
+      return this.created
     }
 
-    redo(options = {}) {
-        this.created = Object.assign({}, this.model().save(Object.assign({}, this.oldArgs, options)))
-        return this.created;
+    undo () {
+      this.model().deleteById(this.created.id)
+      this.created = null
+    }
+
+    redo (options = {}) {
+      this.created = Object.assign({}, this.model().save(Object.assign({}, this.oldArgs, options)))
+      return this.created
     }
 }
 

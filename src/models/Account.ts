@@ -2,22 +2,12 @@ import timeUtils from '../utils/timeUtils'
 import BaseItem from './BaseItem'
 import Setting from './Setting'
 import Transaction, { TransactionItemInterface } from './Transaction'
-import Transfer from './Transfer'
 
 export enum AccountType {
-	Savings = 1,
-	Current = 2,
-    OffBudget = 3
+  Savings = 1,
+  Current = 2,
+  OffBudget = 3
 }
-
-// class BaseModel {
-
-//     public static TYPE_ACCOUNT = ModelType.Account;
-// 	public static TYPE_CATEGORY = ModelType.Category;
-// 	public static TYPE_CATEGORY_GROUP = ModelType.CategoryGroup;
-// 	public static TYPE_TARGET = ModelType.Target;
-// 	public static TYPE_TRANSACTION = ModelType.Transaction;
-// 	public static TYPE_TRANSFER = ModelType.Transfer;
 
 export interface AccountItemInterface {
     id: string;
@@ -36,7 +26,6 @@ export interface AccountSaveItemInterface {
     name: string
     amount: number
     type: number
-    createdDay: number
 }
 
 class Account extends BaseItem {
@@ -60,7 +49,7 @@ class Account extends BaseItem {
     }
 
     static save = (o: AccountSaveItemInterface) : AccountItemInterface => {
-      const { id, closed, createdDay } = o
+      const { id, closed } = o
       if (!id && !closed) {
         // New accounts are open by default
         o.closed = false
@@ -81,10 +70,10 @@ class Account extends BaseItem {
       return balance
     }
 
-    static add = ({ name, amount, type, createdDay }: AccountSaveItemInterface) => {
-      const account = this.save({ name, amount, type, createdDay })
+    static add = ({ name, amount, type }: AccountSaveItemInterface) => {
+      const account = this.save({ name, amount, type })
       Transaction.add({
-        createdDay,
+        createdDay: new Date(),
         payee: 'Starting Balance',
         categoryId: Setting.get('readyToAssignId'),
         accountId: account.id,

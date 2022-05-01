@@ -1,4 +1,3 @@
-import Calendar from '../lib/Calendar';
 import Transfer from '../models/Transfer'
 import AddCommand from './AddCommand'
 class AddTransfer extends AddCommand {

@@ -1,5 +1,5 @@
 
-import { createStore, Store } from '@reduxjs/toolkit'
+import { Store } from '@reduxjs/toolkit'
 import BaseSyncTarget from '../lib/BaseSyncTarget'
 import Database from '../lib/Database'
 import FileApiDriverLocal from '../lib/FileApiDriverLocal'
@@ -7,7 +7,7 @@ import FsDriverNode from '../lib/FsDriverNode'
 import Logger from '../lib/Logger'
 import shim from '../lib/shim'
 import store from '../lib/store'
-import { envFromArgs, profilePathFromArgs, isDebugMode } from '../lib/startupHelpers'
+import { envFromArgs } from '../lib/startupHelpers'
 import SyncTargetFilesystem from '../lib/SyncTargetFilesystem'
 import SyncTargetNone from '../lib/SyncTargetNone'
 import SyncTargetRegistry from '../lib/SyncTargetRegistry'
@@ -28,7 +28,7 @@ const fs = require('fs-extra')
 
 export default class BaseApplication {
     private database_: any = null;
-    protected store_: Store<any> = null;
+    protected store_: Store<any> | null = null;
 
     public async start (argv: string[]): Promise<any> {
       // TODO: Implement search Service
@@ -50,7 +50,7 @@ export default class BaseApplication {
 
       const env = envFromArgs(argv)
       const profilePath = this.determineProfileDir(argv)
-      const debugMode = isDebugMode(argv)
+      // const debugMode = isDebugMode(argv)
 
       const tempDir = `${profilePath}/tmp`
       const cacheDir = `${profilePath}/cache`
@@ -104,7 +104,8 @@ export default class BaseApplication {
     }
 
     public dispatch (action: any) {
-      if (this.store()) return this.store().dispatch(action)
+      const store = this.store()
+      if (store) return store.dispatch(action)
     }
 
     public determineProfileDir (initArgs: any) {
@@ -123,7 +124,9 @@ export default class BaseApplication {
 
     public initRedux () {
       this.store_ = store
-      BaseModel.dispatch = this.store().dispatch
-      BaseSyncTarget.dispatch = this.store().dispatch
+      if (store) {
+        BaseModel.dispatch = store.dispatch
+        BaseSyncTarget.dispatch = store.dispatch
+      }
     }
 }

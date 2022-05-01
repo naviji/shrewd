@@ -9,7 +9,10 @@ const NanoTimer = require('nanotimer')
 // import {customParseFormat} from 'dayjs/plugin/customParseFormat'
 // dayjs.extend(customParseFormat)
 
-const timers_ = {}
+interface TimerDict {
+  [index: number]: typeof NanoTimer
+}
+const timers_: TimerDict = {}
 
 export const unixMsFromDate = (dateString: string) => {
   if (!dateString) {
@@ -62,6 +65,14 @@ export const printDateOfToday = () => {
   return dayjs().format('DD/MM/YYYY')
 }
 
+export const setTimeout = (fn: Function, interval: number) => {
+  const timer = new NanoTimer()
+  const id = Math.floor(Math.random() * 100000000)
+  timer.setTimeout(fn, '', `${interval}m`)
+  timers_[id] = timer
+  return id
+}
+
 export const msleep = (ms: number) => {
   return new Promise((resolve: Function) => {
     setTimeout(() => { resolve() }, ms)
@@ -72,15 +83,7 @@ export const sleep = (seconds: number) => {
   return msleep(seconds * 1000)
 }
 
-export const setTimeout = (fn, interval) => {
-  const timer = new NanoTimer()
-  const id = Math.floor(Math.random() * 100000000)
-  timer.setTimeout(fn, '', `${interval}m`)
-  timers_[id] = timer
-  return id
-}
-
-export const setInterval = (fn, interval) => {
+export const setInterval = (fn: Function, interval: number) => {
   const timer = new NanoTimer()
   const id = Math.floor(Math.random() * 100000000)
   timer.setInterval(fn, '', `${interval}m`)
@@ -88,43 +91,43 @@ export const setInterval = (fn, interval) => {
   return id
 }
 
-export const clearTimeout = (id) => {
+export const clearTimeout = (id: number) => {
   timers_[id].clearTimeout(id)
   delete timers_[id]
 }
 
-export const clearInterval = (id) => {
+export const clearInterval = (id: number) => {
   timers_[id].clearInterval(id)
   delete timers_[id]
 }
 
-export const unserializeDate = (value) => {
+export const unserializeDate = (value: string) => {
   return dayjs(value, 'YYYY-MM-DDTHH:mm:ss.SSSZ').valueOf()
 }
 
-export const serializeDate = (value) => {
+export const serializeDate = (value: Date) => {
   return `${dayjs(Number(value)).format('YYYY-MM-DDTHH:mm:ss.SSS')}Z`
 }
 
-const getMonthFromDay = (value) => {
+const getMonthFromDay = (value: Date) => {
   return dayjs(Number(value)).startOf('month').valueOf()
 }
 
-const getMonthsTillDate = (currentDate, endDate) => {
+const getMonthsTillDate = (currentDate: Date, endDate: Date) => {
   const currentMonth = dayjs(currentDate).startOf('month')
   const endMonth = dayjs(endDate).startOf('month')
   return endMonth.diff(currentMonth, 'month') + 1
 }
 
-const monthFromUnixMs = (value) => {
+const monthFromUnixMs = (value: number) => {
   return dayjs(Number(value)).startOf('month').valueOf()
 }
 
-const getPrevMonthUnixMs = (value) => {
+const getPrevMonthUnixMs = (value: number) => {
   return dayjs(Number(value)).startOf('month').subtract(1, 'month').valueOf()
 }
 
-const addMonthsToDateUnixMs = (currDate, monthsToAdd) => {
+const addMonthsToDateUnixMs = (currDate: Date, monthsToAdd: number) => {
   return dayjs(Number(currDate)).add(monthsToAdd, 'month').valueOf()
 }
 // if (['createdAt', 'updatedAt', 'sync_time', 'user_updatedAt', 'user_createdAt'].indexOf(propName) >= 0) {
