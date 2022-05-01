@@ -1,15 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react'
 import Checkbox from '@mui/material/Checkbox'
 import { IconButton, Typography, ButtonBase, TextField } from '@mui/material'
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import Box from '@mui/material/Box'
 import MoneyCell from './MoneyCell'
 import CssBaseline from '@mui/material/CssBaseline'
 import ClickAwayListener from '@mui/material/ClickAwayListener'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import ProgresBar from './ProgressBar'
-
-import ArrowRightIcon from '@mui/icons-material/ArrowRight'
 import ArrowRight from '@mui/icons-material/ArrowRight'
 
 /*

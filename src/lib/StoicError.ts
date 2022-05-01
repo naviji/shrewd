@@ -1,4 +1,4 @@
-export default class JoplinError extends Error {
+export default class StoicError extends Error {
     public code: any = null;
     public details: string | null = '';
 

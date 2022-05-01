@@ -46,7 +46,7 @@ export default {
       }
     }
 
-    const setBudgetedById = (id, v) => {
+    const setBudgetedById = (id: string, v: number) => {
       const clonedCategories = categories.slice()
       const x = clonedCategories.find(x => x.id === id)
       if (x) {
@@ -55,7 +55,7 @@ export default {
       setCategories(clonedCategories)
     }
 
-    const setCategoryNameById = (id, v) => {
+    const setCategoryNameById = (id: string, v: string) => {
       const clonedCategories = categories.slice()
       const x = clonedCategories.find(x => x.id === id)
       if (x) {

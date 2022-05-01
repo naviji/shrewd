@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
-import { nanoid } from 'nanoid'
 import BudgetCategories from './BudgetCategories'
 
-const BudgetViewer = ({ categories, categoryGroups, setBudgetedById, setCategoryNameById }: any) => {
+const BudgetViewer = ({ categories, categoryGroups }: any) => {
   const groupIds = categoryGroups.map(x => x.id)
   const [expanded, setExpanded] = useState(groupIds)
 

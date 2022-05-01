@@ -38,7 +38,7 @@ export class Bridge {
   }
 }
 
-let bridge_: Bridge = null
+let bridge_: Bridge | null = null
 
 function bridge () {
   if (!bridge_) bridge_ = new Bridge()

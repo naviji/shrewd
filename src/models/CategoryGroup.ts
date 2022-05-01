@@ -1,15 +1,15 @@
-import BaseItem from "./BaseItem"
-import Category from "./Category"
+import BaseItem from './BaseItem'
+import Category from './Category'
 
 class CategoryGroup extends BaseItem {
-    static tableName = () => "CategoryGroup"
+    static tableName = () => 'CategoryGroup'
 
-    static fieldNames() {
-        return ["id", "name", "updatedAt", "createdAt"]
+    static fieldNames () {
+      return ['id', 'name', 'updatedAt', 'createdAt']
     }
 
     static getAllCategoriesFromId = (id) => {
-        return Category.getAll().filter(x => x.parentId === id)
+      return Category.getAll().filter(x => x.parentId === id)
     }
 }
 

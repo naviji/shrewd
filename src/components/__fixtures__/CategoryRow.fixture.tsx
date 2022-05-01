@@ -4,11 +4,6 @@ import { useValue } from 'react-cosmos/fixture'
 
 /* eslint react-hooks/rules-of-hooks: "off" */
 
-// longName: <CategoryRow data={longNameProps}/>,
-// largeAmounts: <CategoryRow data={largeAmountProps}/>,
-// hugeAmountProps: <CategoryRow data={hugeAmountProps}/>,
-// hugeAmountWithLongNameProps: <CategoryRow data={hugeAmountWithLongNameProps}/>
-
 export default {
   default: () => {
     const [budgeted, setBudgeted] = useValue('budgeted', { defaultValue: 12345600 })

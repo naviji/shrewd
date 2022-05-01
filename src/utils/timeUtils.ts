@@ -2,13 +2,6 @@ import dayjs from 'dayjs'
 const customParseFormat = require('dayjs/plugin/customParseFormat')
 dayjs.extend(customParseFormat)
 const NanoTimer = require('nanotimer')
-// var NanoTimer = require('nanotimer');
-
-// import timers from "timers"
-// var customParseFormat = require('dayjs/plugin/customParseFormat')
-// import {customParseFormat} from 'dayjs/plugin/customParseFormat'
-// dayjs.extend(customParseFormat)
-
 interface TimerDict {
   [index: number]: typeof NanoTimer
 }

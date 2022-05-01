@@ -1,11 +1,10 @@
 export enum Dirnames {
-	Locks = 'locks',
-	Temp = 'temp',
+  Locks = 'locks',
+  Temp = 'temp',
 }
 
 export interface BaseItemEntity {
-    id?: string;
-    updatedAt?: number;
-    createdAt?: number;
-  }
-  
+  id?: string;
+  updatedAt?: number;
+  createdAt?: number;
+}

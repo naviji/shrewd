@@ -1,6 +1,5 @@
 import React from 'react'
 import BudgetViewer from '../BudgetViewer'
-import { useValue } from 'react-cosmos/fixture'
 import { nanoid } from 'nanoid'
 
 /* eslint react-hooks/rules-of-hooks: "off" */
@@ -81,7 +80,7 @@ export default {
     return <BudgetViewer
                 categories={mockCategories}
                 categoryGroups={mockCategoryGroups}
-                setBudgetedById={(a, b) => null}
-                setCategoryNameById={(a, b) => null} />
+                setBudgetedById={() => null}
+                setCategoryNameById={() => null} />
   }
 }

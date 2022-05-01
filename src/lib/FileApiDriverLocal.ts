@@ -126,23 +126,6 @@ export default class FileApiDriverLocal {
       } catch (error) {
         throw this.fsErrorToJsError_(error, path)
       }
-
-      // return new Promise((resolve, reject) => {
-      // 	fs.exists(path, (exists) => {
-      // 		if (exists) {
-      // 			resolve();
-      // 			return;
-      // 		}
-
-      // 		fs.mkdirp(path, (error) => {
-      // 			if (error) {
-      // 				reject(this.fsErrorToJsError_(error));
-      // 			} else {
-      // 				resolve();
-      // 			}
-      // 		});
-      // 	});
-      // });
     }
 
     async put (path, content, options = null) {
@@ -180,21 +163,6 @@ export default class FileApiDriverLocal {
       } catch (error) {
         throw this.fsErrorToJsError_(error, path)
       }
-
-      // return new Promise((resolve, reject) => {
-      // 	fs.unlink(path, function(error) {
-      // 		if (error) {
-      // 			if (error && error.code == 'ENOENT') {
-      // 				// File doesn't exist - it's fine
-      // 				resolve();
-      // 			} else {
-      // 				reject(this.fsErrorToJsError_(error));
-      // 			}
-      // 		} else {
-      // 			resolve();
-      // 		}
-      // 	});
-      // });
     }
 
     async move (oldPath, newPath) {
@@ -203,26 +171,6 @@ export default class FileApiDriverLocal {
       } catch (error) {
         throw this.fsErrorToJsError_(error, oldPath)
       }
-
-      // let lastError = null;
-
-      // for (let i = 0; i < 5; i++) {
-      // 	try {
-      // 		let output = await fs.move(oldPath, newPath, { overwrite: true });
-      // 		return output;
-      // 	} catch (error) {
-      // 		lastError = error;
-      // 		// Normally cannot happen with the `overwrite` flag but sometime it still does.
-      // 		// In this case, retry.
-      // 		if (error.code == 'EEXIST') {
-      // 			await time.sleep(1);
-      // 			continue;
-      // 		}
-      // 		throw this.fsErrorToJsError_(error);
-      // 	}
-      // }
-
-      // throw lastError;
     }
 
     format () {

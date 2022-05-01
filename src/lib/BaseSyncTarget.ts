@@ -8,9 +8,9 @@ import Synchronizer from './Synchronizer'
 export default class BaseSyncTarget {
     public static dispatch: Function = () => {};
 
-    private synchronizer_: Synchronizer = null;
+    private synchronizer_: Synchronizer|null = null;
     private initState_: any = null;
-    private logger_: Logger = null;
+    private logger_: Logger|null = null;
     private options_: any;
     private db_: any;
     protected fileApi_: any;
@@ -42,7 +42,10 @@ export default class BaseSyncTarget {
     public async synchronizer (): Promise<Synchronizer> {
       if (this.synchronizer_) return this.synchronizer_
       this.synchronizer_ = await this.initSynchronizer()
-      this.synchronizer_.setLogger(this.logger())
+      const currLogger = this.logger()
+      if (currLogger) {
+        this.synchronizer_.setLogger(currLogger)
+      }
       return this.synchronizer_
     }
 
@@ -71,42 +74,4 @@ export default class BaseSyncTarget {
     public static supportsSelfHosted (): boolean {
       return true
     }
-
-  // public option(name: string, defaultValue: any = null) {
-  // 	return this.options_ && name in this.options_ ? this.options_[name] : defaultValue;
-  // }
-
-  // // If [] is returned it means all platforms are supported
-  // public static unsupportedPlatforms(): any[] {
-  // 	return [];
-  // }
-
-  // public async isAuthenticated() {
-  // 	return false;
-  // }
-
-  // public authRouteName(): string {
-  // 	return null;
-  // }
-
-  // public static id() {
-  // 	throw new Error('id() not implemented');
-  // }
-
-  // // Note: it cannot be called just "name()" because that's a reserved keyword and
-  // // it would throw an obscure error in React Native.
-  // public static targetName() {
-  // 	throw new Error('targetName() not implemented');
-  // }
-
-  // public static label() {
-  // 	throw new Error('label() not implemented');
-  // }
-
-  // public async syncStarted() {
-  // 	if (!this.synchronizer_) return false;
-  // 	if (!(await this.isAuthenticated())) return false;
-  // 	const sync = await this.synchronizer();
-  // 	return sync.state() != 'idle';
-  // }
 }

@@ -11,7 +11,7 @@ describe('Target should calculate amount needed', function () {
 
   beforeEach(async () => {
     await setupDatabase(1)
-    Account.add({ name: 'Savings', amount: 1000, type: Account.TYPE_SAVINGS, createdDay: today })
+    Account.add({ name: 'Savings', amount: 1000, type: Account.TYPE_SAVINGS })
     categoryGroup = CategoryGroup.add({ name: 'Wishlist' })
     category = await Category.add({ name: 'House', parentId: categoryGroup.id })
   })

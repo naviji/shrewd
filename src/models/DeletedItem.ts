@@ -1,7 +1,6 @@
-import BaseModel from "./BaseModel"
+import BaseModel from './BaseModel'
 class DeletedItem extends BaseModel {
-    static tableName = () => "DeletedItem"
-
+    static tableName = () => 'DeletedItem'
 }
 
 export default DeletedItem

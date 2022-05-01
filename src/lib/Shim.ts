@@ -1,7 +1,3 @@
-// import * as React from 'react';
-import { AccountEntity, CategoryEntity, CategoryGroupEntity, TransactionEntity, TransferEntity } from '../types/database/types'
-
-// let isTestingEnv_ = false;
 
 // We need to ensure that there's only one instance of React being used by all
 // the packages. In particular, the lib might need React to define generic
@@ -41,7 +37,7 @@ const shim = {
   isNode: () => {
     if (typeof process === 'undefined') return false
     if (shim.isElectron()) return true
-    return process.title == 'node' || (process.title && process.title.indexOf('gulp') === 0)
+    return process.title === 'node' || (process.title && process.title.indexOf('gulp') === 0)
   },
 
   isReactNative: () => {
@@ -115,16 +111,16 @@ const shim = {
 
     // Unfortunately the error 'Network request failed' doesn't have a type
     // or error code, so hopefully that message won't change and is not localized
-    if (error.message == 'Network request failed') return true
+    if (error.message === 'Network request failed') return true
 
     // request to https://public-ch3302....1fab24cb1bd5f.md failed, reason: socket hang up"
-    if (error.code == 'ECONNRESET') return true
+    if (error.code === 'ECONNRESET') return true
 
     // OneDrive (or Node?) sometimes sends back a "not found" error for resources
     // that definitely exist and in this case repeating the request works.
     // Error is:
     // request to https://graph.microsoft.com/v1.0/drive/special/approot failed, reason: getaddrinfo ENOTFOUND graph.microsoft.com graph.microsoft.com:443
-    if (error.code == 'ENOTFOUND') return true
+    if (error.code === 'ENOTFOUND') return true
 
     // network timeout at: https://public-ch3302...859f9b0e3ab.md
     if (error.message && error.message.indexOf('network timeout') === 0) return true
@@ -136,7 +132,7 @@ const shim = {
     // code: 'EAI_AGAIN' } } reason: { FetchError: request to https://api.ipify.org/?format=json failed, reason: getaddrinfo EAI_AGAIN api.ipify.org:443
     //
     // It's a Microsoft error: "A temporary failure in name resolution occurred."
-    if (error.code == 'EAI_AGAIN') return true
+    if (error.code === 'EAI_AGAIN') return true
 
     // request to https://public-...8fd8bc6bb68e9c4d17a.md failed, reason: connect ETIMEDOUT 204.79.197.213:443
     // Code: ETIMEDOUT
@@ -188,12 +184,6 @@ const shim = {
     return r.text()
   },
 
-  // createResourceFromPath: async (_filePath: string, _defaultProps: any = null, _options: any = null): Promise<ResourceEntity> => {
-  // 	throw new Error('Not implemented');
-  // },
-
-  // FormData: typeof FormData !== 'undefined' ? FormData : null,
-
   fsDriver: (): any => {
     throw new Error('Not implemented')
   },
@@ -203,70 +193,6 @@ const shim = {
   readLocalFileBase64: (_path: string) => {
     throw new Error('Not implemented')
   },
-
-  // uploadBlob: (_url: string, _options: any) => {
-  // 	throw new Error('Not implemented');
-  // },
-
-  // sjclModule: null as any,
-
-  // randomBytes: async (_count: number) => {
-  // 	throw new Error('Not implemented');
-  // },
-
-  // stringByteLength: (_s: string) => {
-  // 	throw new Error('Not implemented');
-  // },
-
-  // detectAndSetLocale: null as Function,
-
-  // attachFileToNote: async (_note: any, _filePath: string): Promise<NoteEntity> => {
-  // 	throw new Error('Not implemented');
-  // },
-
-  // attachFileToNoteBody: async (_body: string, _filePath: string, _position: number, _options: any): Promise<string> => {
-  // 	throw new Error('Not implemented');
-  // },
-
-  // imageFromDataUrl: async (_imageDataUrl: string, _filePath: string, _options: any = null) => {
-  // 	throw new Error('Not implemented');
-  // },
-
-  // fetchBlob: function(_url: string, _options: any = null): any {
-  // 	throw new Error('Not implemented');
-  // },
-
-  // Buffer: null as any,
-
-  // openUrl: () => {
-  // 	throw new Error('Not implemented');
-  // },
-
-  // httpAgent: () => {
-  // 	throw new Error('Not implemented');
-  // },
-
-  // openOrCreateFile: (_path: string, _defaultContents: any) => {
-  // 	throw new Error('Not implemented');
-  // },
-
-  // waitForFrame: () => {
-  // 	throw new Error('Not implemented');
-  // },
-
-  // appVersion: () => {
-  // 	throw new Error('Not implemented');
-  // },
-
-  // injectedJs: (_name: string) => '',
-
-  // isTestingEnv: () => {
-  // 	return isTestingEnv_;
-  // },
-
-  // setIsTestingEnv: (v: boolean) => {
-  // 	isTestingEnv_ = v;
-  // },
 
   pathRelativeToCwd: (_path: string) => {
     throw new Error('Not implemented')
@@ -323,49 +249,6 @@ const shim = {
     if (!nodeSqlite_) throw new Error('Trying to access nodeSqlite before it has been set!!!')
     return nodeSqlite_
   }
-
-  // setReact: (react: any) => {
-  // 	react_ = react;
-  // },
-
-  // react: () => {
-  // 	if (!react_) throw new Error('Trying to access React before it has been set!!!');
-  // 	return react_;
-  // },
-
-  // platformSupportsKeyChain: () => {
-  // 	// keytar throws an error when system keychain is not present; even
-  // 	// when keytar itself is installed. try/catch to ensure system
-  // 	// keychain is present and no error is thrown.
-
-  // 	// For now, keychain support is disabled on Linux because when
-  // 	// keytar is loaded it seems to cause the following error when
-  // 	// loading Sharp:
-  // 	//
-  // 	// Something went wrong installing the "sharp" module
-  // 	// /lib/x86_64-linux-gnu/libz.so.1: version `ZLIB_1.2.9' not found
-  // 	// (required by
-  // 	// /home/travis/build/laurent22/stoic/packages/app-cli/node_modules/sharp/build/Release/../../vendor/lib/libpng16.so.16)
-  // 	//
-  // 	// See: https://travis-ci.org/github/laurent22/stoic/jobs/686222036
-  // 	//
-  // 	// Also disabled in portable mode obviously.
-
-  // 	return (shim.isWindows() || shim.isMac()) && !shim.isPortable();
-  // },
-
-  // keytar: (): any => {
-  // 	throw new Error('Not implemented');
-  // },
-
-  // In general all imports should be static, but for cases where dynamic
-  // require is needed, we should use the shim so that the code can build in
-  // React Native. In React Native that code path will throw an error, but at
-  // least it will build.
-  // https://stackoverflow.com/questions/55581073
-  // requireDynamic: (_path: string): any => {
-  // 	throw new Error('Not implemented');
-  // },
 
 }
 

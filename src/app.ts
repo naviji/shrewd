@@ -1,16 +1,11 @@
 
-import { webFrame, Menu } from 'electron'
 import BaseApplication from './classes/BaseApplication'
-import _ from './lib/migrations/1'
-import { envFromArgs, profilePathFromArgs, isDebugMode } from './lib/startupHelpers'
+import { envFromArgs } from './lib/startupHelpers'
 import Setting from './models/Setting'
 import CommandService from './services/CommandService'
-import store from './lib/store'
-import BaseModel from './models/BaseModel'
-import BaseSyncTarget from './lib/BaseSyncTarget'
+
 import Category from './models/Category'
 import bridge from './bridge'
-const { shimInit } = require('./lib/ShimNode')
 
 class Application extends BaseApplication {
   public async start (argv: string[]): Promise<any> {
@@ -50,34 +45,6 @@ class Application extends BaseApplication {
 
     return null
   }
-
-  // private initRedux() {
-  //     this.store_ = store
-  //     BaseModel.dispatch = this.store().dispatch;
-  // 	BaseSyncTarget.dispatch = this.store().dispatch;
-  // }
-
-  // protected async generalMiddleware(store: any, next: any, action: any) {
-  //     // Middleware are for creating side effects in response to redux actions;
-  //     // These generally include UI or settings updates or execting actions on models
-
-  // 	if (action.type === 'settings/zoom' || action.type == 'settings/all') {
-  // 		webFrame.setZoomFactor(Setting.get('windowContentZoomFactor') / 100);
-  // 	}
-
-  // 	const result = await super.generalMiddleware(store, next, action); // Why are we calling super.generalMiddleware here and not at the top??
-  // 	const newState = store.getState();
-
-  // 	// if (action.type === 'FOLDER_AND_NOTE_SELECT') {
-  // 	// 	await Folder.expandTree(newState.folders, action.folderId);
-  // 	// }
-
-  // 	// if (this.hasGui() && ((action.type == 'SETTING_UPDATE_ONE' && ['themeAutoDetect', 'theme', 'preferredLightTheme', 'preferredDarkTheme'].includes(action.key)) || action.type == 'SETTING_UPDATE_ALL')) {
-  // 	// 	this.handleThemeAutoDetect();
-  // 	// }
-
-  // 	return result;
-  // }
 }
 
 let application_: Application = null
@@ -88,6 +55,3 @@ function app () {
 }
 
 export default app
-// function shimInit(arg0: Bridge) {
-//     throw new Error('Function not implemented.');
-// }
