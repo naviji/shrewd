@@ -72,14 +72,6 @@ const DateEditor = forwardRef((props: any, ref) => {
 DateEditor.displayName = 'DateEditor'
 
 const PayeeSelector = forwardRef((props: any, ref) => {
-  const [payees, setPayees] = useState([
-    'Achan',
-    'Amma',
-    'Gas',
-    'Market',
-    'Shop'
-  ])
-
   useEffect(() => {
     console.log('props', props)
     console.log('ref', ref)
@@ -117,44 +109,12 @@ const PayeeSelector = forwardRef((props: any, ref) => {
             </Box>
       </Box>
     </Box>
-
-  //         marginTop: '50px'
-  //       }}>
-  // <Box sx={{
-  //   display: 'inline-block',
-  //   position: 'relative',
-  //   border: '1px solid black',
-  //   '& :after': {
-  //     position: 'absolute',
-  //     width: '50px',
-  //     height: '50px',
-  //     bottom: '100%',
-  //     left: '50%',
-  //     marginLeft: '-25px',
-  //     content: '""',
-  //     transform: 'rotate(45deg)',
-  //     marginBottom: '-50px'
-  //   }
-  // }}>
-  //                 <Box sx={{
-  //                   padding: 8
-  //                 }}>
-  //                     {
-  //                         payees.map((x, idx) => <Typography key={idx}> {x} </Typography>)
-  //                     }
-  //                 </Box>
-
-  //             </Box>
-  //       </Paper>
-
   )
 })
 PayeeSelector.displayName = 'PayeeSelector'
 
-const RowCheckBox = memo((props) => {
-  // checked={params.value === 'checked'} onChange={onChangeHandler}
-
-  const onChangeHandler = (e) => {
+const RowCheckBox = memo(() => {
+  const onChangeHandler = (e: any) => {
     console.log('Changed', e)
   }
   return (
@@ -165,30 +125,18 @@ const RowCheckBox = memo((props) => {
 })
 RowCheckBox.displayName = 'RowCheckBox'
 
-const RowCleared = memo((props) => {
-  // checked={params.value === 'checked'} onChange={onChangeHandler}
-
-  //   const onChangeHandler = (e) => {
-  //     console.log('Changed', e)
-  //   }
+const RowCleared = memo(() => {
   return (
       <>
         <IconButton color="inherit">
               <CheckCircleIcon fontSize="small"/>
         </ IconButton>
-
-        {/* <CheckCircleOutlineIcon /> */}
       </>
   )
 })
 RowCleared.displayName = 'RowCleared'
 
-const HeaderCleared = memo((props) => {
-  // checked={params.value === 'checked'} onChange={onChangeHandler}
-
-  //   const onChangeHandler = (e) => {
-  //     console.log('Changed', e)
-  //   }
+const HeaderCleared = memo(() => {
   return (
         <>
           <IconButton color="inherit">
@@ -200,32 +148,10 @@ const HeaderCleared = memo((props) => {
 })
 HeaderCleared.displayName = 'HeaderCleared'
 
-const HeaderCheckBox = memo((props) => {
-  const onChangeHandler = (e) => {
+const HeaderCheckBox = memo(() => {
+  const onChangeHandler = (e: any) => {
     console.log('Changed header', e)
   }
-  // const [sortState, setSortState] = useState();
-
-  //   const onClick = useCallback(() => {
-  //     console.log('clicked')
-  //     // props.progressSort();
-  //   })
-
-  // useEffect(() => {
-  //     const listener = () => {
-  //         if (props.column.isSortAscending()) {
-  //             setSortState('ASC');
-  //         } else if (props.column.isSortDescending()) {
-  //             setSortState('DESC');
-  //         } else {
-  //             setSortState(undefined);
-  //         }
-  //     };
-
-  //     props.column.addEventListener('sortChanged', listener);
-
-  //     return () => props.column.removeEventListener('sortChanged', listener);;
-  // }, []);
 
   return (
     <input type='checkbox' onChange={onChangeHandler} />
@@ -296,13 +222,6 @@ const TransactionTable = () => {
       key: 'cleared',
       name: 'Cleared'
     }
-    // {
-    //   field: 'cleared',
-    //   editable: false,
-    //   cellRenderer: RowCleared,
-    //   headerComponent: HeaderCleared,
-    //   maxWidth: 100
-    // }
 
   ])
 
@@ -321,19 +240,6 @@ const TransactionTable = () => {
   function rowKeyGetter (row: Row): number {
     return row.id
   }
-
-  //   // never changes, so we can use useMemo
-  //   const defaultColDef = useMemo(() => ({
-  //     resizable: true,
-  //     sortable: true,
-  //     editable: true,
-  //     suppressMovable: true
-  //   }), [])
-
-  //   const onGridReady = e => {
-  //     e.api.sizeColumnsToFit()
-  //     e.columnApi.resetColumnState()
-  //   }
 
   return (
        <Box sx={{ height: '600px', width: '1000px' }}>

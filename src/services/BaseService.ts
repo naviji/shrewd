@@ -1,8 +1,8 @@
 import Logger from '../lib/Logger'
 
 export default class BaseService {
-    static logger_: Logger = null;
-    protected instanceLogger_: Logger = null;
+    static logger_: Logger | null = null;
+    protected instanceLogger_: Logger | null= null;
 
     logger (): Logger {
       if (this.instanceLogger_) return this.instanceLogger_

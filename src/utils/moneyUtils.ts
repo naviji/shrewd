@@ -1,6 +1,6 @@
 import accounting from 'accounting'
 export const format = (money: number) => accounting.formatMoney(money / 100)
-export const unformat = (x: string) => {
+export const unformat = (x: string): number => {
   let sign = 1
   if (x.length === 0) return 0
   if (x[0] === '-') {
@@ -13,5 +13,5 @@ export const unformat = (x: string) => {
   if (!afterDecimal || afterDecimal.length === 0) return sign * (Number(beforeDecimal) * 100)
   if (afterDecimal.length === 1) return sign * (Number(beforeDecimal) * 100 + Number(afterDecimal) * 10)
   if (afterDecimal.length === 2) return sign * (Number(beforeDecimal) * 100 + Number(afterDecimal))
-  if (afterDecimal.length > 2) return sign * (Number(beforeDecimal) * 100 + Number(afterDecimal.slice(0, 2)))
+  return sign * (Number(beforeDecimal) * 100 + Number(afterDecimal.slice(0, 2)))
 }

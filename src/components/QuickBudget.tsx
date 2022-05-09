@@ -9,6 +9,7 @@ import { ButtonBase } from '@mui/material'
 import { format } from '../utils/moneyUtils'
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp'
 import OfflineBoltIcon from '@mui/icons-material/OfflineBolt'
+import { MonthInfo } from '../types/Model'
 
 const AccordionDetails = ({ children }: any) => {
   return (
@@ -124,7 +125,7 @@ const QuickBudgetItem = ({ name, amount }: any) => {
   )
 }
 
-const QuickBudget = ({ items }: any) => {
+const QuickBudget = ({ items }: { items: MonthInfo[] }) => {
   return (
     <Accordion>
         <AccordionSummary>

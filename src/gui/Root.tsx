@@ -1,22 +1,10 @@
 import React, { useEffect } from 'react'
 import ReactDOM from 'react-dom'
-import { Provider, useDispatch, useSelector } from 'react-redux'
+import { Provider } from 'react-redux'
 import app from '../app'
 import ErrorBoundary from './ErrorBoundary'
-import { setAppState, State } from '../lib/store'
-
-import Button from '@mui/material/Button'
 import Dashboard from './Dashboard'
-
-import Box from '@mui/material/Box'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
-
-// interface Props {
-//   themeId: number;
-//   appState: string,
-//   dispatch: Function;
-//   zoomFactor: number;
-// }
 
 async function initialize () {
   // Add an event listener to listen for resize window

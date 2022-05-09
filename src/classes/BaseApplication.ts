@@ -1,16 +1,9 @@
 
 import { Store } from '@reduxjs/toolkit'
-import BaseSyncTarget from '../lib/BaseSyncTarget'
 import Database from '../lib/Database'
-import FileApiDriverLocal from '../lib/FileApiDriverLocal'
-import FsDriverNode from '../lib/FsDriverNode'
 import Logger from '../lib/Logger'
-import shim from '../lib/shim'
 import store from '../lib/store'
 import { envFromArgs } from '../lib/startupHelpers'
-import SyncTargetFilesystem from '../lib/SyncTargetFilesystem'
-import SyncTargetNone from '../lib/SyncTargetNone'
-import SyncTargetRegistry from '../lib/SyncTargetRegistry'
 import Account from '../models/Account'
 import BaseItem from '../models/BaseItem'
 import BaseModel from '../models/BaseModel'
@@ -21,6 +14,7 @@ import Target from '../models/Target'
 import Transaction from '../models/Transaction'
 import Transfer from '../models/Transfer'
 import BaseService from '../services/BaseService'
+import StoicError from '../lib/StoicError'
 import { toSystemSlashes } from '../utils/pathUtils'
 
 const os = require('os')
@@ -31,14 +25,6 @@ export default class BaseApplication {
     protected store_: Store<any> | null = null;
 
     public async start (argv: string[]): Promise<any> {
-      // TODO: Implement search Service
-      // TODO: Add time, date, locale and currency format customization
-      // TODO: Sync startup operations such as clearing local sync state info
-
-      const fsDriver = new FsDriverNode()
-      // Logger.setFsDriver(fsDriver)
-      FileApiDriverLocal.setFsDriver(fsDriver)
-
       // // That's not good, but it's to avoid circular dependency issues
       // // in the BaseItem class.
       BaseItem.loadClass('Account', Account)
@@ -59,19 +45,6 @@ export default class BaseApplication {
       Setting.setConstant('profileDir', profilePath)
       Setting.setConstant('tempDir', tempDir)
       Setting.setConstant('cacheDir', cacheDir)
-
-      SyncTargetRegistry.addClass(SyncTargetNone)
-      SyncTargetRegistry.addClass(SyncTargetFilesystem)
-
-      try {
-        // Perform shimInit frist before using this!
-        // Question: why is this using shim while mkdirp does not?
-        await shim.fsDriver().remove(tempDir)
-      } catch (error) {
-        // Can't do anything in this case, not even log, since the logger
-        // is not yet ready. But normally it's not an issue if the temp
-        // dir cannot be deleted.
-      }
 
       await fs.mkdirp(profilePath, 0o755)
       await fs.mkdirp(tempDir, 0o755)
@@ -100,7 +73,8 @@ export default class BaseApplication {
     }
 
     public store () {
-      return this.store_
+      if (this.store_) return this.store_
+      throw new StoicError('Store not initialized')
     }
 
     public dispatch (action: any) {
@@ -126,7 +100,6 @@ export default class BaseApplication {
       this.store_ = store
       if (store) {
         BaseModel.dispatch = store.dispatch
-        BaseSyncTarget.dispatch = store.dispatch
       }
     }
 }

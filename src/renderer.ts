@@ -29,7 +29,7 @@ async function startAppAndDisplayUI () {
   }
 }
 
-async function displayError (error) {
+async function displayError (error: any) {
   const env = await bridge().env()
   if (error.code === 'flagError') {
     // TODO: Add error code and message handling

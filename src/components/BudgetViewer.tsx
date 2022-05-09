@@ -1,7 +1,14 @@
 import React, { useState } from 'react'
 import BudgetCategories from './BudgetCategories'
+import { CategoryGroupInfo, CategoryInfo } from '../types/Model'
 
-const BudgetViewer = ({ categories, categoryGroups }: any) => {
+const BudgetViewer = (
+  { categories, categoryGroups, setBudgetedById, setCategoryNameById }:
+  { categories: CategoryInfo[],
+    categoryGroups: CategoryGroupInfo[]
+    setBudgetedById: (id: string, value: number) => void,
+    setCategoryNameById : (id: string, value: number) => void
+  }) => {
   const groupIds = categoryGroups.map(x => x.id)
   const [expanded, setExpanded] = useState(groupIds)
 
@@ -14,13 +21,6 @@ const BudgetViewer = ({ categories, categoryGroups }: any) => {
     }
   }
 
-  // const setBudgetedById = (id, v) => {
-  //   console.log(`Trying to set budgeted of ${id} to ${v}`)
-  // }
-
-  // const setCategoryNameById = (id, v) => {
-  //   console.log(`Trying to set categoryName of ${id} to ${v}`)
-  // }
   return (
     <>
     {
@@ -39,8 +39,8 @@ const BudgetViewer = ({ categories, categoryGroups }: any) => {
             key={categoryGroupToRender.id}
             categoryGroup={categoryGroupToRender}
             categories={categoriesOfGroup}
-            setBudgetedById={(a, b) => null}
-            setCategoryNameById={(a, b) => null}
+            setBudgetedById={setBudgetedById}
+            setCategoryNameById={setCategoryNameById}
             expanded={expanded.indexOf(categoryGroupToRender.id) !== -1}
             handleChange={() => {
               handleChange(categoryGroupToRender.id)

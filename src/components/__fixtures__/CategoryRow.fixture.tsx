@@ -13,9 +13,11 @@ export default {
       spent={12345600}
       balance={12345600}
       budgeted={budgeted}
-      saveBudgetedAmount={(v) => setBudgeted(v)}
-      saveCategoryName={(v) => setCategoryName(v)}
-      isGroup={false} />
+      saveBudgetedAmount={(v: any) => setBudgeted(v)}
+      saveCategoryName={(v: any) => setCategoryName(v)}
+      isGroup={false}
+      handleChange={() => {}}
+      expanded={false}/>
     )
   },
   longName: () => {
@@ -26,9 +28,11 @@ export default {
       spent={12345600}
       balance={12345600}
       budgeted={budgeted}
-      saveBudgetedAmount={(v) => setBudgeted(v)}
-      saveCategoryName={(v) => setCategoryName(v)}
-      isGroup={false} />
+      saveBudgetedAmount={(v: any) => setBudgeted(v)}
+      saveCategoryName={(v: any) => setCategoryName(v)}
+      isGroup={false}
+      handleChange={() => {}}
+      expanded={false}/>
     )
   },
   hugeAmount: () => {
@@ -39,9 +43,12 @@ export default {
       spent={123412345600}
       balance={123412345600}
       budgeted={budgeted}
-      saveBudgetedAmount={(v) => setBudgeted(v)}
-      saveCategoryName={(v) => setCategoryName(v)}
-      isGroup={false} />
+      saveBudgetedAmount={(v: any) => setBudgeted(v)}
+      saveCategoryName={(v: any) => setCategoryName(v)}
+      isGroup={false}
+      handleChange={() => {}}
+      expanded={false}/>
+
     )
   },
   groupRow: () => {
@@ -52,9 +59,11 @@ export default {
       spent={123412345600}
       balance={123412345600}
       budgeted={budgeted}
-      saveBudgetedAmount={(v) => setBudgeted(v)}
-      saveCategoryName={(v) => setCategoryName(v)}
-      isGroup={true} />
+      saveBudgetedAmount={(v: any) => setBudgeted(v)}
+      saveCategoryName={(v: any) => setCategoryName(v)}
+      isGroup={true}
+      handleChange={() => {}}
+      expanded={false}/>
     )
   }
 }

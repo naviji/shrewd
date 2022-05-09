@@ -1,10 +1,11 @@
 import React from 'react'
 import BudgetViewer from '../BudgetViewer'
 import { nanoid } from 'nanoid'
+import { CategoryInfo, CategoryGroupInfo } from '../../types/Model'
 
 /* eslint react-hooks/rules-of-hooks: "off" */
 
-const mockCategoryGroups = [
+const mockCategoryGroups: CategoryGroupInfo[] = [
   {
     id: nanoid(),
     name: 'True Expenses'
@@ -16,7 +17,7 @@ const mockCategoryGroups = [
 
 ]
 
-const mockCategories = [
+const mockCategories: CategoryInfo[] = [
   {
     id: nanoid(),
     groupId: mockCategoryGroups[0].id,

@@ -47,7 +47,7 @@ const MoneyInputCell = forwardRef((props: any, ref: any) => {
               }
             }}
             inputRef={ref}
-            onBlur={(e) => {
+            onBlur={() => {
               saveAmount(unformat(tempAmount))
               setClickedFalse()
             }}
@@ -158,17 +158,19 @@ const MoneyCell = ({ amount, editable, colored, saveChangedAmount }: MoneyCellPr
     moneyCell = <MoneyInputCell
       ref={inputRef}
       tempAmount={tempAmount}
-      setTempAmount={(v) => setTempAmount(v)}
+      setTempAmount={(v: any) => setTempAmount(v)}
       setClickedFalse={() => setClicked(false)}
-      saveAmount={(value) => saveChangedAmount(value)}
+      saveAmount={(v: any) => saveChangedAmount(v)}
     />
   } else {
     moneyCell = <MoneyDisplayCell amount={amount} colored={colored} />
   }
 
   const onClickAwayHandler = () => {
-    saveChangedAmount(unformat(tempAmount))
-    setTempAmount(format(unformat(tempAmount)).slice(1))
+    if (tempAmount) {
+      saveChangedAmount(unformat(tempAmount))
+      setTempAmount(format(unformat(tempAmount)).slice(1))
+    }
     setClicked(false)
   }
 

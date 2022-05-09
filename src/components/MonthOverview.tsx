@@ -9,7 +9,7 @@ import { ButtonBase } from '@mui/material'
 import { format } from '../utils/moneyUtils'
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
-
+import { MonthInfo } from '../types/Model'
 const AccordionDetails = ({ children }: any) => {
   return (
         <MuiAccordionDetails
@@ -125,7 +125,7 @@ const MonthOverviewItem = ({ name, amount }: any) => {
   )
 }
 
-const MonthOverview = ({ items }: any) => {
+const MonthOverview = ({ items }: { items: MonthInfo[] }) => {
   return (
     <Accordion>
         <AccordionSummary>

@@ -1,6 +1,4 @@
 import BaseItem from './BaseItem'
-import Calendar from '../lib/Calendar'
-import Setting from './Setting'
 import timeUtils from '../utils/timeUtils'
 
 class Transfer extends BaseItem {

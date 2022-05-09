@@ -47,7 +47,7 @@ class Application extends BaseApplication {
   }
 }
 
-let application_: Application = null
+let application_: Application | null = null
 
 function app () {
   if (!application_) application_ = new Application()

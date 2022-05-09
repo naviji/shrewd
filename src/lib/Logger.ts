@@ -1,4 +1,3 @@
-import FsDriverNode from './FsDriverNode'
 import dayjs from 'dayjs'
 const { sprintf } = require('sprintf-js')
 
@@ -40,8 +39,6 @@ export interface LoggerWrapper {
 }
 
 class Logger {
-    private static fsDriver: null | FsDriverNode
-
     private targets_: Target[] = [];
     private level_: LogLevel = LogLevel.Info;
     private enabled: boolean = true;

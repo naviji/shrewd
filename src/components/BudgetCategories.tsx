@@ -1,8 +1,8 @@
 import React from 'react'
-import { CategoryEntity } from '../types/model'
 
 import CategoryRow from './CategoryRow'
 import CssBaseline from '@mui/material/CssBaseline'
+import { CategoryInfo } from '../types/Model'
 
 const BudgetCategories = ({
   categoryGroup,
@@ -29,7 +29,7 @@ const BudgetCategories = ({
                     expanded={expanded} />
                 {
                     expanded
-                      ? categories.map((x) => <CategoryRow
+                      ? categories.map((x: CategoryInfo) => <CategoryRow
                         key={x.id}
                         name={x.name}
                         spent={x.spent}

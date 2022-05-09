@@ -117,7 +117,7 @@ export default function SidebarAccounts () {
   const [expanded, setExpanded] = React.useState<Array<string>>(['panel1', 'panel2'])
 
   const handleChange =
-    (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
+    (panel: string) => () => {
       const idx = expanded.indexOf(panel)
       if (idx !== -1) {
         setExpanded(expanded.filter(x => x !== panel))
