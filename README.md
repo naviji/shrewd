@@ -1,11 +1,9 @@
 Buddy
 
 
+
 TO DO:
 - [x] Add File API
-- [ ] Implement Synchronization
-
-TO DO LATER:
 - [ ] Add credit card logic
 - [ ] Investment or Debt accounts
 - [ ] Add Targets (Monthly, Month/Year, By Date)
