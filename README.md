@@ -1,6 +1,9 @@
-Buddy
+## Shrewd Budgeting App
+![UI design mock](https://www.dropbox.com/s/ps00ldh5xgmmvta/ui-design.jpg?raw=1)
 
 
+
+[Figma link](https://www.figma.com/file/hUWQcoXMg4MEQYgFBs1onm/Shrewd?node-id=0%3A1)
 
 TO DO:
 - [x] Add File API
